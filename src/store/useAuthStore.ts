@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/config";
 
 interface UserProfile {
   id: number | string;
@@ -8,6 +10,8 @@ interface UserProfile {
   displayName?: string | null;
   photoURL?: string | null;
   uid?: string; // Firebase raw UID for frontend display
+  created_at?: string | null;
+  last_login?: string | null;
 }
 
 interface AuthState {
@@ -19,11 +23,11 @@ interface AuthState {
   
   // Actions
   login: (token: string, user: UserProfile) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   setToken: (token: string | null) => void;
   setUser: (user: UserProfile | null) => void;
   setLoading: (loading: boolean) => void;
-  clearUser: () => void;
+  clearUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -44,7 +48,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
   },
 
-  logout: () => {
+  logout: async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Firebase SignOut Error:", err);
+    }
     localStorage.removeItem("edulab_token");
     set({
       token: null,
@@ -67,7 +76,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setUser: (user) => set({ user }),
   setLoading: (isLoading) => set({ isLoading, loading: isLoading }),
-  clearUser: () => {
+  clearUser: async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Firebase SignOut Error:", err);
+    }
     localStorage.removeItem("edulab_token");
     set({
       token: null,
@@ -78,3 +92,4 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
   },
 }));
+

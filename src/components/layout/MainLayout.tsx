@@ -32,7 +32,16 @@ export default function MainLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#010414] tech-grid">
+    <div 
+      className="min-h-screen flex flex-col bg-[#f8fafc]"
+      style={{
+        backgroundImage: `
+          linear-gradient(to right, rgba(0, 19, 91, 0.02) 1.5px, transparent 1.5px),
+          linear-gradient(to bottom, rgba(0, 19, 91, 0.02) 1.5px, transparent 1.5px)
+        `,
+        backgroundSize: "40px 40px"
+      }}
+    >
       <Navbar onToggleSidebar={handleToggleSidebar} />
       
       <div className="flex-1 flex relative">

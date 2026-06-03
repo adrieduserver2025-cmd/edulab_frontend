@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { 
   LayoutDashboard, 
   Globe, 
@@ -15,11 +15,10 @@ interface SidebarProps {
 export default function Sidebar({ isOpen }: SidebarProps) {
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = "/";
   };
 
   const navItems = [
@@ -31,7 +30,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
   return (
     <aside 
-      className={`fixed top-16 left-0 h-[calc(100vh-64px)] z-40 transition-all duration-300 glass-panel border-y-0 border-l-0 border-r border-glass-border flex flex-col justify-between py-6
+      className={`fixed top-16 left-0 h-[calc(100vh-64px)] z-40 transition-all duration-300 bg-white border-r border-gray-200 flex flex-col justify-between py-6
         ${isOpen ? "w-64 px-4" : "w-20 px-2"}`}
     >
       {/* Navigation Links */}
@@ -43,10 +42,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               key={item.path}
               to={item.path}
               className={({ isActive }) => `
-                flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group
+                flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 group border
                 ${isActive 
-                  ? "bg-secondary/15 text-secondary border border-secondary/35 shadow-[0_0_15px_rgba(93,140,226,0.15)]" 
-                  : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"}
+                  ? "bg-gradient-to-r from-[#00135B] to-[#5D8CE2] text-white border-transparent shadow-sm" 
+                  : "text-gray-500 hover:text-[#00135B] hover:bg-slate-50 border-transparent"}
               `}
             >
               <Icon className="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110" />
@@ -57,12 +56,12 @@ export default function Sidebar({ isOpen }: SidebarProps) {
       </nav>
 
       {/* Footer / User Session Details */}
-      <div className="space-y-4 pt-4 border-t border-glass-border">
+      <div className="space-y-4 pt-4 border-t border-gray-150">
         {isOpen && user && (
-          <div className="px-4 py-2 bg-white/5 rounded-xl border border-glass-border">
-            <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Sesión como</p>
-            <p className="text-sm font-medium text-white truncate">{user.email}</p>
-            <span className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full bg-accent/20 text-accent font-semibold border border-accent/25 uppercase">
+          <div className="px-4 py-2 bg-slate-50 rounded-xl border border-gray-100 text-gray-700">
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Sesión como</p>
+            <p className="text-xs font-semibold text-[#00135B] truncate">{user.email}</p>
+            <span className="inline-block mt-1 text-[9px] px-2 py-0.5 rounded-full bg-[#F5C542]/20 text-[#00135B] font-bold border border-[#F5C542]/30 uppercase">
               {user.role}
             </span>
           </div>
@@ -70,7 +69,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         
         <button
           onClick={handleLogout}
-          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-transparent transition-all duration-200 cursor-pointer
+          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-transparent transition-all duration-200 cursor-pointer bg-transparent
             ${!isOpen && "justify-center"}`}
         >
           <LogOut className="w-5 h-5 shrink-0" />

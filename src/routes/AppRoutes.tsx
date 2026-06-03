@@ -1,7 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "../pages/landing/LandingPage";
-import LoginPage from "../pages/auth/LoginPage";
-import RegisterPage from "../pages/auth/RegisterPage";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
 import MainLayout from "../components/layout/MainLayout";
@@ -10,6 +8,7 @@ import ProgramsPage from "../pages/programs/ProgramsPage";
 import ProfilePage from "../pages/profile/ProfilePage";
 import OnboardingPage from "../pages/onboarding/OnboardingPage";
 import AIToolsPage from "../pages/ai/AIToolsPage";
+import OpportunityDetailPage from "../pages/programs/OpportunityDetailPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRoutes() {
@@ -17,10 +16,12 @@ export default function AppRoutes() {
     <Routes>
       {/* Public Pages */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LandingPage initialAuthMode="login" />} />
+      <Route path="/register" element={<LandingPage initialAuthMode="register" />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/opportunities/:slug" element={<OpportunityDetailPage />} />
+      <Route path="/voluntariados/:slug" element={<OpportunityDetailPage />} />
 
       {/* Protected App Space */}
       <Route element={<ProtectedRoute />}>

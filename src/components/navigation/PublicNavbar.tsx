@@ -11,38 +11,70 @@ import {
   Cpu, 
   Briefcase, 
   MessageSquare,
-  HelpCircle
+  HelpCircle,
+  Bell,
+  User,
+  Settings,
+  Moon,
+  Grid,
+  DollarSign,
+  ShoppingCart,
+  Laptop,
+  LogOut,
+  Building,
+  ChevronRight
 } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
 
 interface SubmenuItem {
   title: string;
   desc: string;
   icon: any;
   highlight?: boolean;
+  slug?: string;
 }
 
-export default function PublicNavbar() {
+interface PublicNavbarProps {
+  onOpenAuth?: (mode: "login" | "register") => void;
+}
+
+export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Auth Store details
+  const { user, isAuthenticated, logout } = useAuthStore();
+
   const handleLinkClick = (path: string) => {
-    navigate(path);
+    if (path === "/login" || path === "/register") {
+      onOpenAuth?.(path === "/register" ? "register" : "login");
+    } else {
+      navigate(path);
+    }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setProfileMenuOpen(false);
+    window.location.href = "/";
   };
 
   const menuData: Record<string, SubmenuItem[]> = {
     Oportunidades: [
-      { title: "Becas de Excelencia", desc: "Financiamiento completo para postgrados y pregrados.", icon: GraduationCap },
-      { title: "Intercambios Académicos", desc: "Semestres en las mejores universidades del mundo.", icon: Globe },
-      { title: "Summer Schools", desc: "Cursos cortos e intensivos de verano en el extranjero.", icon: BookOpen },
+      { title: "Becas de Excelencia", desc: "Financiamiento completo para postgrados y pregrados.", icon: GraduationCap, slug: "daad-beca" },
+      { title: "Intercambios Académicos", desc: "Semestres en las mejores universidades del mundo.", icon: Globe, slug: "u-tokyo-exchange" },
+      { title: "Summer Schools", desc: "Cursos cortos e intensivos de verano en el extranjero.", icon: BookOpen, slug: "oxford-summer-school" },
     ],
     Voluntariados: [
       { 
         title: "VOLUNTARIADO EN AIESEC", 
         desc: "Desarrolla tu liderazgo en proyectos sociales globales.", 
         icon: HeartHandshake, 
-        highlight: true 
+        highlight: true,
+        slug: "aiesec-voluntariado"
       },
-      { title: "Voluntariado Ambiental ONU", desc: "Acción climática y conservación ecológica global.", icon: Globe },
+      { title: "Voluntariado Ambiental ONU", desc: "Acción climática y conservación ecológica global.", icon: Globe, slug: "onu-voluntariado" },
       { title: "Cruz Roja Internacional", desc: "Apoyo humanitario y salud comunitaria.", icon: HeartHandshake },
     ],
     IA: [
@@ -57,7 +89,7 @@ export default function PublicNavbar() {
   };
 
   return (
-    <nav className="w-full bg-white h-20 px-8 flex items-center justify-between border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+    <nav className="w-full bg-white h-20 px-8 flex items-center justify-between border-b border-gray-100 fixed top-0 left-0 right-0 z-50 shadow-sm text-gray-700">
       {/* Brand Identity */}
       <div className="flex items-center gap-12">
         <Link to="/" className="flex items-center gap-2.5 group">
@@ -98,7 +130,18 @@ export default function PublicNavbar() {
                       return (
                         <div
                           key={idx}
-                          onClick={() => handleLinkClick("/login")}
+                          onClick={() => {
+                            if (item.slug) {
+                              navigate(`/opportunities/${item.slug}`);
+                            } else {
+                              if (isAuthenticated) {
+                                if (menu === "IA") navigate("/ai-tools");
+                                else if (menu === "Oportunidades" || menu === "Voluntariados") navigate("/programs");
+                              } else {
+                                handleLinkClick("/login");
+                              }
+                            }
+                          }}
                           className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 group/item
                             ${item.highlight 
                               ? "bg-amber-500/5 hover:bg-amber-500/10 border border-[#F5C542]/20 hover:border-[#F5C542]/40" 
@@ -131,30 +174,212 @@ export default function PublicNavbar() {
           ))}
 
           {/* Testimonios Link */}
-          <Link 
-            to="/login" 
-            className="text-[#00135B]/85 hover:text-[#5D8CE2] font-semibold text-sm cursor-pointer transition-colors duration-200"
+          <button 
+            onClick={() => {
+              if (isAuthenticated) {
+                // Scroll to testimonials
+                document.getElementById("opportunities")?.scrollIntoView({ behavior: "smooth" });
+              } else {
+                onOpenAuth?.("login");
+              }
+            }}
+            className="text-[#00135B]/85 hover:text-[#5D8CE2] font-semibold text-sm cursor-pointer transition-colors duration-200 bg-transparent border-none"
           >
             Testimonios
-          </Link>
+          </button>
         </div>
       </div>
 
-      {/* Auth Control Buttons */}
+      {/* Auth Control Buttons or Logged-in State */}
       <div className="flex items-center gap-6">
-        <Link 
-          to="/login" 
-          className="text-[#00135B]/85 hover:text-[#5D8CE2] font-bold text-sm transition-colors duration-200"
-        >
-          Iniciar Sesión
-        </Link>
-        
-        <Link
-          to="/login"
-          className="px-6 py-2.5 rounded-full bg-[#00135B] hover:bg-[#0d288c] text-white font-bold text-sm tracking-wide transition-all duration-300 shadow-md shadow-[#00135B]/20 hover:scale-102 hover:shadow-[#00135B]/30 cursor-pointer"
-        >
-          Registrarse
-        </Link>
+        {!isAuthenticated ? (
+          <>
+            <button 
+              onClick={() => onOpenAuth?.("login")}
+              className="text-[#00135B]/85 hover:text-[#5D8CE2] font-bold text-sm transition-colors duration-200 cursor-pointer bg-transparent border-none"
+            >
+              Iniciar Sesión
+            </button>
+            
+            <button
+              onClick={() => onOpenAuth?.("register")}
+              className="px-6 py-2.5 rounded-full bg-[#00135B] hover:bg-[#0d288c] text-white font-bold text-sm tracking-wide transition-all duration-300 shadow-md shadow-[#00135B]/20 hover:scale-102 hover:shadow-[#00135B]/30 cursor-pointer"
+            >
+              Registrarse
+            </button>
+          </>
+        ) : (
+          <div className="flex items-center gap-4">
+            {/* Notifications Bell */}
+            <button className="relative p-2 rounded-xl text-gray-400 hover:text-[#00135B] hover:bg-gray-50 transition-all duration-200 cursor-pointer border-none bg-transparent">
+              <Bell className="w-5 h-5 text-gray-500" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#F5C542] rounded-full animate-pulse"></span>
+            </button>
+
+            {/* "Tu Perfil" text link */}
+            <button
+              onClick={() => navigate("/profile")}
+              className="text-xs font-bold text-[#00135B] hover:text-[#5D8CE2] transition-colors cursor-pointer bg-transparent border-none"
+            >
+              Tu Perfil
+            </button>
+
+            {/* Profile Avatar with Dropdown on Hover */}
+            <div 
+              className="relative py-2"
+              onMouseEnter={() => setProfileMenuOpen(true)}
+              onMouseLeave={() => setProfileMenuOpen(false)}
+            >
+              {/* Avatar circle */}
+              <button className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#00135B] to-[#5D8CE2] hover:scale-105 transition-all duration-200 flex items-center justify-center font-bold text-xs text-white border-none cursor-pointer">
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+                ) : (
+                  (user?.email || "EP").substring(0, 2).toUpperCase()
+                )}
+              </button>
+
+              {/* Canva-style Hover Menu */}
+              <AnimatePresence>
+                {profileMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.18 }}
+                    className="absolute right-0 top-[100%] w-72 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50 flex flex-col gap-3 text-left"
+                  >
+                    {/* User Profile Summary */}
+                    <div 
+                      onClick={() => {
+                        setProfileMenuOpen(false);
+                        navigate("/profile");
+                      }}
+                      className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors group"
+                    >
+                      <div className="w-11 h-11 rounded-full bg-[#00135B] flex items-center justify-center text-white font-bold text-sm">
+                        {user?.photoURL ? (
+                          <img src={user.photoURL} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                          (user?.email || "EP").substring(0, 2).toUpperCase()
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-[#00135B] truncate leading-none mb-1">
+                          {user?.displayName || user?.email?.split("@")[0]}
+                        </p>
+                        <p className="text-[10px] text-gray-400 truncate leading-none">
+                          {user?.email}
+                        </p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+
+                    {/* Team Section */}
+                    <div className="p-2 border-t border-gray-50">
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">Equipos</p>
+                      <button
+                        disabled
+                        className="w-full py-2 px-3 border border-dashed border-gray-200 rounded-xl text-[10px] font-semibold text-gray-400 flex items-center justify-center gap-2 bg-gray-50 cursor-not-allowed"
+                      >
+                        <Building className="w-3.5 h-3.5" />
+                        <span>Crear un equipo (Próximamente)</span>
+                      </button>
+                    </div>
+
+                    {/* Main Menu Actions */}
+                    <div className="flex flex-col gap-1 border-t border-gray-50 pt-2">
+                      
+                      <button
+                        onClick={() => {
+                          setProfileMenuOpen(false);
+                          navigate("/profile");
+                        }}
+                        className="flex items-center gap-3 p-2 rounded-lg text-xs font-semibold text-[#00135B] hover:bg-gray-50 transition-colors cursor-pointer bg-transparent border-none w-full"
+                      >
+                        <Settings className="w-4 h-4 text-gray-400" />
+                        <span>Configuración</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setProfileMenuOpen(false);
+                          navigate("/profile");
+                        }}
+                        className="flex items-center gap-3 p-2 rounded-lg text-xs font-semibold text-[#00135B] hover:bg-gray-50 transition-colors cursor-pointer bg-transparent border-none w-full"
+                      >
+                        <User className="w-4 h-4 text-gray-400" />
+                        <span>Mi cuenta</span>
+                      </button>
+
+                      <div className="flex items-center justify-between p-2 rounded-lg text-xs font-semibold text-gray-400 hover:bg-gray-50 transition-colors w-full cursor-not-allowed select-none">
+                        <div className="flex items-center gap-3">
+                          <Moon className="w-4 h-4 text-gray-300" />
+                          <span>Tema</span>
+                        </div>
+                        <span className="text-[8px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded uppercase font-bold">Próximamente</span>
+                      </div>
+
+                      <div className="flex items-center justify-between p-2 rounded-lg text-xs font-semibold text-gray-400 hover:bg-gray-50 transition-colors w-full cursor-not-allowed select-none">
+                        <div className="flex items-center gap-3">
+                          <HelpCircle className="w-4 h-4 text-gray-300" />
+                          <span>Ayuda y recursos</span>
+                        </div>
+                        <span className="text-[8px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded uppercase font-bold">Próximamente</span>
+                      </div>
+
+                      <div className="flex items-center justify-between p-2 rounded-lg text-xs font-semibold text-gray-400 hover:bg-gray-50 transition-colors w-full cursor-not-allowed select-none">
+                        <div className="flex items-center gap-3">
+                          <Grid className="w-4 h-4 text-gray-300" />
+                          <span>Herramientas avanzadas</span>
+                        </div>
+                        <span className="text-[8px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded uppercase font-bold">Beta</span>
+                      </div>
+
+                      <div className="flex items-center justify-between p-2 rounded-lg text-xs font-semibold text-gray-400 hover:bg-gray-50 transition-colors w-full cursor-not-allowed select-none">
+                        <div className="flex items-center gap-3">
+                          <DollarSign className="w-4 h-4 text-gray-300" />
+                          <span>Planes y precios</span>
+                        </div>
+                        <span className="text-[8px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded uppercase font-bold">Próximamente</span>
+                      </div>
+
+                      <div className="flex items-center justify-between p-2 rounded-lg text-xs font-semibold text-gray-400 hover:bg-gray-50 transition-colors w-full cursor-not-allowed select-none">
+                        <div className="flex items-center gap-3">
+                          <ShoppingCart className="w-4 h-4 text-gray-300" />
+                          <span>Historial de compra</span>
+                        </div>
+                        <span className="text-[8px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded uppercase font-bold">Próximamente</span>
+                      </div>
+
+                    </div>
+
+                    {/* Download App & Logout */}
+                    <div className="flex flex-col gap-1 border-t border-gray-50 pt-2 text-[11px]">
+                      
+                      <div className="flex items-center justify-between p-2 rounded-lg text-gray-400 hover:bg-gray-50 transition-colors w-full cursor-not-allowed select-none">
+                        <div className="flex items-center gap-3">
+                          <Laptop className="w-4 h-4 text-gray-300" />
+                          <span>Descargar app EDULAB</span>
+                        </div>
+                        <span className="text-[8px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded uppercase font-bold">Próximamente</span>
+                      </div>
+
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 p-2 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer bg-transparent border-none w-full"
+                      >
+                        <LogOut className="w-4 h-4 text-rose-400" />
+                        <span>Cerrar sesión</span>
+                      </button>
+
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

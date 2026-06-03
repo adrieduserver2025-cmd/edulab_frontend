@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   GraduationCap, 
   Sparkles, 
@@ -20,8 +21,93 @@ import {
   Award
 } from "lucide-react";
 import PublicNavbar from "../../components/navigation/PublicNavbar";
+import AuthModal from "../../components/auth/AuthModal";
+import IaIntroModal from "../../components/auth/IaIntroModal";
+import { useAuthStore } from "../../store/useAuthStore";
+import { getMyProfile } from "../../services/profileService";
+import type { StudentProfileResponse } from "../../services/profileService";
 
-export default function LandingPage() {
+interface LandingPageProps {
+  initialAuthMode?: "login" | "register";
+}
+
+export default function LandingPage({ initialAuthMode }: LandingPageProps) {
+  const navigate = useNavigate();
+  
+  // Auth details
+  const { user, isAuthenticated } = useAuthStore();
+  const [profile, setProfile] = useState<StudentProfileResponse | null>(null);
+  const [showIaIntro, setShowIaIntro] = useState(false);
+
+  const [showAuthModal, setShowAuthModal] = useState(initialAuthMode !== undefined);
+  const [authModalMode, setAuthModalMode] = useState<"login" | "register">(initialAuthMode || "login");
+
+  // Load user profile and trigger onboarding check / IA modal check
+  useEffect(() => {
+    async function loadData() {
+      if (isAuthenticated && user) {
+        // Load profile first
+        try {
+          const profileData = await getMyProfile();
+          setProfile(profileData);
+
+          // Determine if they just registered/created their account (timestamps within 15 seconds)
+          const isNewRegistration = user.created_at && user.last_login &&
+            (Math.abs(new Date(user.last_login).getTime() - new Date(user.created_at).getTime()) < 15000);
+
+          // Check if user has seen IA intro modal
+          const hasSeen = localStorage.getItem(`has_seen_ia_intro_${user.uid}`) === "true";
+          
+          if (isNewRegistration && !hasSeen) {
+            setShowIaIntro(true);
+          } else {
+            // Check onboarding redirect
+            if (user.role === "student" && !profileData) {
+              const skipped = sessionStorage.getItem("skipped_onboarding") === "true";
+              if (!skipped) {
+                navigate("/onboarding");
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Error loading profile or checking onboarding:", err);
+        }
+      } else {
+        setProfile(null);
+        setShowIaIntro(false);
+      }
+    }
+    loadData();
+  }, [isAuthenticated, user, navigate]);
+
+  useEffect(() => {
+    if (initialAuthMode !== undefined) {
+      setAuthModalMode(initialAuthMode);
+      setShowAuthModal(true);
+    } else {
+      setShowAuthModal(false);
+    }
+  }, [initialAuthMode]);
+
+  const handleIaIntroClose = (allowAi: boolean) => {
+    setShowIaIntro(false);
+    if (user) {
+      localStorage.setItem(`has_seen_ia_intro_${user.uid}`, "true");
+      localStorage.setItem(`allow_ai_improvement_${user.uid}`, String(allowAi));
+      // Check onboarding redirect
+      if (user.role === "student" && !profile) {
+        const skipped = sessionStorage.getItem("skipped_onboarding") === "true";
+        if (!skipped) {
+          navigate("/onboarding");
+        }
+      }
+    }
+  };
+
+  const openAuthModal = (mode: "login" | "register") => {
+    setAuthModalMode(mode);
+    setShowAuthModal(true);
+  };
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -102,10 +188,10 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-white text-[#00135B] flex flex-col justify-between overflow-x-hidden">
+    <div className="w-full min-h-screen bg-white text-[#00135B] flex flex-col justify-between overflow-x-hidden pt-20">
       
       {/* 1. Navbar */}
-      <PublicNavbar />
+      <PublicNavbar onOpenAuth={openAuthModal} />
 
       {/* 2. Hero Section (Deep Blue Gradient Container with Separated Grid Layer) */}
       <section className="relative w-full bg-gradient-to-b from-[#00135B] via-[#001a7a] to-[#0d288c] text-white overflow-hidden py-24 px-6 z-10 flex flex-col items-center">
@@ -164,13 +250,13 @@ export default function LandingPage() {
               <ArrowRight className="w-5 h-5 text-[#00135B]" />
             </a>
             
-            <Link
-              to="/login"
-              className="px-8 py-4 rounded-xl border border-white/20 hover:border-[#5D8CE2]/50 bg-white/5 hover:bg-white/10 text-white font-bold text-base flex items-center gap-2.5 transition-all duration-300 hover:scale-105 cursor-pointer"
+            <button
+              onClick={() => openAuthModal("login")}
+              className="px-8 py-4 rounded-xl border border-white/20 hover:border-[#5D8CE2]/50 bg-white/5 hover:bg-white/10 text-white font-bold text-base flex items-center gap-2.5 transition-all duration-300 hover:scale-105 cursor-pointer bg-transparent"
             >
               <Cpu className="w-5 h-5 text-[#5D8CE2]" />
               Analizar mi perfil con IA
-            </Link>
+            </button>
           </motion.div>
 
           {/* Screenshot 4 Aligned Dashboard Mockup */}
@@ -178,46 +264,71 @@ export default function LandingPage() {
             variants={itemVariants}
             className="w-full max-w-5xl pt-16"
           >
-            <div className="glass-panel p-8 rounded-[24px] border border-white/10 shadow-2xl relative bg-gradient-to-tr from-white/5 to-white/[0.01]">
-              <div className="absolute inset-0 bg-[#00135B]/20 rounded-[24px] filter blur-xl -z-10"></div>
-              
-              <h3 className="font-display font-bold text-2xl mb-2 text-white">Dashboard Inteligente</h3>
-              <p className="text-xs text-gray-400 mb-8">Toda tu información analizada en tiempo real</p>
+            {(() => {
+              const completionPercent = isAuthenticated && profile ? profile.profile_completion : (isAuthenticated ? 0 : 85);
+              const matchOpportunities = isAuthenticated ? (profile ? 32 : 0) : 32;
+              const competitiveScore = isAuthenticated ? (profile ? (profile.profile_completion >= 90 ? "A+" : profile.profile_completion >= 60 ? "B" : "C") : "-") : "A+";
+              const postulationsCount = isAuthenticated ? (profile ? 3 : 0) : 5;
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                
-                {/* Metric 1 */}
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-3 shadow-inner">
-                  <span className="text-[10px] text-[#F5C542] uppercase font-bold tracking-wider">Perfil Completado</span>
-                  <p className="text-3xl font-extrabold font-display text-white">85%</p>
-                  <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-                    <div className="w-[85%] h-full bg-gradient-to-r from-[#5D8CE2] to-[#F5C542] rounded-full"></div>
+              return (
+                <div className="glass-panel p-8 rounded-[24px] border border-white/10 shadow-2xl relative bg-gradient-to-tr from-white/5 to-white/[0.01]">
+                  <div className="absolute inset-0 bg-[#00135B]/20 rounded-[24px] filter blur-xl -z-10"></div>
+                  
+                  <h3 className="font-display font-bold text-2xl mb-2 text-white">Dashboard Inteligente</h3>
+                  <p className="text-xs text-gray-400 mb-8">Toda tu información analizada en tiempo real</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    
+                    {/* Metric 1 */}
+                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-3 shadow-inner">
+                      <span className="text-[10px] text-[#F5C542] uppercase font-bold tracking-wider">Perfil Completado</span>
+                      <p className="text-3xl font-extrabold font-display text-white">{completionPercent}%</p>
+                      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[#5D8CE2] to-[#F5C542] rounded-full" style={{ width: `${completionPercent}%` }}></div>
+                      </div>
+                    </div>
+
+                    {/* Metric 2 */}
+                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-2 shadow-inner">
+                      <span className="text-[10px] text-[#8b5cf6] uppercase font-bold tracking-wider">Oportunidades Match</span>
+                      <p className="text-3xl font-extrabold font-display text-white">{matchOpportunities}</p>
+                      <span className="text-[10px] text-emerald-400 font-semibold">{isAuthenticated ? "Actualizado" : "+8 esta semana"}</span>
+                    </div>
+
+                    {/* Metric 3 */}
+                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-2 shadow-inner">
+                      <span className="text-[10px] text-[#fb7185] uppercase font-bold tracking-wider">Score Competitivo</span>
+                      <p className="text-3xl font-extrabold font-display text-white">{competitiveScore}</p>
+                      <span className="text-[10px] text-gray-400 font-semibold">{isAuthenticated ? "Basado en tu perfil" : "top 10% global"}</span>
+                    </div>
+
+                    {/* Metric 4 */}
+                    <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-2 shadow-inner">
+                      <span className="text-[10px] text-[#0ea5e9] uppercase font-bold tracking-wider">Postulaciones</span>
+                      <p className="text-3xl font-extrabold font-display text-white">{postulationsCount}</p>
+                      <span className="text-[10px] text-gray-400 font-semibold">{isAuthenticated ? "Registradas" : "En proceso"}</span>
+                    </div>
+
                   </div>
-                </div>
 
-                {/* Metric 2 */}
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-2 shadow-inner">
-                  <span className="text-[10px] text-[#8b5cf6] uppercase font-bold tracking-wider">Oportunidades Match</span>
-                  <p className="text-3xl font-extrabold font-display text-white">32</p>
-                  <span className="text-[10px] text-emerald-400 font-semibold">+8 esta semana</span>
+                  {/* Complete profile CTA banner if logged in and profile is incomplete */}
+                  {isAuthenticated && completionPercent < 100 && (
+                    <div className="mt-8 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                      <div className="text-left">
+                        <p className="text-xs font-bold text-[#F5C542] uppercase tracking-wider">¡Completa tu Perfil!</p>
+                        <p className="text-xs text-gray-300 mt-1">Necesitas tener tu perfil al 100% para poder postular a oportunidades internacionales con IA.</p>
+                      </div>
+                      <button
+                        onClick={() => navigate("/profile")}
+                        className="px-6 py-2.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-bold text-xs uppercase tracking-wider transition-all duration-200 shrink-0 shadow-md cursor-pointer hover:scale-102"
+                      >
+                        Completa tu perfil ahora
+                      </button>
+                    </div>
+                  )}
                 </div>
-
-                {/* Metric 3 */}
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-2 shadow-inner">
-                  <span className="text-[10px] text-[#fb7185] uppercase font-bold tracking-wider">Score Competitivo</span>
-                  <p className="text-3xl font-extrabold font-display text-white">A+</p>
-                  <span className="text-[10px] text-gray-400 font-semibold">top 10% global</span>
-                </div>
-
-                {/* Metric 4 */}
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 text-left space-y-2 shadow-inner">
-                  <span className="text-[10px] text-[#0ea5e9] uppercase font-bold tracking-wider">Postulaciones</span>
-                  <p className="text-3xl font-extrabold font-display text-white">5</p>
-                  <span className="text-[10px] text-gray-400 font-semibold">En proceso</span>
-                </div>
-
-              </div>
-            </div>
+              );
+            })()}
           </motion.div>
 
         </motion.div>
@@ -283,12 +394,12 @@ export default function LandingPage() {
               </div>
 
               {/* Action Trigger Button */}
-              <Link
-                to="/login"
-                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:from-[#0d288c] hover:to-blue-400 text-white font-bold text-xs tracking-wider uppercase text-center shadow-md shadow-[#00135B]/10 shrink-0 hover:scale-102 transition-all duration-200 cursor-pointer"
+              <button
+                onClick={() => navigate("/opportunities/daad-beca")}
+                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:from-[#0d288c] hover:to-blue-400 text-white font-bold text-xs tracking-wider uppercase text-center shadow-md shadow-[#00135B]/10 shrink-0 hover:scale-102 transition-all duration-200 cursor-pointer bg-transparent border-none"
               >
                 Ver Detalles
-              </Link>
+              </button>
             </motion.div>
 
             {/* Card 2: Voluntariados */}
@@ -335,23 +446,29 @@ export default function LandingPage() {
               </div>
 
               {/* Action Trigger Button */}
-              <Link
-                to="/login"
-                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:from-[#0d288c] hover:to-blue-400 text-white font-bold text-xs tracking-wider uppercase text-center shadow-md shadow-[#00135B]/10 shrink-0 hover:scale-102 transition-all duration-200 cursor-pointer"
+              <button
+                onClick={() => navigate("/opportunities/aiesec-voluntariado")}
+                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:from-[#0d288c] hover:to-blue-400 text-white font-bold text-xs tracking-wider uppercase text-center shadow-md shadow-[#00135B]/10 shrink-0 hover:scale-102 transition-all duration-200 cursor-pointer bg-transparent border-none"
               >
                 Ver Detalles
-              </Link>
+              </button>
             </motion.div>
 
           </div>
 
           <div className="text-center pt-8">
-            <Link
-              to="/login"
-              className="inline-block px-8 py-3.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-bold text-sm tracking-wide transition-all duration-300 hover:scale-105 cursor-pointer shadow-md shadow-[#F5C542]/20"
+            <button
+              onClick={() => {
+                if (isAuthenticated) {
+                  navigate("/programs");
+                } else {
+                  openAuthModal("login");
+                }
+              }}
+              className="inline-block px-8 py-3.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-bold text-sm tracking-wide transition-all duration-300 hover:scale-105 cursor-pointer shadow-md shadow-[#F5C542]/20 border-none"
             >
               Ver Todas las Oportunidades
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -415,12 +532,12 @@ export default function LandingPage() {
                     </p>
                   </div>
 
-                  <Link
-                    to="/login"
-                    className="w-full py-2.5 mt-4 rounded-xl border border-white/10 hover:border-[#5D8CE2]/50 hover:bg-white/5 text-[#5D8CE2] hover:text-white font-bold text-xs tracking-wider uppercase text-center transition-all duration-200 cursor-pointer"
+                  <button
+                    onClick={() => openAuthModal("login")}
+                    className="w-full py-2.5 mt-4 rounded-xl border border-white/10 hover:border-[#5D8CE2]/50 hover:bg-white/5 text-[#5D8CE2] hover:text-white font-bold text-xs tracking-wider uppercase text-center transition-all duration-200 cursor-pointer bg-transparent"
                   >
                     Probar Ahora →
-                  </Link>
+                  </button>
                 </motion.div>
               );
             })}
@@ -634,10 +751,10 @@ export default function LandingPage() {
           <div className="space-y-4 text-left">
             <h4 className="text-xs font-bold uppercase tracking-wider text-gray-300">Oportunidades</h4>
             <ul className="space-y-2 text-xs text-gray-400 font-medium">
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Becas Internacionales</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Voluntariados Globales</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Intercambios Académicos</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Programas de Liderazgo</Link></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Becas Internacionales</button></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Voluntariados Globales</button></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Intercambios Académicos</button></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Programas de Liderazgo</button></li>
             </ul>
           </div>
 
@@ -645,10 +762,10 @@ export default function LandingPage() {
           <div className="space-y-4 text-left">
             <h4 className="text-xs font-bold uppercase tracking-wider text-gray-300">Recursos</h4>
             <ul className="space-y-2 text-xs text-gray-400 font-medium">
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Blog & Noticias</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Guías de Postulación</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Preguntas Frecuentes</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors duration-200">Casos de Éxito</Link></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Blog & Noticias</button></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Guías de Postulación</button></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Preguntas Frecuentes</button></li>
+              <li><button onClick={() => openAuthModal("login")} className="hover:text-white transition-colors duration-200 bg-transparent border-none cursor-pointer">Casos de Éxito</button></li>
             </ul>
           </div>
 
@@ -684,6 +801,23 @@ export default function LandingPage() {
 
       </footer>
 
+      {/* Auth Modal Popup */}
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => {
+          setShowAuthModal(false);
+          if (initialAuthMode !== undefined) {
+            navigate("/");
+          }
+        }} 
+        initialMode={authModalMode}
+      />
+
+      {/* AI Intro Modal Disclaimer */}
+      <IaIntroModal 
+        isOpen={showIaIntro}
+        onClose={handleIaIntroClose}
+      />
     </div>
   );
 }

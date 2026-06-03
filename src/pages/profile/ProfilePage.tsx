@@ -290,36 +290,36 @@ export default function ProfilePage() {
   const completionPercent = calculateLiveCompletion();
 
   return (
-    <div className="space-y-6 text-white animate-fadeIn max-w-5xl mx-auto pb-12">
+    <div className="space-y-6 text-slate-700 animate-fadeIn max-w-5xl mx-auto pb-12">
       {/* Page Header */}
-      <div className="border-b border-glass-border pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-gray-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display font-extrabold text-3xl bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-200 to-[#5D8CE2]">
+          <h1 className="font-display font-extrabold text-3xl text-[#00135B]">
             Perfil Académico Estratégico
           </h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Completa tu perfil para recibir emparejamientos inteligentes con convocatorias internacionales.
           </p>
         </div>
 
         {/* Dynamic Completion Badge */}
-        <div className="flex items-center gap-3 bg-[#00135B]/40 border border-glass-border rounded-2xl px-4 py-2 self-start md:self-auto">
+        <div className="flex items-center gap-3 bg-[#00135B]/5 border border-gray-250 rounded-2xl px-4 py-2 self-start md:self-auto">
           <div className="text-right">
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Completitud del Perfil</p>
-            <p className="text-lg font-extrabold text-[#F5C542]">{completionPercent}%</p>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Completitud del Perfil</p>
+            <p className="text-lg font-extrabold text-[#5D8CE2]">{completionPercent}%</p>
           </div>
-          <div className="w-12 h-12 rounded-full border-4 border-glass-border flex items-center justify-center relative overflow-hidden">
+          <div className="w-12 h-12 rounded-full border-4 border-gray-200 flex items-center justify-center relative overflow-hidden bg-slate-50">
             <div
-              className="absolute bottom-0 left-0 right-0 bg-[#5D8CE2]/40 transition-all duration-500"
+              className="absolute bottom-0 left-0 right-0 bg-[#5D8CE2] transition-all duration-500"
               style={{ height: `${completionPercent}%` }}
             />
-            <span className="relative z-10 font-bold text-xs">{completionPercent}%</span>
+            <span className="relative z-10 font-bold text-xs text-[#00135B]">{completionPercent}%</span>
           </div>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-[#00135B]/20 rounded-full h-2 overflow-hidden border border-glass-border">
+      <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-gray-250">
         <div
           className="bg-gradient-to-r from-[#5D8CE2] to-[#F5C542] h-full rounded-full transition-all duration-500"
           style={{ width: `${completionPercent}%` }}
@@ -361,20 +361,20 @@ export default function ProfilePage() {
                   setCurrentStep(s.step);
                 }
               }}
-              className={`w-full text-left p-4 rounded-2xl transition-all border flex items-center gap-3 text-sm ${currentStep === s.step
-                  ? "bg-gradient-to-r from-[#00135B]/80 to-[#5D8CE2]/30 border-[#5D8CE2]/50 shadow-lg shadow-[#00135B]/40"
-                  : "bg-[#00135B]/10 hover:bg-[#00135B]/30 border-glass-border/30 text-gray-400"
+              className={`w-full text-left p-4 rounded-2xl transition-all border flex items-center gap-3 text-sm cursor-pointer ${currentStep === s.step
+                  ? "bg-gradient-to-r from-[#00135B] to-[#5D8CE2] text-white border-transparent shadow-md"
+                  : "bg-white hover:bg-slate-50 border-gray-150 text-slate-500 shadow-sm"
                 }`}
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${currentStep === s.step ? "bg-[#5D8CE2] text-white" : "bg-[#00135B]/30 text-gray-500"
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${currentStep === s.step ? "bg-white text-[#00135B]" : "bg-slate-100 text-slate-400"
                 }`}>
                 {s.step}
               </div>
               <div>
-                <p className={`font-semibold ${currentStep === s.step ? "text-white" : "text-gray-300"}`}>
+                <p className={`font-semibold ${currentStep === s.step ? "text-white" : "text-[#00135B]"}`}>
                   {s.title}
                 </p>
-                <p className="text-xs text-gray-500 mt-0.5">{s.desc}</p>
+                <p className={`text-xs mt-0.5 ${currentStep === s.step ? "text-blue-100" : "text-slate-400"}`}>{s.desc}</p>
               </div>
             </button>
           ))}
@@ -382,64 +382,64 @@ export default function ProfilePage() {
 
         {/* Wizard Form Panel */}
         <div className="lg:col-span-3">
-          <form onSubmit={handleSaveProfile} className="glass-panel p-8 rounded-3xl border border-glass-border bg-[#00135B]/25 backdrop-blur-xl space-y-8">
+          <form onSubmit={handleSaveProfile} className="bg-white p-8 rounded-3xl border border-gray-150 shadow-lg space-y-8 text-slate-700">
 
             {/* STEP 1: PERSONAL DATA */}
             {currentStep === 1 && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="border-b border-glass-border pb-3">
-                  <h2 className="text-xl font-bold font-display text-white">1. Datos Personales</h2>
-                  <p className="text-xs text-gray-400 mt-1">Ingresa tu ubicación y datos básicos de contacto.</p>
+                <div className="border-b border-gray-100 pb-3">
+                  <h2 className="text-xl font-bold font-display text-[#00135B]">1. Datos Personales</h2>
+                  <p className="text-xs text-slate-400 mt-1">Ingresa tu ubicación y datos básicos de contacto.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">País de Residencia <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">País de Residencia <span className="text-red-400">*</span></label>
                     <input
                       type="text"
                       name="country"
                       value={formData.country}
                       onChange={handleInputChange}
                       placeholder="Ej. Costa Rica"
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Ciudad <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Ciudad <span className="text-red-400">*</span></label>
                     <input
                       type="text"
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
                       placeholder="Ej. San José"
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Fecha de Nacimiento <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Fecha de Nacimiento <span className="text-red-400">*</span></label>
                     <input
                       type="date"
                       name="birth_date"
                       value={formData.birth_date}
                       onChange={handleInputChange}
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Teléfono de Contacto <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Teléfono de Contacto <span className="text-red-400">*</span></label>
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="Ej. +506 8888-8888"
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       required
                     />
                   </div>
@@ -450,51 +450,51 @@ export default function ProfilePage() {
             {/* STEP 2: EDUCATION */}
             {currentStep === 2 && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="border-b border-glass-border pb-3">
-                  <h2 className="text-xl font-bold font-display text-white">2. Nivel Académico</h2>
-                  <p className="text-xs text-gray-400 mt-1">Cuéntanos sobre tu historial educativo actual.</p>
+                <div className="border-b border-gray-100 pb-3">
+                  <h2 className="text-xl font-bold font-display text-[#00135B]">2. Nivel Académico</h2>
+                  <p className="text-xs text-slate-400 mt-1">Cuéntanos sobre tu historial educativo actual.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Nivel Educativo Máximo <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Nivel Educativo Máximo <span className="text-red-400">*</span></label>
                     <select
                       name="education_level"
                       value={formData.education_level}
                       onChange={handleInputChange}
-                      className="w-full bg-[#00135B]/30 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       required
                     >
                       {EDUCATION_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#00135B] text-white">{opt}</option>
+                        <option key={opt} value={opt} className="bg-white text-slate-800">{opt}</option>
                       ))}
                     </select>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Área de Enfoque / Disciplina <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Área de Enfoque / Disciplina <span className="text-red-400">*</span></label>
                     <select
                       name="area"
                       value={formData.area}
                       onChange={handleInputChange}
-                      className="w-full bg-[#00135B]/30 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       required
                     >
                       {AREA_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#00135B] text-white">{opt}</option>
+                        <option key={opt} value={opt} className="bg-white text-slate-800">{opt}</option>
                       ))}
                     </select>
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Institución Actual (Colegio/Universidad)</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Institución Actual (Colegio/Universidad)</label>
                     <input
                       type="text"
                       name="current_institution"
                       value={formData.current_institution || ""}
                       onChange={handleInputChange}
                       placeholder="Ej. Universidad de Costa Rica"
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                     />
                   </div>
                 </div>
@@ -504,41 +504,41 @@ export default function ProfilePage() {
             {/* STEP 3: LANGUAGES */}
             {currentStep === 3 && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="border-b border-glass-border pb-3">
-                  <h2 className="text-xl font-bold font-display text-white">3. Dominio de Idiomas</h2>
-                  <p className="text-xs text-gray-400 mt-1">El inglés y otros idiomas amplían enormemente tu elegibilidad.</p>
+                <div className="border-b border-gray-100 pb-3">
+                  <h2 className="text-xl font-bold font-display text-[#00135B]">3. Dominio de Idiomas</h2>
+                  <p className="text-xs text-slate-400 mt-1">El inglés y otros idiomas amplían enormemente tu elegibilidad.</p>
                 </div>
 
                 <div className="space-y-6">
                   <div className="space-y-2 max-w-md">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Nivel de Inglés <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Nivel de Inglés <span className="text-red-400">*</span></label>
                     <select
                       name="english_level"
                       value={formData.english_level}
                       onChange={handleInputChange}
-                      className="w-full bg-[#00135B]/30 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       required
                     >
                       {ENGLISH_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt} className="bg-[#00135B] text-white">{opt}</option>
+                        <option key={opt} value={opt} className="bg-white text-slate-800">{opt}</option>
                       ))}
                     </select>
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Otros Idiomas que hablas</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Otros Idiomas que hablas</label>
                     <div className="flex gap-2 max-w-md">
                       <input
                         type="text"
                         value={newLanguage}
                         onChange={(e) => setNewLanguage(e.target.value)}
                         placeholder="Ej. Francés, Alemán"
-                        className="flex-1 bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                        className="flex-1 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                       />
                       <button
                         type="button"
                         onClick={handleAddLanguage}
-                        className="bg-[#5D8CE2] hover:bg-[#5D8CE2]/80 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors"
+                        className="bg-[#5D8CE2] hover:bg-[#5D8CE2]/80 text-white font-bold px-4 py-2 rounded-xl text-sm transition-colors cursor-pointer"
                       >
                         Añadir
                       </button>
@@ -550,20 +550,20 @@ export default function ProfilePage() {
                         formData.other_languages.map((lang) => (
                           <span
                             key={lang}
-                            className="bg-[#5D8CE2]/20 border border-[#5D8CE2]/40 rounded-full px-3 py-1 text-xs flex items-center gap-2"
+                            className="bg-[#5D8CE2]/20 border border-[#5D8CE2]/45 rounded-full px-3 py-1 text-xs text-[#00135B] flex items-center gap-2 font-medium"
                           >
                             {lang}
                             <button
                               type="button"
                               onClick={() => handleRemoveLanguage(lang)}
-                              className="text-red-400 hover:text-red-300 font-bold"
+                              className="text-rose-500 hover:text-rose-600 font-bold ml-1 cursor-pointer bg-transparent border-none"
                             >
                               &times;
                             </button>
                           </span>
                         ))
                       ) : (
-                        <span className="text-xs text-gray-500 italic">No has agregado otros idiomas.</span>
+                        <span className="text-xs text-slate-400 italic">No has agregado otros idiomas.</span>
                       )}
                     </div>
                   </div>
@@ -574,16 +574,16 @@ export default function ProfilePage() {
             {/* STEP 4: INTERESTS AND TARGETS */}
             {currentStep === 4 && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="border-b border-glass-border pb-3">
-                  <h2 className="text-xl font-bold font-display text-white">4. Intereses y Objetivos</h2>
-                  <p className="text-xs text-gray-400 mt-1">Selecciona tus áreas de interés, destinos y tipos de programas favoritos.</p>
+                <div className="border-b border-gray-100 pb-3">
+                  <h2 className="text-xl font-bold font-display text-[#00135B]">4. Intereses y Objetivos</h2>
+                  <p className="text-xs text-slate-400 mt-1">Selecciona tus áreas de interés, destinos y tipos de programas favoritos.</p>
                 </div>
 
                 <div className="space-y-6">
                   {/* Interests selectors */}
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-[#5D8CE2] block">Intereses Académicos y Profesionales <span className="text-red-400">*</span></label>
-                    <p className="text-[10px] text-gray-400">¿Qué tipo de oportunidades buscas de forma primaria?</p>
+                    <p className="text-[10px] text-slate-400 font-medium">¿Qué tipo de oportunidades buscas de forma primaria?</p>
                     <div className="flex flex-wrap gap-2 pt-2">
                       {INTEREST_OPTIONS.map((interest) => {
                         const isSelected = formData.interests?.includes(interest);
@@ -592,9 +592,9 @@ export default function ProfilePage() {
                             key={interest}
                             type="button"
                             onClick={() => toggleArrayItem("interests", interest)}
-                            className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${isSelected
-                                ? "bg-[#5D8CE2] border-[#5D8CE2] text-white"
-                                : "bg-[#00135B]/20 border-glass-border text-gray-400 hover:bg-[#00135B]/40"
+                            className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${isSelected
+                                ? "bg-[#5D8CE2] border-[#5D8CE2] text-white shadow-sm"
+                                : "bg-slate-50 border-gray-200 text-slate-500 hover:bg-slate-100"
                               }`}
                           >
                             {interest}
@@ -607,7 +607,7 @@ export default function ProfilePage() {
                   {/* Target countries selectors */}
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-[#5D8CE2] block">Países de Destino Preferidos <span className="text-red-400">*</span></label>
-                    <p className="text-[10px] text-gray-400">¿Dónde te gustaría postular y estudiar?</p>
+                    <p className="text-[10px] text-slate-400 font-medium">¿Dónde te gustaría postular y estudiar?</p>
                     <div className="flex flex-wrap gap-2 pt-2">
                       {COUNTRY_OPTIONS.map((country) => {
                         const isSelected = formData.target_countries?.includes(country);
@@ -616,9 +616,9 @@ export default function ProfilePage() {
                             key={country}
                             type="button"
                             onClick={() => toggleArrayItem("target_countries", country)}
-                            className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${isSelected
-                                ? "bg-[#5D8CE2] border-[#5D8CE2] text-white"
-                                : "bg-[#00135B]/20 border-glass-border text-gray-400 hover:bg-[#00135B]/40"
+                            className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${isSelected
+                                ? "bg-[#5D8CE2] border-[#5D8CE2] text-white shadow-sm"
+                                : "bg-slate-50 border-gray-200 text-slate-500 hover:bg-slate-100"
                               }`}
                           >
                             {country}
@@ -631,7 +631,7 @@ export default function ProfilePage() {
                   {/* Target program types selectors */}
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-[#5D8CE2] block">Tipos de Programa <span className="text-red-400">*</span></label>
-                    <p className="text-[10px] text-gray-400">¿Qué formatos de convocatorias te interesan?</p>
+                    <p className="text-[10px] text-slate-400 font-medium">¿Qué formatos de convocatorias te interesan?</p>
                     <div className="flex flex-wrap gap-2 pt-2">
                       {PROGRAM_TYPE_OPTIONS.map((prog) => {
                         const isSelected = formData.target_program_types?.includes(prog.key);
@@ -640,9 +640,9 @@ export default function ProfilePage() {
                             key={prog.key}
                             type="button"
                             onClick={() => toggleArrayItem("target_program_types", prog.key)}
-                            className={`px-3 py-2 rounded-xl text-xs font-medium border transition-all ${isSelected
-                                ? "bg-[#F5C542] border-[#F5C542] text-primary-dark font-semibold"
-                                : "bg-[#00135B]/20 border-glass-border text-gray-400 hover:bg-[#00135B]/40"
+                            className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${isSelected
+                                ? "bg-[#F5C542] border-[#F5C542] text-[#00135B]"
+                                : "bg-slate-50 border-gray-200 text-slate-500 hover:bg-slate-100"
                               }`}
                           >
                             {prog.label}
@@ -658,57 +658,57 @@ export default function ProfilePage() {
             {/* STEP 5: LINKS AND CV */}
             {currentStep === 5 && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="border-b border-glass-border pb-3">
-                  <h2 className="text-xl font-bold font-display text-white">5. Enlaces y Currículum</h2>
-                  <p className="text-xs text-gray-400 mt-1">Completa tu perfil agregando enlaces a tus portafolios y redes profesionales.</p>
+                <div className="border-b border-gray-100 pb-3">
+                  <h2 className="text-xl font-bold font-display text-[#00135B]">5. Enlaces y Currículum</h2>
+                  <p className="text-xs text-slate-400 mt-1">Completa tu perfil agregando enlaces a tus portafolios y redes profesionales.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Enlace de LinkedIn</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Enlace de LinkedIn</label>
                     <input
                       type="url"
                       name="linkedin_url"
                       value={formData.linkedin_url || ""}
                       onChange={handleInputChange}
                       placeholder="Ej. https://linkedin.com/in/usuario"
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Enlace de Portafolio / Web</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Enlace de Portafolio / Web</label>
                     <input
                       type="url"
                       name="portfolio_url"
                       value={formData.portfolio_url || ""}
                       onChange={handleInputChange}
                       placeholder="Ej. https://miportafolio.com"
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                     />
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">URL del CV en Nube (Google Drive/Dropbox)</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">URL del CV en Nube (Google Drive/Dropbox)</label>
                     <input
                       type="url"
                       name="cv_url"
                       value={formData.cv_url || ""}
                       onChange={handleInputChange}
                       placeholder="Ej. https://drive.google.com/file/... (Compartido de forma pública)"
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                     />
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-300">Breve Biografía Académica</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Breve Biografía Académica</label>
                     <textarea
                       name="bio"
                       value={formData.bio || ""}
                       onChange={handleInputChange}
                       rows={4}
                       placeholder="Describe brevemente tus logros académicos, ambiciones profesionales y motivaciones..."
-                      className="w-full bg-[#00135B]/20 border border-glass-border rounded-xl p-4 text-sm focus:outline-none focus:border-[#5D8CE2] transition-colors resize-none"
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl p-4 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all resize-none"
                     />
                   </div>
                 </div>
@@ -716,12 +716,12 @@ export default function ProfilePage() {
             )}
 
             {/* Navigation buttons inside the wizard panel */}
-            <div className="border-t border-glass-border pt-6 flex justify-between gap-4">
+            <div className="border-t border-gray-150 pt-6 flex justify-between gap-4">
               <button
                 type="button"
                 onClick={handlePrev}
                 disabled={currentStep === 1}
-                className="px-6 py-3 rounded-xl border border-glass-border text-sm font-semibold hover:bg-white/5 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                className="px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-slate-55 text-slate-600 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
               >
                 Anterior
               </button>
@@ -730,7 +730,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="bg-[#5D8CE2] hover:bg-[#5D8CE2]/80 text-white font-semibold px-8 py-3 rounded-xl text-sm transition-all shadow-md shadow-[#5D8CE2]/25"
+                  className="bg-[#5D8CE2] hover:bg-[#5D8CE2]/80 text-white font-semibold px-8 py-3 rounded-xl text-sm transition-all shadow-md shadow-[#5D8CE2]/25 cursor-pointer"
                 >
                   Siguiente
                 </button>
@@ -738,11 +738,11 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-gradient-to-r from-[#F5C542] to-[#5D8CE2] hover:from-[#F5C542]/80 hover:to-[#5D8CE2]/80 text-primary-dark font-extrabold px-10 py-3 rounded-xl text-sm transition-all shadow-md shadow-[#F5C542]/20 flex items-center gap-2"
+                  className="bg-gradient-to-r from-[#F5C542] to-[#5D8CE2] hover:from-[#F5C542]/80 hover:to-[#5D8CE2]/80 text-[#00135B] font-extrabold px-10 py-3 rounded-xl text-sm transition-all shadow-md shadow-[#F5C542]/20 flex items-center gap-2 cursor-pointer"
                 >
                   {isSaving ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-dark border-t-transparent"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#00135B] border-t-transparent"></div>
                       Guardando...
                     </>
                   ) : (

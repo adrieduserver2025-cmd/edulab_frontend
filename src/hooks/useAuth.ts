@@ -40,6 +40,8 @@ export const useAuth = () => {
               is_active: backendUser.status === "active",
               displayName: backendUser.full_name || localUser.displayName,
               photoURL: backendUser.photo_url || localUser.photoURL,
+              created_at: backendUser.created_at,
+              last_login: backendUser.last_login,
             });
           } catch (backendErr) {
             console.warn("FastAPI backend is offline or unsynced. Restoring session locally.", backendErr);
