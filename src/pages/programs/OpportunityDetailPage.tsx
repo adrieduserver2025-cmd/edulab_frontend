@@ -385,7 +385,7 @@ export default function OpportunityDetailPage() {
   const isProfileComplete = completionPercent === 100;
 
   return (
-    <div className="w-full min-h-screen bg-[#f8fafc] text-slate-700 flex flex-col justify-between overflow-x-hidden pt-20">
+    <div className="w-full min-h-screen bg-[#f8fafc] text-slate-700 flex flex-col justify-between pt-20">
       <PublicNavbar onOpenAuth={openAuthModal} />
 
       {/* Share Toast */}
@@ -579,7 +579,7 @@ export default function OpportunityDetailPage() {
 
       {/* Main Content Body */}
       <section className="max-w-7xl w-full mx-auto px-6 md:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start overflow-visible">
 
           {/* Left Column (Main details) */}
           <div className="lg:col-span-2 space-y-12">
@@ -704,11 +704,11 @@ export default function OpportunityDetailPage() {
                   "Disponibilidad para viajar"
                 ]).map((req, idx) => (
                   <div key={idx} className="flex items-center gap-3 p-3.5 bg-slate-50 border border-gray-200/50 rounded-xl">
-  <div className="w-5 h-5 rounded-full bg-[#5D8CE2]/10 border border-[#5D8CE2]/20 flex items-center justify-center text-[#5D8CE2] shrink-0">
-    <Check className="w-3 h-3 stroke-[3]" />
-  </div>
-  <span className="text-xs font-semibold text-slate-700">{req}</span>
-</div>
+                    <div className="w-5 h-5 rounded-full bg-[#5D8CE2]/10 border border-[#5D8CE2]/20 flex items-center justify-center text-[#5D8CE2] shrink-0">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-700">{req}</span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -737,8 +737,8 @@ export default function OpportunityDetailPage() {
                       <Play className="w-4 h-4 fill-current translate-x-0.5" />
                     </a>
                   </div>
-                  <div className="p-4 text-left space-y-1">
-                    <h4 className="font-bold text-xs text-[#00135B]">Conoce la experiencia de Alysandra en su voluntariado internacional</h4>
+                  <div className="p-5 text-left space-y-1">
+                    <h4 className="font-bold text-sm text-[#00135B]">Conoce la experiencia de Alysandra en su voluntariado internacional</h4>
 
                   </div>
                 </div>
@@ -760,9 +760,9 @@ export default function OpportunityDetailPage() {
                       <Play className="w-4 h-4 fill-current translate-x-0.5" />
                     </a>
                   </div>
-                  <div className="p-4 text-left space-y-1">
-                    <h4 className="font-bold text-xs text-[#00135B]">Conoce la experiencia de Ahmad en su voluntariado internacional</h4>
-        
+                  <div className="p-5 text-left space-y-1">
+                    <h4 className="font-bold text-sm text-[#00135B]">Conoce la experiencia de Ahmad en su voluntariado internacional</h4>
+
                   </div>
                 </div>
 
@@ -772,8 +772,7 @@ export default function OpportunityDetailPage() {
           </div>
 
           {/* Right Column (Sidebar details) */}
-          <div className="space-y-6">
-
+          <aside className="space-y-6 lg:sticky lg:top-36 lg:self-start"> 
 
             {/* Acompañamiento EDULAB */}
             <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden">
@@ -812,16 +811,20 @@ export default function OpportunityDetailPage() {
             <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Organización</h3>
 
-
-
-
-
-
-
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-gray-100 flex items-center justify-center font-extrabold text-[#F5C542]">
-                  {opportunity.organization_name?.substring(0, 3).toUpperCase() || "ORG"}
-                </div>
+<div className="w-12 h-12 rounded-xl bg-white border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+  {opportunity.organization_name?.toLowerCase().includes("aiesec") ? (
+    <img
+      src="/src/assets/man_aiesec.png"
+      alt="AIESEC"
+      className="h-9 w-9 object-contain"
+    />
+  ) : (
+    <span className="font-extrabold text-[#F5C542]">
+      {opportunity.organization_name?.substring(0, 3).toUpperCase() || "ORG"}
+    </span>
+  )}
+</div>
                 <div>
                   <h4 className="font-bold text-xs text-[#F5C542]">{opportunity.organization}</h4>
                   <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Socio Oficial</span>
@@ -851,31 +854,7 @@ export default function OpportunityDetailPage() {
               </div>
             </div>
 
-            {/* ¿Por qué ser voluntario? */}
-            <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-4 text-left">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">¿Por qué ser voluntario?</h3>
-
-              <ul className="space-y-3 text-xs font-semibold text-[#00135B]">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Contribuyes a causas reales</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Desarrollas habilidades blandas</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Fortaleces tu CV y perfil</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Conoces nuevas realidades</span>
-                </li>
-              </ul>
-            </div>
-
-          </div>
+          </aside>
 
         </div>
       </section>
