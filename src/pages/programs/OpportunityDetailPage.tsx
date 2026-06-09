@@ -1,23 +1,78 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  ChevronLeft, 
-  Heart, 
-  Share2, 
-  Play, 
-  Check, 
-  HelpCircle, 
-  Globe, 
-  Award, 
-  Calendar, 
-  AlertTriangle, 
-  X, 
-  UserCheck, 
-  ShieldCheck, 
+import {
+  ChevronLeft,
+  Heart,
+  Share2,
+  Play,
+  Check,
+  HelpCircle,
+  Globe,
+  Award,
+  Calendar,
+  AlertTriangle,
+  X,
+  UserCheck,
+  ShieldCheck,
   Building,
-  ArrowRight
+  ArrowRight,
+  Globe2,
+  Brain,
+  Network,
+  ScrollText,
+  Sparkles,
+  School,
+  Sprout,
+  UsersRound,
 } from "lucide-react";
 
+//iconos para beneficios
+const benefitIcons = [Globe2, Brain, Network, ScrollText, Sparkles, Award];
+
+
+const activityIcons = [School, Sparkles, Sprout, Globe2, UsersRound];
+const activityMedia = [
+  {
+    title: "Enseñanza en comunidades",
+    type: "image",
+    media:
+      'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80',
+    description:
+      "Participa en actividades educativas y de apoyo comunitario junto a jóvenes voluntarios.",
+  },
+  {
+    title: "Proyectos sociales",
+    type: "image",
+    media:
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    description:
+      "Colabora en iniciativas sociales orientadas a generar impacto positivo en comunidades.",
+  },
+  {
+    title: "Campañas ambientales",
+    type: "image",
+    media:
+      "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1200&q=80",
+    description:
+      "Forma parte de campañas ambientales y actividades vinculadas al cuidado del entorno.",
+  },
+  {
+    title: "Actividades interculturales",
+    type: "video",
+    media:
+      "https://www.youtube.com/embed/47iHjBi9VRw",
+    description:
+      "Comparte experiencias con jóvenes de distintos países y fortalece tus habilidades interculturales.",
+  },
+  {
+    title: "Apoyo a jóvenes y niños",
+    type: "image",
+    media:
+      "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80",
+    description:
+      "Apoya actividades formativas, recreativas o sociales dirigidas a jóvenes y niños.",
+  },
+];
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +180,7 @@ export default function OpportunityDetailPage() {
     const saved = localStorage.getItem("edulab_saved_programs");
     return saved ? JSON.parse(saved) : [];
   });
-  
+
   // Video embed inline toggle
   const [playVideo, setPlayVideo] = useState(false);
 
@@ -136,6 +191,7 @@ export default function OpportunityDetailPage() {
   const [postulating, setPostulating] = useState(false);
   const [shareToast, setShareToast] = useState(false);
   const [showVideoPopup, setShowVideoPopup] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<any>(null);
 
   // Load Opportunity Data
   useEffect(() => {
@@ -168,10 +224,10 @@ export default function OpportunityDetailPage() {
             status: "open",
             short_description: "Vive una experiencia internacional que transforma tu forma de ver el mundo.",
             activities: [
-              "Enseñanza en comunidades 📚",
-              "Proyectos sociales 🤝",
-              "Campañas ambientales 🌱",
-              "Actividades interculturales 🌍"
+              "Enseñanza en comunidades",
+              "Proyectos sociales",
+              "Campañas ambientales",
+              "Actividades interculturales"
             ],
             requirements: [
               "Tener entre 18 y 30 años",
@@ -183,11 +239,11 @@ export default function OpportunityDetailPage() {
               "Membresía aproximada Bs. 2430"
             ],
             benefits_json: [
-              "Experiencia internacional 🌍",
-              "Desarrollo de liderazgo 🧠",
-              "Red global de contactos 🤝",
-              "Certificado internacional 📜",
-              "Crecimiento personal 🌱"
+              "Experiencia internacional",
+              "Desarrollo de liderazgo",
+              "Red global de contactos",
+              "Certificado internacional",
+              "Crecimiento personal"
             ],
             dates_info: "Convocatoria: Abierta durante el año | Salidas: Según proyecto, varias fechas disponibles",
             support_ai: [
@@ -314,7 +370,7 @@ export default function OpportunityDetailPage() {
         <div className="flex-1 flex flex-col items-center justify-center space-y-4 text-center p-6">
           <AlertTriangle className="w-12 h-12 text-rose-500 animate-bounce" />
           <h2 className="text-xl font-bold text-[#00135B]">{error || "Oportunidad no encontrada"}</h2>
-          <button 
+          <button
             onClick={() => navigate("/programs")}
             className="px-6 py-2 bg-[#00135B] text-white rounded-xl text-xs font-bold hover:bg-[#0d288c] transition-colors"
           >
@@ -342,50 +398,62 @@ export default function OpportunityDetailPage() {
 
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-b from-[#00135B] via-[#001a7a] to-[#0d288c] text-white overflow-hidden py-16 px-6 md:px-12 z-10 flex flex-col items-center">
-        
+        <div className="absolute inset-0">
+          <img
+            src="/src/assets/portada_aiesec.jpg"
+            alt="Voluntariado internacional AIESEC"
+            className="h-full w-full object-cover object-[center_70%]"
+          />
+
+          <div className='absolute inset-0 bg-[linear-gradient(90deg,rgba(4,17,58,0.95)_0%,rgba(4,17,58,0.82)_34%,rgba(4,17,58,0.38)_58%,rgba(4,17,58,0.12)_78%,rgba(4,17,58,0.03)_100%)]' />
+          <div className='absolute inset-0 bg-[linear-gradient(180deg,rgba(4,17,58,0.12)_0%,rgba(4,17,58,0.42)_62%,rgba(4,17,58,0.72)_100%)]' />
+        </div>
+
+
         {/* Tech Grid Background lines */}
         <div className="absolute inset-0 tech-grid opacity-35 pointer-events-none z-0"></div>
+        <div className="pointer-events-none absolute inset-x-0 top-12 z-30">
+          <div className="mx-auto flex max-w-7xl justify-end px-6 md:px-12">
+            <div className="pointer-events-auto flex items-center gap-3">
+              <button
+                onClick={toggleSave}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all bg-white/5 cursor-pointer ${savedPrograms.includes(opportunity.id)
+                  ? "border-rose-400/50 text-rose-400 bg-rose-500/10"
+                  : "border-white/20 text-slate-300 hover:text-white hover:bg-white/10"
+                  }`}
+              >
+                <Heart className={`w-3.5 h-3.5 ${savedPrograms.includes(opportunity.id) ? "fill-current" : ""}`} />
+                <span>{savedPrograms.includes(opportunity.id) ? "Guardado" : "Guardar para después"}</span>
+              </button>
 
+              <button
+                onClick={handleShare}
+                className="p-1.5 rounded-full border border-white/20 text-slate-300 hover:text-white hover:bg-white/10 bg-white/5 cursor-pointer"
+                title="Compartir oportunidad"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
         <div className="max-w-7xl w-full flex flex-col lg:flex-row justify-between items-center gap-12 relative z-10 text-left">
-          
+
           {/* Left Block Details */}
           <div className="space-y-6 flex-1">
             {/* Top Navigation Row */}
             <div className="flex items-center justify-between">
-              <button 
+              <button
                 onClick={() => navigate("/programs")}
                 className="flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Volver a voluntariados</span>
               </button>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={toggleSave}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all bg-white/5 cursor-pointer ${
-                    savedPrograms.includes(opportunity.id)
-                      ? "border-rose-400/50 text-rose-400 bg-rose-500/10"
-                      : "border-white/20 text-slate-300 hover:text-white hover:bg-white/10"
-                  }`}
-                >
-                  <Heart className={`w-3.5 h-3.5 ${savedPrograms.includes(opportunity.id) ? "fill-current" : ""}`} />
-                  <span>{savedPrograms.includes(opportunity.id) ? "Guardado" : "Guardar para después"}</span>
-                </button>
-
-                <button
-                  onClick={handleShare}
-                  className="p-1.5 rounded-full border border-white/20 text-slate-300 hover:text-white hover:bg-white/10 bg-white/5 cursor-pointer"
-                  title="Compartir oportunidad"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
             </div>
 
             {/* Badge & Title */}
             <div className="space-y-3">
-              <span className="inline-block px-3 py-1 rounded-full bg-[#F5C542] text-[#00135B] text-[10px] font-extrabold uppercase tracking-wider">
+              <span className="inline-block px-3 py-1 rounded-full bg-[#F5C542] text-[#00135B] text-[10px] font-extrabold uppercase tracking-wider gold-premium-static">
                 {opportunity.status === "open" ? "Convocatoria Abierta" : "Cerrado"}
               </span>
               <h1 className="font-display font-extrabold text-4xl md:text-5xl leading-tight">
@@ -393,6 +461,7 @@ export default function OpportunityDetailPage() {
               </h1>
               <p className="text-slate-300 text-sm md:text-base font-medium max-w-2xl">
                 {opportunity.short_description}
+
               </p>
             </div>
 
@@ -425,11 +494,11 @@ export default function OpportunityDetailPage() {
               <button
                 onClick={handleStartPostulation}
                 disabled={postulating}
-                className="px-8 py-3.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                className="px-8 py-3.5 rounded-xl gold-premium fx-neon text-[#04113a] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
               >
                 {postulating ? "Procesando..." : "Iniciar mi postulación"}
               </button>
-              
+
               <button
                 onClick={() => scrollToSection("requisitos")}
                 className="px-6 py-3.5 rounded-xl border border-white/30 hover:border-white text-white font-bold text-xs uppercase tracking-wider transition-all bg-transparent cursor-pointer"
@@ -452,15 +521,15 @@ export default function OpportunityDetailPage() {
                 ></iframe>
               ) : (
                 <>
-                  <img 
-                    src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600" 
-                    alt="Welcome to AIESEC video cover" 
+                  <img
+                    src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600"
+                    alt="Welcome to AIESEC video cover"
                     className="absolute inset-0 w-full h-full object-cover opacity-75 filter brightness-75 transition-transform duration-500 group-hover:scale-103"
                   />
-                  
+
                   <div className="absolute inset-0 bg-gradient-to-t from-[#00135B]/90 via-[#00135B]/30 to-transparent"></div>
 
-                  <button 
+                  <button
                     onClick={() => setPlayVideo(true)}
                     className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#F5C542] hover:bg-[#ebd035] hover:scale-110 flex items-center justify-center text-[#00135B] shadow-xl transition-all duration-300 cursor-pointer"
                   >
@@ -497,11 +566,10 @@ export default function OpportunityDetailPage() {
             <button
               key={tab.id}
               onClick={() => scrollToSection(tab.id)}
-              className={`py-4 font-bold text-xs uppercase tracking-wider border-b-2 cursor-pointer transition-colors ${
-                activeTab === tab.id
-                  ? "border-[#00135B] text-[#00135B]"
-                  : "border-transparent text-slate-400 hover:text-slate-700"
-              }`}
+              className={`py-4 font-bold text-xs uppercase tracking-wider border-b-2 cursor-pointer transition-colors ${activeTab === tab.id
+                ? "border-[#00135B] text-[#00135B]"
+                : "border-transparent text-slate-400 hover:text-slate-700"
+                }`}
             >
               {tab.label}
             </button>
@@ -512,15 +580,15 @@ export default function OpportunityDetailPage() {
       {/* Main Content Body */}
       <section className="max-w-7xl w-full mx-auto px-6 md:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Left Column (Main details) */}
           <div className="lg:col-span-2 space-y-12">
-            
+
             {/* Descripción */}
-            <div id="descripcion" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
+            <div id="descripcion" className="bg-white p-8 rounded-3xl border border-[#EBDDC5] shadow-[0_12px_35px_rgba(3,26,51,0.05)] space-y-6 text-left">
               <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Descripción</span>
               <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">¿De qué se trata este voluntariado?</h2>
-              
+
               <div className="text-slate-600 text-sm leading-relaxed space-y-4 font-medium">
                 {opportunity.description.split("\n\n").map((para, idx) => (
                   <p key={idx}>{para}</p>
@@ -533,55 +601,101 @@ export default function OpportunityDetailPage() {
             </div>
 
             {/* Beneficios */}
-            <div id="beneficios" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
+            <div id="beneficios" className="bg-white p-8 rounded-3xl border border-[#EBDDC5] shadow-[0_12px_35px_rgba(3,26,51,0.05)] space-y-6 text-left">
               <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Beneficios</span>
               <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">Lo que ganarás con esta experiencia</h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {(opportunity.benefits_json || [
-                  "Experiencia internacional 🌍",
-                  "Desarrollo de liderazgo 🧠",
-                  "Red global de contactos 🤝",
-                  "Certificado internacional 📜",
-                  "Crecimiento personal 🌱"
-                ]).map((ben, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 border border-gray-200/50 rounded-2xl flex flex-col justify-between space-y-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#5D8CE2]/10 border border-[#5D8CE2]/20 flex items-center justify-center text-[#5D8CE2] font-bold text-sm shrink-0">
-                      {idx + 1}
+                  "Experiencia internacional",
+                  "Desarrollo de liderazgo",
+                  "Red global de contactos",
+                  "Certificado internacional",
+                  "Crecimiento personal"
+                ]).map((ben, idx) => {
+                  const Icon = benefitIcons[idx] || Sparkles;
+
+                  return (
+                    <div
+                      key={idx}
+                      className="p-4 bg-slate-50 border border-gray-200/50 rounded-2xl flex items-center gap-3"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-[#5D8CE2]/10 border border-[#5D8CE2]/20 flex items-center justify-center text-[#5D8CE2] shrink-0">
+                        <Icon className="w-4 h-4" strokeWidth={2.2} />
+                      </div>
+
+                      <span className="font-bold text-xs text-[#00135B] leading-snug">
+                        {ben}
+                      </span>
                     </div>
-                    <span className="font-bold text-xs text-[#00135B] leading-snug">{ben}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* Actividades */}
-            <div id="actividades" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
-              <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Actividades</span>
-              <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">¿Qué harás?</h2>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {/* Actividades */}
+            <div id="actividades" className="bg-white p-8 rounded-3xl border border-[#EBDDC5] shadow-[0_12px_35px_rgba(3,26,51,0.05)] space-y-6 text-left">
+              <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">
+                Actividades
+              </span>
+
+              <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">
+                ¿Qué harás?
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 {(opportunity.activities || [
-                  "Enseñanza en comunidades 📚",
-                  "Proyectos sociales 🤝",
-                  "Campañas ambientales 🌱",
-                  "Actividades interculturales 🌍"
-                ]).map((act, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 border border-gray-200/50 rounded-2xl flex flex-col justify-between space-y-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#F5C542]/10 border border-[#F5C542]/30 flex items-center justify-center text-[#00135B] font-bold text-xs shrink-0">
-                      {idx + 1}
-                    </div>
-                    <span className="font-bold text-xs text-slate-700 leading-snug">{act}</span>
-                  </div>
-                ))}
+                  "Enseñanza en comunidades",
+                  "Proyectos sociales",
+                  "Campañas ambientales",
+                  "Actividades interculturales"
+                ]).map((act, idx) => {
+                  const Icon = activityIcons[idx] || Sparkles;
+                  const cleanTitle = String(act);
+                  const mediaInfo = activityMedia[idx] || {
+                    title: cleanTitle,
+                    type: "image",
+                    media:
+                      "https://www.youtube.com/embed/47iHjBi9VRw",
+                    description:
+                      "Conoce más sobre esta actividad y cómo forma parte de la experiencia del voluntariado.",
+                  };
+
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() =>
+                        setSelectedActivity({
+                          ...mediaInfo,
+                          title: cleanTitle,
+                        })
+                      }
+                      className="group min-h-[150px] p-4 bg-slate-50 border border-gray-200/50 rounded-2xl flex flex-col items-center justify-center text-center gap-3 transition-all hover:-translate-y-1 hover:border-[#5D8CE2]/40 hover:bg-[#5D8CE2]/5 hover:shadow-[0_14px_30px_rgba(3,26,51,0.08)] cursor-pointer"
+                    >
+                      <div className="w-12 h-12 rounded-2xl bg-[#5D8CE2]/10 border border-[#5D8CE2]/20 flex items-center justify-center text-[#5D8CE2] transition group-hover:scale-105 group-hover:bg-[#5D8CE2]/15">
+                        <Icon className="w-6 h-6" strokeWidth={2.1} />
+                      </div>
+
+                      <span className="font-bold text-xs text-[#00135B] leading-snug">
+                        {cleanTitle}
+                      </span>
+
+                      <span className="text-[11px] font-extrabold text-[#5D8CE2] opacity-0 transition group-hover:opacity-100">
+                        Ver detalle
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Requisitos */}
-            <div id="requisitos" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
+            <div id="requisitos" className="bg-white p-8 rounded-3xl border border-[#EBDDC5] shadow-[0_12px_35px_rgba(3,26,51,0.05)] space-y-6 text-left">
               <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Requisitos</span>
               <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">Lo que necesitas para participar</h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {(opportunity.requirements || [
                   "Tener entre 18 y 30 años",
@@ -589,60 +703,66 @@ export default function OpportunityDetailPage() {
                   "Nivel básico/intermedio de inglés",
                   "Disponibilidad para viajar"
                 ]).map((req, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-3.5 bg-amber-500/5 border border-amber-500/10 rounded-xl">
-                    <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </div>
-                    <span className="text-xs font-semibold text-slate-700">{req}</span>
-                  </div>
+                  <div key={idx} className="flex items-center gap-3 p-3.5 bg-slate-50 border border-gray-200/50 rounded-xl">
+  <div className="w-5 h-5 rounded-full bg-[#5D8CE2]/10 border border-[#5D8CE2]/20 flex items-center justify-center text-[#5D8CE2] shrink-0">
+    <Check className="w-3 h-3 stroke-[3]" />
+  </div>
+  <span className="text-xs font-semibold text-slate-700">{req}</span>
+</div>
                 ))}
               </div>
             </div>
 
             {/* Testimonios */}
-            <div id="testimonios" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
+            <div id="testimonios" className="bg-white p-8 rounded-3xl border border-[#EBDDC5] shadow-[0_12px_35px_rgba(3,26,51,0.05)] space-y-6 text-left">
               <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Testimonios</span>
               <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">Historias de voluntarios</h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                
+
                 {/* Video Card 1 */}
                 <div className="border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="relative aspect-video bg-slate-900 flex items-center justify-center">
-                    <img 
-                      src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" 
-                      alt="AIESEC volunteer story 1" 
+                    <img
+                      src="/src/assets/alysandra.png"
+                      alt="AIESEC volunteer story 1"
                       className="absolute inset-0 w-full h-full object-cover opacity-60"
                     />
-                    <button className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer">
+                    <a
+                      href="https://www.youtube.com/watch?v=apYz97XhpgM"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer"
+                    >
                       <Play className="w-4 h-4 fill-current translate-x-0.5" />
-                    </button>
+                    </a>
                   </div>
                   <div className="p-4 text-left space-y-1">
-                    <h4 className="font-bold text-xs text-[#00135B]">Experiencias AIESEC alrededor del mundo</h4>
-                    <p className="text-[10px] text-slate-500 font-medium">
-                      Conoce historias reales de jóvenes que participaron en voluntariados internacionales y vivieron una experiencia de crecimiento cultural.
-                    </p>
+                    <h4 className="font-bold text-xs text-[#00135B]">Conoce la experiencia de Alysandra en su voluntariado internacional</h4>
+
                   </div>
                 </div>
 
                 {/* Video Card 2 */}
                 <div className="border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="relative aspect-video bg-slate-900 flex items-center justify-center">
-                    <img 
-                      src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400" 
-                      alt="AIESEC volunteer story 2" 
+                    <img
+                      src="/src/assets/ahmad.png"
+                      alt="AIESEC volunteer story 2"
                       className="absolute inset-0 w-full h-full object-cover opacity-60"
                     />
-                    <button className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer">
+                    <a
+                      href="https://www.youtube.com/watch?v=apYz97XhpgM"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer"
+                    >
                       <Play className="w-4 h-4 fill-current translate-x-0.5" />
-                    </button>
+                    </a>
                   </div>
                   <div className="p-4 text-left space-y-1">
-                    <h4 className="font-bold text-xs text-[#00135B]">Voluntariado internacional con impacto</h4>
-                    <p className="text-[10px] text-slate-500 font-medium">
-                      Mira cómo los participantes desarrollan liderazgo, trabajan con comunidades y se adaptan a nuevas culturas durante su experiencia.
-                    </p>
+                    <h4 className="font-bold text-xs text-[#00135B]">Conoce la experiencia de Ahmad en su voluntariado internacional</h4>
+        
                   </div>
                 </div>
 
@@ -653,30 +773,12 @@ export default function OpportunityDetailPage() {
 
           {/* Right Column (Sidebar details) */}
           <div className="space-y-6">
-            
-            {/* Lo que necesitas */}
-            <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left">
-              <h3 className="font-bold text-sm text-[#F5C542] uppercase tracking-wider">Lo que necesitas</h3>
-              
-              <ul className="space-y-3.5 text-xs text-slate-200 font-medium">
-                {(opportunity.requirements || [
-                  "Tener entre 18 y 30 años",
-                  "Interés en voluntariado internacional",
-                  "Nivel básico/intermedio de inglés",
-                  "Disponibilidad para viajar"
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5">
-                    <Check className="w-4 h-4 text-[#F5C542] shrink-0 mt-0.5 stroke-[3]" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+
 
             {/* Acompañamiento EDULAB */}
             <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden">
               <div className="absolute top-0 right-0 w-16 h-16 bg-[#5D8CE2]/10 rounded-full blur-xl pointer-events-none"></div>
-              
+
               <h3 className="font-bold text-sm text-[#F5C542] uppercase tracking-wider">Acompañamiento EDULAB</h3>
               <p className="text-xs text-slate-300 leading-relaxed font-medium">
                 Te ayudamos a prepararte mejor antes de aplicar, ordenando tu perfil, tu motivación y los pasos básicos de la postulación.
@@ -699,7 +801,7 @@ export default function OpportunityDetailPage() {
 
               <button
                 onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
-                className="w-full mt-4 py-2.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer border-none shadow-md"
+                className="w-full mt-4 py-2.5 rounded-xl gold-premium fx-neon text-[#04113a] font-extrabold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer border-none shadow-md"
               >
                 <span>Preparar postulación</span>
                 <ArrowRight className="w-3 h-3 text-[#00135B] stroke-[3]" />
@@ -707,20 +809,26 @@ export default function OpportunityDetailPage() {
             </div>
 
             {/* Organización */}
-            <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-4 text-left">
+            <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Organización</h3>
-              
+
+
+
+
+
+
+
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-gray-100 flex items-center justify-center font-extrabold text-[#00135B]">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-gray-100 flex items-center justify-center font-extrabold text-[#F5C542]">
                   {opportunity.organization_name?.substring(0, 3).toUpperCase() || "ORG"}
                 </div>
                 <div>
-                  <h4 className="font-bold text-xs text-[#00135B]">{opportunity.organization}</h4>
+                  <h4 className="font-bold text-xs text-[#F5C542]">{opportunity.organization}</h4>
                   <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Socio Oficial</span>
                 </div>
               </div>
 
-              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+              <p className="text-[11px] text-xs text-slate-300 leading-relaxed font-medium">
                 Organización global liderada por jóvenes enfocada en liderazgo, intercambio cultural y experiencias internacionales con impacto social.
               </p>
 
@@ -746,7 +854,7 @@ export default function OpportunityDetailPage() {
             {/* ¿Por qué ser voluntario? */}
             <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-4 text-left">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">¿Por qué ser voluntario?</h3>
-              
+
               <ul className="space-y-3 text-xs font-semibold text-[#00135B]">
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-[#5D8CE2]" />
@@ -776,7 +884,7 @@ export default function OpportunityDetailPage() {
       <section className="bg-[#00135B] py-16 px-6 md:px-8 text-white text-center relative overflow-hidden">
         <div className="absolute inset-0 tech-grid opacity-25 pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-left">
-          
+
           <div className="space-y-2 max-w-lg">
             <span className="text-[9px] text-[#F5C542] uppercase font-bold tracking-widest">Próximo Paso</span>
             <h2 className="font-display font-extrabold text-2xl md:text-3xl leading-snug">¿Listo para generar impacto?</h2>
@@ -820,19 +928,19 @@ export default function OpportunityDetailPage() {
       </section>
 
       {/* Auth Modal Trigger */}
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
-        initialMode={authModalMode} 
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode={authModalMode}
       />
 
       {/* POSTULATION SUCCESS MODAL */}
       {showPostulationModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
           <div className="w-full max-w-md bg-white p-8 rounded-3xl border border-gray-200 shadow-2xl relative space-y-6 text-left animate-scaleUp">
-            
+
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowPostulationModal(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none"
             >
@@ -844,11 +952,11 @@ export default function OpportunityDetailPage() {
               <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mx-auto shadow-sm">
                 <ShieldCheck className="w-8 h-8 fill-emerald-100" />
               </div>
-              
+
               <h3 className="font-display font-extrabold text-xl text-[#00135B]">
                 ¡Postulación Iniciada!
               </h3>
-              
+
               <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
                 Tu intención de postular al **{opportunity.title}** ha sido registrada con éxito en EDULAB con estado <span className="font-bold text-[#5D8CE2]">started</span>.
               </p>
@@ -904,7 +1012,7 @@ export default function OpportunityDetailPage() {
               >
                 Completar Perfil
               </button>
-              
+
               <button
                 onClick={() => {
                   setShowPostulationModal(false);
@@ -924,9 +1032,9 @@ export default function OpportunityDetailPage() {
       {showVideoPopup && opportunity?.video_url && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
           <div className="w-full max-w-4xl bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl relative animate-scaleUp">
-            
+
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowVideoPopup(false)}
               className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors border border-white/10 cursor-pointer"
             >
@@ -947,7 +1055,7 @@ export default function OpportunityDetailPage() {
             {/* Title / Description area */}
             <div className="p-6 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="space-y-1 text-left">
-                <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#F5C542] text-[#00135B] text-[8px] font-extrabold uppercase tracking-wider">
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#F5C542] text-[#00135B] text-[8px] font-extrabold uppercase tracking-wider gold-premium-static">
                   Impacto Global
                 </span>
                 <h3 className="font-display font-bold text-lg text-white">
@@ -957,7 +1065,7 @@ export default function OpportunityDetailPage() {
               </div>
               <button
                 onClick={() => setShowVideoPopup(false)}
-                className="px-6 py-2.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer border-none shadow-md shrink-0 self-start sm:self-center"
+                className="px-6 py-2.5 rounded-xl gold-premium fx-neon text-[#04113a] font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer border-none shadow-md shrink-0 self-start sm:self-center"
               >
                 Comenzar a explorar
               </button>
@@ -966,7 +1074,104 @@ export default function OpportunityDetailPage() {
           </div>
         </div>
       )}
+      <ActivityModal
+        activity={selectedActivity}
+        onClose={() => setSelectedActivity(null)}
+      />
+    </div>
+  );
+}
 
+{ /* Actividad Modal: Sirve para mostrar detalles de una actividad */ }
+function ActivityModal({
+  activity,
+  onClose,
+}: {
+  activity: any;
+  onClose: () => void;
+}) {
+  if (!activity) return null;
+
+  const isVideo = activity.type === "video";
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#00135B]/80 px-4 py-6 backdrop-blur-sm">
+      <button
+        type="button"
+        className="absolute inset-0 cursor-default"
+        onClick={onClose}
+        aria-label="Cerrar modal"
+      />
+
+      <article className="relative z-10 w-full max-w-4xl overflow-hidden rounded-[2rem] border border-white/15 bg-white shadow-2xl shadow-black/30">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-[#00135B]/75 text-white backdrop-blur-md transition hover:bg-[#00135B]"
+          aria-label="Cerrar"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="grid lg:grid-cols-[1.25fr_0.75fr]">
+          <div className="relative min-h-[280px] bg-[#00135B]">
+            {isVideo ? (
+              <iframe
+                src={activity.media}
+                title={activity.title}
+                className="h-full min-h-[320px] w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <>
+                <img
+                  src={activity.media}
+                  alt={activity.title}
+                  className="h-full min-h-[320px] w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#00135B]/55 to-transparent" />
+              </>
+            )}
+
+            {!isVideo && (
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 transition group-hover:opacity-100">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#5D8CE2] text-white shadow-xl">
+                  <Play className="w-6 h-6" fill="currentColor" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="p-7 sm:p-8">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#5D8CE2]">
+              Actividad del voluntariado
+            </p>
+
+            <h3 className="mt-3 text-3xl font-black leading-tight text-[#00135B]">
+              {activity.title}
+            </h3>
+
+            <p className="mt-5 text-base leading-8 text-slate-600">
+              {activity.description}
+            </p>
+
+            <div className="mt-7 rounded-2xl border border-gray-200 bg-slate-50 p-4">
+              <p className="text-sm font-bold leading-6 text-[#00135B]">
+                Esta actividad puede variar según el país, proyecto y organización anfitriona.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="mt-7 inline-flex rounded-2xl bg-[#5D8CE2] px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-[#00135B]"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      </article>
     </div>
   );
 }
