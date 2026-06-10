@@ -24,7 +24,10 @@ import {
   School,
   Sprout,
   UsersRound,
+  Handshake
+  
 } from "lucide-react";
+
 
 //iconos para beneficios
 const benefitIcons = [Globe2, Brain, Network, ScrollText, Sparkles, Award];
@@ -89,6 +92,38 @@ const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
   </svg>
 );
+
+
+const emojiIconMap: Record<string, any> = {
+  "🌍": Globe2,
+  "🌎": Globe2,
+  "🌏": Globe2,
+  "🧠": Brain,
+  "🤝": Handshake,
+  "📜": ScrollText,
+  "🌱": Sprout,
+  "📚": School,
+  "✨": Sparkles,
+};
+
+function getEmojiFromText(text: string) {
+  return Object.keys(emojiIconMap).find((emoji) => text.includes(emoji));
+}
+
+function removeEmojis(text: string) {
+  return text
+    .replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, "")
+    .trim();
+}
+
+function parseIconText(text: string, fallbackIcon = Sparkles) {
+  const emoji = getEmojiFromText(text);
+
+  return {
+    text: removeEmojis(text),
+    Icon: emoji ? emojiIconMap[emoji] : fallbackIcon,
+  };
+}
 
 const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -613,7 +648,9 @@ export default function OpportunityDetailPage() {
                   "Certificado internacional",
                   "Crecimiento personal"
                 ]).map((ben, idx) => {
-                  const Icon = benefitIcons[idx] || Sparkles;
+                  const rawText = String(ben);
+                  const fallbackIcon = benefitIcons[idx] || Sparkles;
+                  const { text, Icon } = parseIconText(rawText, fallbackIcon);
 
                   return (
                     <div
@@ -625,7 +662,7 @@ export default function OpportunityDetailPage() {
                       </div>
 
                       <span className="font-bold text-xs text-[#00135B] leading-snug">
-                        {ben}
+                        {text}
                       </span>
                     </div>
                   );
@@ -651,8 +688,9 @@ export default function OpportunityDetailPage() {
                   "Campañas ambientales",
                   "Actividades interculturales"
                 ]).map((act, idx) => {
-                  const Icon = activityIcons[idx] || Sparkles;
-                  const cleanTitle = String(act);
+                  const rawText = String(act);
+                  const fallbackIcon = activityIcons[idx] || Sparkles;
+                  const { text: cleanTitle, Icon } = parseIconText(rawText, fallbackIcon);
                   const mediaInfo = activityMedia[idx] || {
                     title: cleanTitle,
                     type: "image",
@@ -751,8 +789,8 @@ export default function OpportunityDetailPage() {
                       alt="AIESEC volunteer story 2"
                       className="absolute inset-0 w-full h-full object-cover opacity-60"
                     />
-                    <a
-                      href="https://www.youtube.com/watch?v=apYz97XhpgM"
+                    <a                     
+                      href="https://www.youtube.com/watch?v=BJruDJdnxU0&t=17s"
                       target="_blank"
                       rel="noreferrer"
                       className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer"
