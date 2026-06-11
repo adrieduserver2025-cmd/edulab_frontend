@@ -25,7 +25,7 @@ import {
   Sprout,
   UsersRound,
   Handshake
-  
+
 } from "lucide-react";
 
 
@@ -240,63 +240,8 @@ export default function OpportunityDetailPage() {
           setShowVideoPopup(true);
         }
       } catch (err: any) {
-        console.error("Failed to fetch opportunity from backend. Falling back to static check.", err);
-        // Fallback static load specifically for 'aiesec-voluntariado' to prevent blank view if backend is rebuilding
-        if (slug === "aiesec-voluntariado") {
-          setOpportunity({
-            id: 4,
-            title: "Voluntariado en AIESEC",
-            description: "El voluntariado de AIESEC es una experiencia internacional de corta duración que permite a jóvenes participar en proyectos sociales en distintos países, con el objetivo de generar impacto positivo en comunidades mientras desarrollan habilidades personales y profesionales.\n\nMás allá del trabajo voluntario, AIESEC busca formar líderes globales. Durante el programa, los jóvenes fortalecen competencias como comunicación intercultural, trabajo en equipo, adaptabilidad y resolución de problemas en entornos reales.\n\nAdemás, el voluntariado incluye acompañamiento antes, durante y después de la experiencia, así como espacios de integración cultural que permiten al participante sumergirse en la realidad del país anfitrión.",
-            type: "volunteering",
-            organization: "AIESEC International",
-            country: "Global",
-            deadline: "2026-09-30",
-            eligibility: "Jóvenes entre 18 y 30 años con ganas de generar impacto social.",
-            benefits: "Hospedaje local, desarrollo de liderazgo y certificado internacional.",
-            slots: 50,
-            slug: "aiesec-voluntariado",
-            organization_name: "AIESEC",
-            status: "open",
-            short_description: "Vive una experiencia internacional que transforma tu forma de ver el mundo.",
-            activities: [
-              "Enseñanza en comunidades",
-              "Proyectos sociales",
-              "Campañas ambientales",
-              "Actividades interculturales"
-            ],
-            requirements: [
-              "Tener entre 18 y 30 años",
-              "Interés en voluntariado internacional",
-              "Nivel básico/intermedio de inglés",
-              "Disponibilidad para viajar",
-              "Pasaporte si el destino lo requiere",
-              "Motivación y apertura cultural",
-              "Membresía aproximada Bs. 2430"
-            ],
-            benefits_json: [
-              "Experiencia internacional",
-              "Desarrollo de liderazgo",
-              "Red global de contactos",
-              "Certificado internacional",
-              "Crecimiento personal"
-            ],
-            dates_info: "Convocatoria: Abierta durante el año | Salidas: Según proyecto, varias fechas disponibles",
-            support_ai: [
-              "Elegir el mejor voluntariado según el perfil del usuario",
-              "Preparar la aplicación",
-              "Redactar carta de motivación con IA"
-            ],
-            facebook_url: "https://www.facebook.com/AIESECglobal",
-            instagram_url: "https://www.instagram.com/aiesecglobal/",
-            youtube_url: "https://www.youtube.com/@aiesecglobal",
-            video_url: "https://www.youtube.com/watch?v=7h43WCAVXdY",
-            image_url: "/assets/images/aiesec_hero.jpg",
-            is_demo: false
-          });
-          setShowVideoPopup(true);
-        } else {
-          setError("Oportunidad no encontrada. Por favor, regresa al listado.");
-        }
+        console.error("Failed to fetch opportunity from backend.", err);
+        setError("Oportunidad no encontrada o backend no disponible.");
       } finally {
         setLoading(false);
       }
@@ -435,8 +380,11 @@ export default function OpportunityDetailPage() {
       <section className="relative w-full bg-gradient-to-b from-[#00135B] via-[#001a7a] to-[#0d288c] text-white overflow-hidden py-16 px-6 md:px-12 z-10 flex flex-col items-center">
         <div className="absolute inset-0">
           <img
-            src="/src/assets/portada_aiesec.jpg"
-            alt="Voluntariado internacional AIESEC"
+            src={opportunity.image_url}
+            alt={opportunity.title}
+            onError={(event) => {
+              event.currentTarget.src = "/assets/images/hero_default.png";
+            }}
             className="h-full w-full object-cover object-[center_70%]"
           />
 
@@ -575,7 +523,7 @@ export default function OpportunityDetailPage() {
                     <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 border border-white/25 text-[8px] font-extrabold uppercase tracking-wider mb-1">
                       Video de Bienvenida
                     </span>
-                    <h3 className="font-bold text-sm font-display text-[#F5C542]">Conoce la experiencia AIESEC</h3>
+                    <h3 className="font-bold text-sm font-display text-[#F5C542]">Conoce más sobre {opportunity.organization_name || opportunity.organization}</h3>
                     <p className="text-[10px] text-slate-300 leading-snug">
                       Mira cómo funciona el voluntariado internacional antes de postular.
                     </p>
@@ -789,7 +737,7 @@ export default function OpportunityDetailPage() {
                       alt="AIESEC volunteer story 2"
                       className="absolute inset-0 w-full h-full object-cover opacity-60"
                     />
-                    <a                     
+                    <a
                       href="https://www.youtube.com/watch?v=BJruDJdnxU0&t=17s"
                       target="_blank"
                       rel="noreferrer"
@@ -810,7 +758,7 @@ export default function OpportunityDetailPage() {
           </div>
 
           {/* Right Column (Sidebar details) */}
-          <aside className="space-y-6 lg:sticky lg:top-36 lg:self-start"> 
+          <aside className="space-y-6 lg:sticky lg:top-36 lg:self-start">
 
             {/* Acompañamiento EDULAB */}
             <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden">
@@ -850,19 +798,19 @@ export default function OpportunityDetailPage() {
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Organización</h3>
 
               <div className="flex items-center gap-3">
-<div className="w-12 h-12 rounded-xl bg-white border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
-  {opportunity.organization_name?.toLowerCase().includes("aiesec") ? (
-    <img
-      src="/src/assets/man_aiesec.png"
-      alt="AIESEC"
-      className="h-9 w-9 object-contain"
-    />
-  ) : (
-    <span className="font-extrabold text-[#F5C542]">
-      {opportunity.organization_name?.substring(0, 3).toUpperCase() || "ORG"}
-    </span>
-  )}
-</div>
+                <div className="w-12 h-12 rounded-xl bg-white border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                  {opportunity.organization_name?.toLowerCase().includes("aiesec") ? (
+                    <img
+                      src="/src/assets/man_aiesec.png"
+                      alt="AIESEC"
+                      className="h-9 w-9 object-contain"
+                    />
+                  ) : (
+                    <span className="font-extrabold text-[#F5C542]">
+                      {opportunity.organization_name?.substring(0, 3).toUpperCase() || "ORG"}
+                    </span>
+                  )}
+                </div>
                 <div>
                   <h4 className="font-bold text-xs text-[#F5C542]">{opportunity.organization}</h4>
                   <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Socio Oficial</span>
