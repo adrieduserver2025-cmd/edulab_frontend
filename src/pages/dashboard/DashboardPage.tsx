@@ -48,12 +48,6 @@ export default function DashboardPage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authLoading = useAuthStore((state) => state.isLoading || state.loading);
 
-  if (user?.role === "organization") {
-    return <OrganizationDashboard />;
-  }
-  if (user?.role === "admin") {
-    return <AdminDashboard />;
-  }
 
   const navigate = useNavigate();
   const [programs, setPrograms] = useState<ProgramItem[]>([]);
@@ -391,6 +385,13 @@ export default function DashboardPage() {
         p.description.toLowerCase().includes(q)
     );
   }
+
+    if (user?.role === "organization") {
+    return <OrganizationDashboard />;
+    }
+    if (user?.role === "admin") {
+      return <AdminDashboard />;
+    }
 
   return (
     <div className="space-y-8 animate-fadeIn text-slate-700 relative">
