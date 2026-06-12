@@ -105,9 +105,17 @@ export default function DashboardPage() {
           compatibility: item.compatibility || (idx === 0 ? 95 : idx === 1 ? 83 : idx === 2 ? 76 : idx === 3 ? 91 : 88)
         }));
         setPrograms(enriched);
+
+        // Clean up savedPrograms from localStorage if they no longer exist in backend database
+        const validIds = enriched.map((p: any) => p.id);
+        const filteredSaved = savedPrograms.filter((id) => validIds.includes(id));
+        if (filteredSaved.length !== savedPrograms.length) {
+          setSavedPrograms(filteredSaved);
+          localStorage.setItem("edulab_saved_programs", JSON.stringify(filteredSaved));
+        }
       } catch (err) {
         console.warn("Could not load programs from backend. Rendering static demo records.");
-        setPrograms([
+        const fallback = [
           {
             id: 1,
             title: "Beca de Excelencia Global DAAD Alemania",
@@ -173,7 +181,16 @@ export default function DashboardPage() {
             slug: "onu-voluntariado",
             is_demo: true
           }
-        ]);
+        ];
+        setPrograms(fallback);
+        
+        // Also sync fallback IDs
+        const validIds = fallback.map((p) => p.id);
+        const filteredSaved = savedPrograms.filter((id) => validIds.includes(id));
+        if (filteredSaved.length !== savedPrograms.length) {
+          setSavedPrograms(filteredSaved);
+          localStorage.setItem("edulab_saved_programs", JSON.stringify(filteredSaved));
+        }
       } finally {
         setLoading(false);
       }
@@ -467,7 +484,7 @@ export default function DashboardPage() {
                   className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${activeTab === "saved" ? "bg-white text-[#00135B] shadow-sm" : "text-slate-500 hover:text-slate-800 bg-transparent border-none"}`}
                 >
                   <Heart className={`w-3.5 h-3.5 ${activeTab === "saved" ? "fill-[#5D8CE2] text-[#5D8CE2]" : ""}`} />
-                  <span>Guardados ({savedPrograms.length})</span>
+                  <span>Guardados ({programs.filter((p) => savedPrograms.includes(p.id)).length})</span>
                 </button>
               </div>
             </div>

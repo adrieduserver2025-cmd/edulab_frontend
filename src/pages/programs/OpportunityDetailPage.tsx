@@ -75,8 +75,35 @@ import PublicNavbar from "../../components/navigation/PublicNavbar";
 import AuthModal from "../../components/auth/AuthModal";
 import axiosClient from "../../services/api/axiosClient";
 import { useAuthStore } from "../../store/useAuthStore";
-import { getMyProfile } from "../../services/profileService";
+import { getMyProfile, createProfile, updateProfile, updateUser } from "../../services/profileService";
 import type { StudentProfileResponse } from "../../services/profileService";
+
+const EDUCATION_OPTIONS = [
+  "Secundario / High School",
+  "Pregrado / Undergraduate",
+  "Posgrado / Graduate",
+  "Doctorado / PhD",
+  "Otro / Other"
+];
+
+const AREA_OPTIONS = [
+  "STEM (Ciencia y Tecnología)",
+  "Negocios y Finanzas",
+  "Humanidades y Ciencias Sociales",
+  "Artes y Diseño",
+  "Ciencias de la Salud",
+  "Leyes y Derecho",
+  "Otro / Other"
+];
+
+const ENGLISH_OPTIONS = [
+  "Ninguno / None",
+  "Básico (A1/A2)",
+  "Intermedio (B1/B2)",
+  "Avanzado (C1/C2)",
+  "Nativo / Native"
+];
+
 
 interface ProgramDetail {
   id: number;
@@ -115,105 +142,12 @@ interface ProgramDetail {
   required_documents?: string[];
 }
 
-const checkMissingFields = (profile: StudentProfileResponse | null, requiredFields?: string[]) => {
-  if (!requiredFields || requiredFields.length === 0) return [];
-  if (!profile) return requiredFields;
-
-  const missing: string[] = [];
-  requiredFields.forEach((field) => {
-    switch (field) {
-      case "phone":
-        if (!profile.phone?.trim()) missing.push("phone");
-        break;
-      case "country":
-        if (!profile.country?.trim()) missing.push("country");
-        break;
-      case "city":
-        if (!profile.city?.trim()) missing.push("city");
-        break;
-      case "birth_date":
-        if (!profile.birth_date) missing.push("birth_date");
-        break;
-      case "education_level":
-        if (!profile.education_level?.trim()) missing.push("education_level");
-        break;
-      case "current_institution":
-      case "university":
-        if (!profile.current_institution?.trim()) missing.push("university");
-        break;
-      case "area":
-      case "carrera":
-        if (!profile.area?.trim()) missing.push("carrera");
-        break;
-      case "english_level":
-      case "languages":
-      case "idiomas":
-        if (!profile.english_level?.trim()) missing.push("languages");
-        break;
-      case "cv":
-      case "cv_url":
-        if (!profile.cv_url?.trim()) missing.push("cv");
-        break;
-      case "expected_graduation_date":
-      case "graduation_date":
-        if (!profile.expected_graduation_date) missing.push("expected_graduation_date");
-        break;
-      case "work_experience":
-      case "laboral":
-        if (!profile.work_experience || profile.work_experience.length === 0) missing.push("work_experience");
-        break;
-      case "volunteer_experience":
-      case "voluntaria":
-        if (!profile.volunteer_experience || profile.volunteer_experience.length === 0) missing.push("volunteer_experience");
-        break;
-      case "general_motivation_letter":
-      case "motivation_letter":
-        if (!profile.general_motivation_letter?.trim()) missing.push("motivation_letter");
-        break;
-      default:
-        const val = (profile as any)[field];
-        if (!val || (typeof val === "string" && !val.trim()) || (Array.isArray(val) && val.length === 0)) {
-          missing.push(field);
-        }
-    }
-  });
-  return missing;
-};
-
-const getFieldLabel = (field: string) => {
-  switch (field) {
-    case "phone": return "Teléfono";
-    case "country": return "País de residencia";
-    case "city": return "Ciudad";
-    case "birth_date": return "Fecha de nacimiento";
-    case "education_level": return "Nivel de educación";
-    case "university":
-    case "current_institution": return "Universidad / Institución";
-    case "carrera":
-    case "area": return "Carrera / Área";
-    case "languages":
-    case "idiomas":
-    case "english_level": return "Idiomas (Inglés)";
-    case "cv":
-    case "cv_url": return "Currículum Vitae (CV)";
-    case "expected_graduation_date":
-    case "graduation_date": return "Fecha de Graduación";
-    case "work_experience":
-    case "laboral": return "Experiencia Laboral";
-    case "volunteer_experience":
-    case "voluntaria": return "Experiencia Voluntaria";
-    case "general_motivation_letter":
-    case "motivation_letter": return "Carta de Motivación General";
-    default: return field;
-  }
-};
-
 export default function OpportunityDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
   // Auth & Profile states
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user, setUser } = useAuthStore();
   const [profile, setProfile] = useState<StudentProfileResponse | null>(null);
 
   // Detail States
@@ -241,12 +175,29 @@ export default function OpportunityDetailPage() {
 
   // Multi-step postulation states
   const [showApplyModal, setShowApplyModal] = useState(false);
-  const [missingProfileFields, setMissingProfileFields] = useState<string[]>([]);
-  const [showMissingFieldsModal, setShowMissingFieldsModal] = useState(false);
   const [applyStep, setApplyStep] = useState(1);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [uploadedDocs, setUploadedDocs] = useState<Record<string, string>>({});
   const [applyError, setApplyError] = useState<string | null>(null);
+  const [localProfileForm, setLocalProfileForm] = useState<any>({
+    full_name: "",
+    country: "",
+    city: "",
+    birth_date: "",
+    phone: "",
+    education_level: "Pregrado / Undergraduate",
+    current_institution: "",
+    area: "STEM (Ciencia y Tecnología)",
+    english_level: "Intermedio (B1/B2)",
+    cv_url: "",
+    expected_graduation_date: "",
+    general_motivation_letter: "",
+    work_experience: [],
+    volunteer_experience: [],
+    interests: [],
+    target_countries: [],
+    target_program_types: []
+  });
 
   // Load Opportunity Data
   useEffect(() => {
@@ -363,15 +314,26 @@ export default function OpportunityDetailPage() {
     }
     if (!opportunity) return;
 
-    // Check profile completeness for the fields required by this opportunity
-    const required = opportunity.required_profile_fields || [];
-    const missing = checkMissingFields(profile, required);
-    
-    if (missing.length > 0) {
-      setMissingProfileFields(missing);
-      setShowMissingFieldsModal(true);
-      return;
-    }
+    // Prefill localProfileForm with profile data if available
+    setLocalProfileForm({
+      full_name: user?.displayName || "",
+      country: profile?.country || "",
+      city: profile?.city || "",
+      birth_date: profile?.birth_date || "",
+      phone: profile?.phone || "",
+      education_level: profile?.education_level || "Pregrado / Undergraduate",
+      current_institution: profile?.current_institution || "",
+      area: profile?.area || "STEM (Ciencia y Tecnología)",
+      english_level: profile?.english_level || "Intermedio (B1/B2)",
+      cv_url: profile?.cv_url || "",
+      expected_graduation_date: profile?.expected_graduation_date || "",
+      general_motivation_letter: profile?.general_motivation_letter || "",
+      work_experience: profile?.work_experience || [],
+      volunteer_experience: profile?.volunteer_experience || [],
+      interests: profile?.interests || [],
+      target_countries: profile?.target_countries || [],
+      target_program_types: profile?.target_program_types || []
+    });
 
     // Initialize custom questions answers and document uploads state
     const initialAnswersObj: Record<string, string> = {};
@@ -997,58 +959,7 @@ export default function OpportunityDetailPage() {
         initialMode={authModalMode} 
       />
 
-      {/* MISSING FIELDS ALERT MODAL */}
-      {showMissingFieldsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-md bg-white p-8 rounded-3xl border border-gray-200 shadow-2xl relative space-y-6 text-left animate-scaleUp">
-            <button 
-              onClick={() => setShowMissingFieldsModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none animate-fadeIn"
-            >
-              <X className="w-5 h-5" />
-            </button>
 
-            <div className="text-center space-y-3">
-              <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-250 flex items-center justify-center text-amber-600 mx-auto shadow-sm">
-                <AlertTriangle className="w-8 h-8 text-amber-500 animate-bounce" />
-              </div>
-              <h3 className="font-display font-extrabold text-xl text-[#00135B]">
-                Perfil Incompleto
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
-                Esta oportunidad requiere que tengas completados ciertos campos clave en tu **Perfil EDULAB**.
-              </p>
-            </div>
-
-            <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl space-y-2">
-              <p className="text-xs font-bold text-amber-800">Campos obligatorios faltantes:</p>
-              <ul className="list-disc pl-5 text-xs text-amber-700 font-semibold space-y-1">
-                {missingProfileFields.map((field) => (
-                  <li key={field}>{getFieldLabel(field)}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button
-                onClick={() => {
-                  setShowMissingFieldsModal(false);
-                  navigate("/profile");
-                }}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:opacity-95 text-white font-extrabold text-xs tracking-wider transition-all duration-200 cursor-pointer active:scale-95 text-center border-none shadow-sm"
-              >
-                Completar Perfil
-              </button>
-              <button
-                onClick={() => setShowMissingFieldsModal(false)}
-                className="flex-1 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-gray-200 text-xs font-bold text-slate-500 transition-all duration-200 cursor-pointer active:scale-95"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* MULTI-STEP POSTULATION FORM MODAL */}
       {showApplyModal && opportunity && (
@@ -1078,10 +989,104 @@ export default function OpportunityDetailPage() {
               
               const currentStepName = steps[applyStep - 1];
 
-              const validateAndNext = () => {
+              const validateAndNext = async () => {
                 setApplyError(null);
                 if (currentStepName === "Perfil EDULAB") {
-                  setApplyStep(prev => prev + 1);
+                  // Standard validation for required fields in the profile schema
+                  if (!localProfileForm.full_name?.trim()) { setApplyError("El nombre completo es requerido."); return; }
+                  if (!localProfileForm.country?.trim()) { setApplyError("El país es requerido."); return; }
+                  if (!localProfileForm.city?.trim()) { setApplyError("La ciudad es requerida."); return; }
+                  if (!localProfileForm.phone?.trim()) { setApplyError("El teléfono es requerido."); return; }
+                  if (!localProfileForm.birth_date) { setApplyError("La fecha de nacimiento es requerida."); return; }
+                  if (!localProfileForm.education_level?.trim()) { setApplyError("El nivel de educación es requerido."); return; }
+                  if (!localProfileForm.area?.trim()) { setApplyError("El área o carrera es requerida."); return; }
+                  if (!localProfileForm.english_level?.trim()) { setApplyError("El nivel de inglés es requerido."); return; }
+
+                  // Dynamic check for custom profile fields requested by opportunity
+                  const required = opportunity.required_profile_fields || [];
+                  const missing: string[] = [];
+                  required.forEach((field: string) => {
+                    switch (field) {
+                      case "university":
+                      case "current_institution":
+                        if (!localProfileForm.current_institution?.trim()) missing.push("Universidad / Institución");
+                        break;
+                      case "cv":
+                      case "cv_url":
+                        if (!localProfileForm.cv_url?.trim()) missing.push("Enlace a tu CV");
+                        break;
+                      case "expected_graduation_date":
+                      case "graduation_date":
+                        if (!localProfileForm.expected_graduation_date) missing.push("Fecha Estimada de Graduación");
+                        break;
+                      case "general_motivation_letter":
+                      case "motivation_letter":
+                        if (!localProfileForm.general_motivation_letter?.trim()) missing.push("Carta de Motivación General");
+                        break;
+                    }
+                  });
+
+                  if (missing.length > 0) {
+                    setApplyError(`Falta completar los campos requeridos por la organización: ${missing.join(", ")}`);
+                    return;
+                  }
+
+                  // Save profile to backend
+                  setPostulating(true);
+                  try {
+                    let updatedProfile;
+                    const cleanForm = {
+                      country: localProfileForm.country,
+                      city: localProfileForm.city,
+                      birth_date: localProfileForm.birth_date,
+                      phone: localProfileForm.phone,
+                      education_level: localProfileForm.education_level,
+                      current_institution: localProfileForm.current_institution || null,
+                      area: localProfileForm.area,
+                      english_level: localProfileForm.english_level,
+                      cv_url: localProfileForm.cv_url || null,
+                      expected_graduation_date: localProfileForm.expected_graduation_date || null,
+                      general_motivation_letter: localProfileForm.general_motivation_letter || null
+                    };
+
+                    if (profile) {
+                      updatedProfile = await updateProfile(cleanForm);
+                    } else {
+                      updatedProfile = await createProfile({
+                        ...cleanForm,
+                        interests: ["Voluntariados"],
+                        target_countries: ["Latinoamérica"],
+                        target_program_types: ["volunteering"],
+                        other_languages: [],
+                        work_experience: [],
+                        volunteer_experience: [],
+                        linkedin_url: null,
+                        portfolio_url: null,
+                        bio: null
+                      });
+                    }
+                    
+                    // Update user's name if changed
+                    if (localProfileForm.full_name && localProfileForm.full_name !== user?.displayName) {
+                      const updatedUser = await updateUser({ full_name: localProfileForm.full_name });
+                      if (user) {
+                        setUser({ ...user, displayName: updatedUser.full_name });
+                      }
+                    }
+
+                    setProfile(updatedProfile);
+                    
+                    if (steps.length > 1) {
+                      setApplyStep(prev => prev + 1);
+                    } else {
+                      await handleFinalSubmit();
+                    }
+                  } catch (err: any) {
+                    console.error("Error saving profile inside modal:", err);
+                    setApplyError(err.response?.data?.detail || "Hubo un error al guardar tu perfil. Revisa los datos.");
+                  } finally {
+                    setPostulating(false);
+                  }
                 } else if (currentStepName === "Preguntas") {
                   if (opportunity.custom_questions) {
                     const missing = opportunity.custom_questions
@@ -1091,7 +1096,11 @@ export default function OpportunityDetailPage() {
                       return;
                     }
                   }
-                  setApplyStep(prev => prev + 1);
+                  if (steps.includes("Documentos")) {
+                    setApplyStep(prev => prev + 1);
+                  } else {
+                    await handleFinalSubmit();
+                  }
                 } else if (currentStepName === "Documentos") {
                   if (opportunity.required_documents) {
                     const missing = opportunity.required_documents
@@ -1101,7 +1110,7 @@ export default function OpportunityDetailPage() {
                       return;
                     }
                   }
-                  handleFinalSubmit();
+                  await handleFinalSubmit();
                 }
               };
 
@@ -1134,42 +1143,186 @@ export default function OpportunityDetailPage() {
                   {currentStepName === "Perfil EDULAB" && (
                     <div className="space-y-4 animate-fadeIn">
                       <div className="bg-slate-50 p-5 rounded-2xl border border-gray-150 space-y-4">
-                        <h4 className="font-bold text-xs text-[#00135B] uppercase tracking-wider">Tus datos en EDULAB (Vista previa)</h4>
+                        <h4 className="font-bold text-xs text-[#00135B] uppercase tracking-wider">Completa / Edita tus Datos de Perfil</h4>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                          <div>
-                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Ubicación</span>
-                            <span className="text-slate-700 font-bold">{profile?.city}, {profile?.country}</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-left">
+                          
+                          {/* Full Name */}
+                          <div className="md:col-span-2 space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Nombre Completo <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={localProfileForm.full_name}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, full_name: e.target.value })}
+                              placeholder="Ej. Juan Pérez"
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
                           </div>
-                          <div>
-                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Contacto</span>
-                            <span className="text-slate-700 font-bold">{profile?.phone}</span>
+
+                          {/* Country */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              País <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={localProfileForm.country}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, country: e.target.value })}
+                              placeholder="Ej. Costa Rica"
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
                           </div>
-                          <div>
-                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Estudios / Carrera</span>
-                            <span className="text-slate-700 font-bold">{profile?.education_level} - {profile?.current_institution}</span>
+
+                          {/* City */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Ciudad <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={localProfileForm.city}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, city: e.target.value })}
+                              placeholder="Ej. San José"
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
                           </div>
-                          <div>
-                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Inglés</span>
-                            <span className="text-slate-700 font-bold">{profile?.english_level}</span>
+
+                          {/* Phone */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Teléfono <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                              type="tel"
+                              value={localProfileForm.phone}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, phone: e.target.value })}
+                              placeholder="Ej. +506 8888-8888"
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
                           </div>
-                          {profile?.cv_url && (
-                            <div className="md:col-span-2">
-                              <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">CV Adjunto</span>
-                              <a 
-                                href={profile.cv_url} 
-                                target="_blank" 
-                                rel="noreferrer" 
-                                className="text-[#5D8CE2] hover:underline font-bold"
-                              >
-                                Ver Currículum Vitae (CV) abrir en nueva pestaña &rarr;
-                              </a>
-                            </div>
-                          )}
+
+                          {/* Birth Date */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Fecha de Nacimiento <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                              type="date"
+                              value={localProfileForm.birth_date}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, birth_date: e.target.value })}
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
+                          </div>
+
+                          {/* Education Level */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Nivel de Educación <span className="text-rose-500">*</span>
+                            </label>
+                            <select
+                              value={localProfileForm.education_level}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, education_level: e.target.value })}
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            >
+                              {EDUCATION_OPTIONS.map((opt) => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* Area / Carrera */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Carrera / Área <span className="text-rose-500">*</span>
+                            </label>
+                            <select
+                              value={localProfileForm.area}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, area: e.target.value })}
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            >
+                              {AREA_OPTIONS.map((opt) => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* Current Institution */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Universidad / Institución {opportunity.required_profile_fields?.includes("university") || opportunity.required_profile_fields?.includes("current_institution") ? <span className="text-rose-500">*</span> : ""}
+                            </label>
+                            <input
+                              type="text"
+                              value={localProfileForm.current_institution}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, current_institution: e.target.value })}
+                              placeholder="Ej. Universidad de Costa Rica"
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
+                          </div>
+
+                          {/* English Level */}
+                          <div className="space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Nivel de Inglés <span className="text-rose-500">*</span>
+                            </label>
+                            <select
+                              value={localProfileForm.english_level}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, english_level: e.target.value })}
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            >
+                              {ENGLISH_OPTIONS.map((opt) => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* CV URL */}
+                          <div className="md:col-span-2 space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Enlace a tu CV (Google Drive/Dropbox) {opportunity.required_profile_fields?.includes("cv") || opportunity.required_profile_fields?.includes("cv_url") ? <span className="text-rose-500">*</span> : ""}
+                            </label>
+                            <input
+                              type="url"
+                              value={localProfileForm.cv_url}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, cv_url: e.target.value })}
+                              placeholder="Ej. https://drive.google.com/file/d/..."
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
+                          </div>
+
+                          {/* Graduation Date */}
+                          <div className="md:col-span-2 space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Fecha Estimada de Graduación {opportunity.required_profile_fields?.includes("expected_graduation_date") || opportunity.required_profile_fields?.includes("graduation_date") ? <span className="text-rose-500">*</span> : ""}
+                            </label>
+                            <input
+                              type="date"
+                              value={localProfileForm.expected_graduation_date}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, expected_graduation_date: e.target.value })}
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
+                          </div>
+
+                          {/* General Motivation Letter */}
+                          <div className="md:col-span-2 space-y-1">
+                            <label className="font-bold uppercase text-[9px] text-slate-400 block">
+                              Carta de Motivación General {opportunity.required_profile_fields?.includes("general_motivation_letter") || opportunity.required_profile_fields?.includes("motivation_letter") ? <span className="text-rose-500">*</span> : ""}
+                            </label>
+                            <textarea
+                              rows={3}
+                              value={localProfileForm.general_motivation_letter}
+                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, general_motivation_letter: e.target.value })}
+                              placeholder="Escribe tu carta de motivación..."
+                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all resize-none"
+                            />
+                          </div>
+
                         </div>
                       </div>
                       <p className="text-[11px] text-slate-400 italic">
-                        * Nota: Estos datos serán enviados de forma automática. Si deseas editarlos, cancela y actualiza tu perfil.
+                        * Nota: Los datos ingresados se guardarán automáticamente en tu **Perfil EDULAB** para futuras aplicaciones.
                       </p>
                     </div>
                   )}
