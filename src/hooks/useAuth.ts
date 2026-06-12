@@ -22,7 +22,7 @@ export const useAuth = () => {
             id: 0, // Fallback placeholder
             uid: firebaseUser.uid,
             email: firebaseUser.email || "",
-            role: (firebaseUser.email?.includes("admin") ? "admin" : "student") as "student" | "admin" | "reviewer",
+            role: (firebaseUser.email?.includes("admin") ? "admin" : "student") as any,
             is_active: true,
             displayName: firebaseUser.displayName,
             photoURL: firebaseUser.photoURL,

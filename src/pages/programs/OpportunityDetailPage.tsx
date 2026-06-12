@@ -104,7 +104,109 @@ interface ProgramDetail {
   video_url?: string;
   image_url?: string;
   is_demo?: boolean;
+  required_profile_fields?: string[];
+  custom_questions?: Array<{
+    id: string;
+    text: string;
+    type: "short_text" | "long_text" | "single_choice";
+    required?: boolean;
+    options?: string[];
+  }>;
+  required_documents?: string[];
 }
+
+const checkMissingFields = (profile: StudentProfileResponse | null, requiredFields?: string[]) => {
+  if (!requiredFields || requiredFields.length === 0) return [];
+  if (!profile) return requiredFields;
+
+  const missing: string[] = [];
+  requiredFields.forEach((field) => {
+    switch (field) {
+      case "phone":
+        if (!profile.phone?.trim()) missing.push("phone");
+        break;
+      case "country":
+        if (!profile.country?.trim()) missing.push("country");
+        break;
+      case "city":
+        if (!profile.city?.trim()) missing.push("city");
+        break;
+      case "birth_date":
+        if (!profile.birth_date) missing.push("birth_date");
+        break;
+      case "education_level":
+        if (!profile.education_level?.trim()) missing.push("education_level");
+        break;
+      case "current_institution":
+      case "university":
+        if (!profile.current_institution?.trim()) missing.push("university");
+        break;
+      case "area":
+      case "carrera":
+        if (!profile.area?.trim()) missing.push("carrera");
+        break;
+      case "english_level":
+      case "languages":
+      case "idiomas":
+        if (!profile.english_level?.trim()) missing.push("languages");
+        break;
+      case "cv":
+      case "cv_url":
+        if (!profile.cv_url?.trim()) missing.push("cv");
+        break;
+      case "expected_graduation_date":
+      case "graduation_date":
+        if (!profile.expected_graduation_date) missing.push("expected_graduation_date");
+        break;
+      case "work_experience":
+      case "laboral":
+        if (!profile.work_experience || profile.work_experience.length === 0) missing.push("work_experience");
+        break;
+      case "volunteer_experience":
+      case "voluntaria":
+        if (!profile.volunteer_experience || profile.volunteer_experience.length === 0) missing.push("volunteer_experience");
+        break;
+      case "general_motivation_letter":
+      case "motivation_letter":
+        if (!profile.general_motivation_letter?.trim()) missing.push("motivation_letter");
+        break;
+      default:
+        const val = (profile as any)[field];
+        if (!val || (typeof val === "string" && !val.trim()) || (Array.isArray(val) && val.length === 0)) {
+          missing.push(field);
+        }
+    }
+  });
+  return missing;
+};
+
+const getFieldLabel = (field: string) => {
+  switch (field) {
+    case "phone": return "Teléfono";
+    case "country": return "País de residencia";
+    case "city": return "Ciudad";
+    case "birth_date": return "Fecha de nacimiento";
+    case "education_level": return "Nivel de educación";
+    case "university":
+    case "current_institution": return "Universidad / Institución";
+    case "carrera":
+    case "area": return "Carrera / Área";
+    case "languages":
+    case "idiomas":
+    case "english_level": return "Idiomas (Inglés)";
+    case "cv":
+    case "cv_url": return "Currículum Vitae (CV)";
+    case "expected_graduation_date":
+    case "graduation_date": return "Fecha de Graduación";
+    case "work_experience":
+    case "laboral": return "Experiencia Laboral";
+    case "volunteer_experience":
+    case "voluntaria": return "Experiencia Voluntaria";
+    case "general_motivation_letter":
+    case "motivation_letter": return "Carta de Motivación General";
+    default: return field;
+  }
+};
 
 export default function OpportunityDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -136,6 +238,15 @@ export default function OpportunityDetailPage() {
   const [postulating, setPostulating] = useState(false);
   const [shareToast, setShareToast] = useState(false);
   const [showVideoPopup, setShowVideoPopup] = useState(false);
+
+  // Multi-step postulation states
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [missingProfileFields, setMissingProfileFields] = useState<string[]>([]);
+  const [showMissingFieldsModal, setShowMissingFieldsModal] = useState(false);
+  const [applyStep, setApplyStep] = useState(1);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [uploadedDocs, setUploadedDocs] = useState<Record<string, string>>({});
+  const [applyError, setApplyError] = useState<string | null>(null);
 
   // Load Opportunity Data
   useEffect(() => {
@@ -252,15 +363,78 @@ export default function OpportunityDetailPage() {
     }
     if (!opportunity) return;
 
+    // Check profile completeness for the fields required by this opportunity
+    const required = opportunity.required_profile_fields || [];
+    const missing = checkMissingFields(profile, required);
+    
+    if (missing.length > 0) {
+      setMissingProfileFields(missing);
+      setShowMissingFieldsModal(true);
+      return;
+    }
+
+    // Initialize custom questions answers and document uploads state
+    const initialAnswersObj: Record<string, string> = {};
+    if (opportunity.custom_questions) {
+      opportunity.custom_questions.forEach((q) => {
+        initialAnswersObj[q.id] = "";
+      });
+    }
+    const initialDocs: Record<string, string> = {};
+    if (opportunity.required_documents) {
+      opportunity.required_documents.forEach((d) => {
+        initialDocs[d] = "";
+      });
+    }
+    setAnswers(initialAnswersObj);
+    setUploadedDocs(initialDocs);
+    setApplyStep(1);
+    setApplyError(null);
+    setShowApplyModal(true);
+  };
+
+  const handleFinalSubmit = async () => {
+    if (!opportunity) return;
+    
+    // Client-side validations
+    if (opportunity.custom_questions) {
+      const missingQs = opportunity.custom_questions
+        .filter((q) => q.required && !answers[q.id]?.trim())
+        .map((q) => q.text);
+      if (missingQs.length > 0) {
+        setApplyError(`Debes responder a las siguientes preguntas obligatorias: ${missingQs.join(", ")}`);
+        return;
+      }
+    }
+
+    if (opportunity.required_documents) {
+      const missingDocs = opportunity.required_documents
+        .filter((doc) => !uploadedDocs[doc]?.trim());
+      if (missingDocs.length > 0) {
+        setApplyError(`Falta subir los siguientes documentos obligatorios: ${missingDocs.map(d => d.toUpperCase()).join(", ")}`);
+        return;
+      }
+    }
+
     setPostulating(true);
+    setApplyError(null);
     try {
-      // POST application to backend (status will default to "started")
-      await axiosClient.post("/applications/", { program_id: opportunity.id });
+      const answersList = Object.entries(answers).map(([qid, ans]) => ({
+        question_id: qid,
+        answer: ans
+      }));
+
+      await axiosClient.post("/applications/", {
+        program_id: opportunity.id,
+        answers: answersList,
+        uploaded_documents: uploadedDocs
+      });
+
+      setShowApplyModal(false);
       setShowPostulationModal(true);
-    } catch (err) {
-      console.error("Failed to start postulation in backend:", err);
-      // Fallback show modal if backend has offline sync issues
-      setShowPostulationModal(true);
+    } catch (err: any) {
+      console.error(err);
+      setApplyError(err.response?.data?.detail || "Hubo un error al enviar tu postulación. Revisa los datos.");
     } finally {
       setPostulating(false);
     }
@@ -324,9 +498,6 @@ export default function OpportunityDetailPage() {
       </div>
     );
   }
-
-  const completionPercent = profile ? profile.profile_completion : 0;
-  const isProfileComplete = completionPercent === 100;
 
   return (
     <div className="w-full min-h-screen bg-[#f8fafc] text-slate-700 flex flex-col justify-between overflow-x-hidden pt-20">
@@ -826,6 +997,292 @@ export default function OpportunityDetailPage() {
         initialMode={authModalMode} 
       />
 
+      {/* MISSING FIELDS ALERT MODAL */}
+      {showMissingFieldsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-md bg-white p-8 rounded-3xl border border-gray-200 shadow-2xl relative space-y-6 text-left animate-scaleUp">
+            <button 
+              onClick={() => setShowMissingFieldsModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none animate-fadeIn"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-250 flex items-center justify-center text-amber-600 mx-auto shadow-sm">
+                <AlertTriangle className="w-8 h-8 text-amber-500 animate-bounce" />
+              </div>
+              <h3 className="font-display font-extrabold text-xl text-[#00135B]">
+                Perfil Incompleto
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
+                Esta oportunidad requiere que tengas completados ciertos campos clave en tu **Perfil EDULAB**.
+              </p>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl space-y-2">
+              <p className="text-xs font-bold text-amber-800">Campos obligatorios faltantes:</p>
+              <ul className="list-disc pl-5 text-xs text-amber-700 font-semibold space-y-1">
+                {missingProfileFields.map((field) => (
+                  <li key={field}>{getFieldLabel(field)}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                onClick={() => {
+                  setShowMissingFieldsModal(false);
+                  navigate("/profile");
+                }}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:opacity-95 text-white font-extrabold text-xs tracking-wider transition-all duration-200 cursor-pointer active:scale-95 text-center border-none shadow-sm"
+              >
+                Completar Perfil
+              </button>
+              <button
+                onClick={() => setShowMissingFieldsModal(false)}
+                className="flex-1 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-gray-200 text-xs font-bold text-slate-500 transition-all duration-200 cursor-pointer active:scale-95"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MULTI-STEP POSTULATION FORM MODAL */}
+      {showApplyModal && opportunity && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl bg-white p-8 rounded-3xl border border-gray-200 shadow-2xl relative space-y-6 text-left animate-scaleUp max-h-[90vh] overflow-y-auto">
+            <button 
+              onClick={() => setShowApplyModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div>
+              <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Formulario de Aplicación</span>
+              <h3 className="font-display font-extrabold text-xl text-[#00135B] mt-1">
+                Postular a {opportunity.title}
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">Llene los requisitos específicos de esta oportunidad.</p>
+            </div>
+
+            {/* Stepper Indicators */}
+            {(() => {
+              const steps: string[] = ["Perfil EDULAB"];
+              if (opportunity.custom_questions && opportunity.custom_questions.length > 0) steps.push("Preguntas");
+              if (opportunity.required_documents && opportunity.required_documents.length > 0) steps.push("Documentos");
+              
+              const currentStepName = steps[applyStep - 1];
+
+              const validateAndNext = () => {
+                setApplyError(null);
+                if (currentStepName === "Perfil EDULAB") {
+                  setApplyStep(prev => prev + 1);
+                } else if (currentStepName === "Preguntas") {
+                  if (opportunity.custom_questions) {
+                    const missing = opportunity.custom_questions
+                      .filter(q => q.required && !answers[q.id]?.trim());
+                    if (missing.length > 0) {
+                      setApplyError(`Falta responder las preguntas marcadas con asterisco.`);
+                      return;
+                    }
+                  }
+                  setApplyStep(prev => prev + 1);
+                } else if (currentStepName === "Documentos") {
+                  if (opportunity.required_documents) {
+                    const missing = opportunity.required_documents
+                      .filter(d => !uploadedDocs[d]?.trim());
+                    if (missing.length > 0) {
+                      setApplyError(`Debes ingresar la URL de todos los documentos solicitados.`);
+                      return;
+                    }
+                  }
+                  handleFinalSubmit();
+                }
+              };
+
+              return (
+                <div className="space-y-6">
+                  {/* Visual Stepper */}
+                  <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
+                    {steps.map((st, idx) => (
+                      <div key={st} className="flex items-center gap-2">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                          applyStep === idx + 1 
+                            ? "bg-[#00135B] text-white" 
+                            : applyStep > idx + 1 
+                              ? "bg-emerald-500 text-white" 
+                              : "bg-slate-100 text-slate-400"
+                        }`}>
+                          {idx + 1}
+                        </div>
+                        <span className={`text-xs font-bold ${
+                          applyStep === idx + 1 ? "text-[#00135B]" : "text-slate-400"
+                        }`}>
+                          {st}
+                        </span>
+                        {idx < steps.length - 1 && <span className="text-slate-300 text-xs">/</span>}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Active Step Content */}
+                  {currentStepName === "Perfil EDULAB" && (
+                    <div className="space-y-4 animate-fadeIn">
+                      <div className="bg-slate-50 p-5 rounded-2xl border border-gray-150 space-y-4">
+                        <h4 className="font-bold text-xs text-[#00135B] uppercase tracking-wider">Tus datos en EDULAB (Vista previa)</h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                          <div>
+                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Ubicación</span>
+                            <span className="text-slate-700 font-bold">{profile?.city}, {profile?.country}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Contacto</span>
+                            <span className="text-slate-700 font-bold">{profile?.phone}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Estudios / Carrera</span>
+                            <span className="text-slate-700 font-bold">{profile?.education_level} - {profile?.current_institution}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">Inglés</span>
+                            <span className="text-slate-700 font-bold">{profile?.english_level}</span>
+                          </div>
+                          {profile?.cv_url && (
+                            <div className="md:col-span-2">
+                              <span className="text-slate-400 font-semibold uppercase tracking-wider block text-[10px]">CV Adjunto</span>
+                              <a 
+                                href={profile.cv_url} 
+                                target="_blank" 
+                                rel="noreferrer" 
+                                className="text-[#5D8CE2] hover:underline font-bold"
+                              >
+                                Ver Currículum Vitae (CV) abrir en nueva pestaña &rarr;
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-slate-400 italic">
+                        * Nota: Estos datos serán enviados de forma automática. Si deseas editarlos, cancela y actualiza tu perfil.
+                      </p>
+                    </div>
+                  )}
+
+                  {currentStepName === "Preguntas" && (
+                    <div className="space-y-4 animate-fadeIn text-left">
+                      {opportunity.custom_questions?.map((q) => (
+                        <div key={q.id} className="space-y-2">
+                          <label className="text-xs font-bold text-[#00135B] uppercase tracking-wider flex items-center gap-1">
+                            <span>{q.text}</span>
+                            {q.required && <span className="text-rose-500">*</span>}
+                          </label>
+                          
+                          {q.type === "long_text" ? (
+                            <textarea
+                              rows={3}
+                              value={answers[q.id] || ""}
+                              onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                              placeholder="Escribe tu respuesta aquí..."
+                              className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all resize-none"
+                            />
+                          ) : q.type === "single_choice" ? (
+                            <select
+                              value={answers[q.id] || ""}
+                              onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                              className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all bg-white"
+                            >
+                              <option value="">Selecciona una opción...</option>
+                              {q.options?.map((opt) => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type="text"
+                              value={answers[q.id] || ""}
+                              onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                              placeholder="Escribe tu respuesta corta..."
+                              className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {currentStepName === "Documentos" && (
+                    <div className="space-y-4 animate-fadeIn text-left">
+                      <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl text-xs text-[#00135B]">
+                        💡 Sube tus documentos a una nube pública (Google Drive, OneDrive, Dropbox, etc.) y pega los enlaces a continuación. Asegúrate de dar permisos de lectura.
+                      </div>
+                      {opportunity.required_documents?.map((d) => (
+                        <div key={d} className="space-y-2">
+                          <label className="text-xs font-bold text-[#00135B] uppercase tracking-wider flex items-center gap-1">
+                            <span>{d}</span>
+                            <span className="text-rose-500">*</span>
+                          </label>
+                          <input
+                            type="url"
+                            value={uploadedDocs[d] || ""}
+                            onChange={(e) => setUploadedDocs({ ...uploadedDocs, [d]: e.target.value })}
+                            placeholder="Ej. https://drive.google.com/file/d/..."
+                            className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Error display */}
+                  {applyError && (
+                    <div className="bg-rose-50 border border-rose-200 text-rose-600 p-3.5 rounded-xl text-xs font-semibold">
+                      {applyError}
+                    </div>
+                  )}
+
+                  {/* Buttons Row */}
+                  <div className="border-t border-gray-150 pt-5 flex justify-between gap-4">
+                    <button
+                      type="button"
+                      disabled={applyStep === 1}
+                      onClick={() => setApplyStep(prev => prev - 1)}
+                      className="px-5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold hover:bg-slate-50 text-slate-500 transition-colors disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                    >
+                      Anterior
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={postulating}
+                      onClick={validateAndNext}
+                      className="bg-[#00135B] hover:bg-[#0d288c] text-white font-extrabold text-xs px-6 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                    >
+                      {postulating ? (
+                        <>
+                          <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent"></div>
+                          <span>Enviando...</span>
+                        </>
+                      ) : applyStep === steps.length ? (
+                        <span>Enviar Postulación</span>
+                      ) : (
+                        <span>Siguiente</span>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+
+          </div>
+        </div>
+      )}
+
       {/* POSTULATION SUCCESS MODAL */}
       {showPostulationModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
@@ -846,51 +1303,19 @@ export default function OpportunityDetailPage() {
               </div>
               
               <h3 className="font-display font-extrabold text-xl text-[#00135B]">
-                ¡Postulación Iniciada!
+                ¡Postulación Recibida!
               </h3>
               
               <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
-                Tu intención de postular al **{opportunity.title}** ha sido registrada con éxito en EDULAB con estado <span className="font-bold text-[#5D8CE2]">started</span>.
+                Tu postulación al **{opportunity.title}** ha sido registrada con éxito en EDULAB con estado <span className="font-extrabold text-emerald-600">PENDING</span>.
               </p>
             </div>
 
-            {/* Profile incompleteness alert */}
-            {!isProfileComplete ? (
-              <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl space-y-2">
-                <h4 className="font-bold text-xs text-amber-800 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 animate-pulse shrink-0" />
-                  <span>Perfil Académico Incompleto ({completionPercent}%)</span>
-                </h4>
-                <p className="text-[10px] text-amber-700 leading-relaxed font-semibold">
-                  Debes completar tu perfil académico estratégico al 100% en la sección 'Mi Perfil' para que nuestro equipo pueda validar tu postulación final y desbloquear el envío definitivo al socio internacional.
-                </p>
-              </div>
-            ) : (
-              <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <p className="text-[10px] text-emerald-700 font-semibold">
-                  ¡Tu perfil está completado al 100%! Nuestro equipo revisará tus detalles y te contactará en breve.
-                </p>
-              </div>
-            )}
-
-            {/* Next steps list */}
-            <div className="space-y-2">
-              <span className="text-[9px] text-[#5D8CE2] uppercase font-bold tracking-wider">Próximos Pasos</span>
-              <ul className="space-y-2 text-xs font-semibold text-slate-600">
-                <li className="flex items-center gap-2 text-emerald-600">
-                  <Check className="w-4 h-4 shrink-0" />
-                  <span>Intención de postulación iniciada</span>
-                </li>
-                <li className={`flex items-center gap-2 ${isProfileComplete ? "text-emerald-600" : "text-slate-400"}`}>
-                  {isProfileComplete ? <Check className="w-4 h-4 shrink-0" /> : <div className="w-4 h-4 rounded-full border border-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-400 shrink-0">2</div>}
-                  <span>Completar perfil al 100%</span>
-                </li>
-                <li className="flex items-center gap-2 text-slate-400">
-                  <div className="w-4 h-4 rounded-full border border-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-400 shrink-0">3</div>
-                  <span>Generar carta de motivación con IA</span>
-                </li>
-              </ul>
+            <div className="bg-emerald-50 border border-emerald-250 p-4 rounded-2xl flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <p className="text-[10px] text-emerald-700 font-semibold leading-relaxed">
+                El equipo del programa y de la organización revisarán tus respuestas y tu Perfil EDULAB. Te enviaremos notificaciones internas y por correo cuando cambie el estado de tu postulación.
+              </p>
             </div>
 
             {/* Actions Button Group */}
@@ -898,19 +1323,9 @@ export default function OpportunityDetailPage() {
               <button
                 onClick={() => {
                   setShowPostulationModal(false);
-                  navigate("/profile");
-                }}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:opacity-95 text-white font-extrabold text-xs tracking-wider transition-all duration-200 cursor-pointer active:scale-95 text-center border-none shadow-sm"
-              >
-                Completar Perfil
-              </button>
-              
-              <button
-                onClick={() => {
-                  setShowPostulationModal(false);
                   navigate("/dashboard");
                 }}
-                className="flex-1 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-gray-200 text-xs font-bold text-slate-500 transition-all duration-200 cursor-pointer active:scale-95"
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:opacity-95 text-white font-extrabold text-xs tracking-wider transition-all duration-200 cursor-pointer active:scale-95 text-center border-none shadow-sm"
               >
                 Ir a mi Panel
               </button>

@@ -21,12 +21,17 @@ export default function Sidebar({ isOpen }: SidebarProps) {
     window.location.href = "/";
   };
 
-  const navItems = [
-    { name: "Panel Control", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Programas", path: "/programs", icon: Globe },
-    { name: "IA Asistente", path: "/ai-tools", icon: BrainCircuit },
-    { name: "Mi Perfil", path: "/profile", icon: User },
-  ];
+  const navItems = user?.role === "organization"
+    ? [
+        { name: "Panel Control", path: "/dashboard", icon: LayoutDashboard },
+        { name: "Perfil Org", path: "/profile", icon: User },
+      ]
+    : [
+        { name: "Panel Control", path: "/dashboard", icon: LayoutDashboard },
+        { name: "Programas", path: "/programs", icon: Globe },
+        { name: "IA Asistente", path: "/ai-tools", icon: BrainCircuit },
+        { name: "Mi Perfil", path: "/profile", icon: User },
+      ];
 
   return (
     <aside 

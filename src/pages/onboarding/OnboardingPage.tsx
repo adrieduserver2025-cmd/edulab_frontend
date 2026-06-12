@@ -32,7 +32,7 @@ export default function OnboardingPage() {
         {/* Heading Content */}
         <div className="space-y-3">
           <h1 className="font-display font-extrabold text-3xl tracking-wide text-[#00135B]">
-            Completa tu perfil académico
+            Completa tu perfil EDULAB
           </h1>
           <p className="text-sm text-slate-400 leading-relaxed max-w-md mx-auto font-medium">
             Tu perfil nos ayudará a encontrar becas, intercambios, voluntariados y oportunidades estratégicas que coincidan exactamente con tus objetivos académicos y profesionales.
@@ -59,7 +59,7 @@ export default function OnboardingPage() {
 
         {/* Tip Badge */}
         <div className="pt-2 text-[11px] text-slate-400 italic">
-          💡 Puedes postular a las oportunidades en cualquier momento una vez alcances el 100% de completitud.
+          💡 Puedes postular a las oportunidades en cualquier momento completando el perfil mínimo requerido por el programa.
         </div>
       </div>
     </div>

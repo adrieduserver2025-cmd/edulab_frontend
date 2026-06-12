@@ -125,7 +125,7 @@ export default function LandingPage({ initialAuthMode }: LandingPageProps) {
   const aiFeatures = [
     {
       title: "Matching Inteligente",
-      desc: "Nuestro algoritmo de IA analiza tu perfil académico y encuentra las oportunidades con mayor probabilidad de éxito.",
+      desc: "Nuestro algoritmo de IA analiza tu perfil EDULAB y encuentra las oportunidades con mayor probabilidad de éxito.",
       icon: Target,
       badge: "94% de precisión",
       color: "bg-[#3b82f6]"
@@ -169,12 +169,90 @@ export default function LandingPage({ initialAuthMode }: LandingPageProps) {
 
   // 6 Steps Data with Color-Matched styling
   const steps = [
-    { num: "01", title: "Completa tu perfil", desc: "Registra tus notas, idiomas y preferencias académicas de forma sencilla.", icon: UserPlus, borderColor: "border-[#0ea5e9]/40", textColor: "text-[#0ea5e9]", iconBg: "bg-[#0ea5e9]/10" },
-    { num: "02", title: "La IA analiza tus fortalezas", desc: "Nuestros algoritmos de IA mapean tu perfil contra estándares globales.", icon: Sparkles, borderColor: "border-[#ec4899]/40", textColor: "text-[#ec4899]", iconBg: "bg-[#ec4899]/10" },
-    { num: "03", title: "Encuentra oportunidades compatibles", desc: "Accede instantáneamente a becas y voluntariados 100% compatibles contigo.", icon: Search, borderColor: "border-[#f59e0b]/40", textColor: "text-[#f59e0b]", iconBg: "bg-[#f59e0b]/10" },
-    { num: "04", title: "Optimiza tus documentos", desc: "Adapta tu currículum y genera cartas persuasivas guiado por copilotos IA.", icon: FileCheck, borderColor: "border-[#10b981]/40", textColor: "text-[#10b981]", iconBg: "bg-[#10b981]/10" },
-    { num: "05", title: "Prepárate para entrevistas", desc: "Simula cuestionarios interactivos por audio y texto con feedback real.", icon: MessageSquare, borderColor: "border-[#8b5cf6]/40", textColor: "text-[#8b5cf6]", iconBg: "bg-[#8b5cf6]/10" },
-    { num: "06", title: "Postula estratégicamente", desc: "Completa tus aplicaciones con un perfil robusto y seguimiento en tiempo real.", icon: Send, borderColor: "border-[#fb7185]/40", textColor: "text-[#fb7185]", iconBg: "bg-[#fb7185]/10" }
+    {
+      num: "01",
+      title: "Completa tu perfil",
+      desc: "Registra tus notas, idiomas y preferencias académicas de forma sencilla.",
+      icon: UserPlus,
+      borderColor: "border-[#0ea5e9]/20 hover:border-[#0ea5e9]/50",
+      textColor: "text-[#0ea5e9]",
+      iconBg: "bg-[#0ea5e9]/10",
+      image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=80",
+      overlay: "from-slate-950/95 via-[#0c243d]/85 to-transparent",
+      tags: ["PERFIL", "REGISTRO"],
+      hoverShadow: "hover:shadow-sky-500/20",
+      glowBg: "bg-sky-500"
+    },
+    {
+      num: "02",
+      title: "La IA analiza tus fortalezas",
+      desc: "Nuestros algoritmos de IA mapean tu perfil contra estándares globales.",
+      icon: Sparkles,
+      borderColor: "border-[#ec4899]/20 hover:border-[#ec4899]/50",
+      textColor: "text-[#ec4899]",
+      iconBg: "bg-[#ec4899]/10",
+      image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80",
+      overlay: "from-slate-950/95 via-[#300c24]/85 to-transparent",
+      tags: ["IA CO-PILOT", "ANÁLISIS"],
+      hoverShadow: "hover:shadow-pink-500/20",
+      glowBg: "bg-pink-500"
+    },
+    {
+      num: "03",
+      title: "Encuentra oportunidades compatibles",
+      desc: "Accede instantáneamente a becas y voluntariados 100% compatibles contigo.",
+      icon: Search,
+      borderColor: "border-[#f59e0b]/20 hover:border-[#f59e0b]/50",
+      textColor: "text-[#f59e0b]",
+      iconBg: "bg-[#f59e0b]/10",
+      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&auto=format&fit=crop&q=80",
+      overlay: "from-slate-950/95 via-[#291708]/85 to-transparent",
+      tags: ["MATCHING", "BECAS"],
+      hoverShadow: "hover:shadow-amber-500/20",
+      glowBg: "bg-amber-500"
+    },
+    {
+      num: "04",
+      title: "Optimiza tus documentos",
+      desc: "Adapta tu currículum y genera cartas persuasivas guiado por copilotos IA.",
+      icon: FileCheck,
+      borderColor: "border-[#10b981]/20 hover:border-[#10b981]/50",
+      textColor: "text-[#10b981]",
+      iconBg: "bg-[#10b981]/10",
+      image: "https://images.unsplash.com/photo-1450133064473-71024230f91b?w=800&auto=format&fit=crop&q=80",
+      overlay: "from-slate-950/95 via-[#0b2417]/85 to-transparent",
+      tags: ["CV Y CARTAS", "OPTIMIZACIÓN"],
+      hoverShadow: "hover:shadow-emerald-500/20",
+      glowBg: "bg-emerald-500"
+    },
+    {
+      num: "05",
+      title: "Prepárate para entrevistas",
+      desc: "Simula cuestionarios interactivos por audio y texto con feedback real.",
+      icon: MessageSquare,
+      borderColor: "border-[#8b5cf6]/20 hover:border-[#8b5cf6]/50",
+      textColor: "text-[#8b5cf6]",
+      iconBg: "bg-[#8b5cf6]/10",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&auto=format&fit=crop&q=80",
+      overlay: "from-slate-950/95 via-[#1d0a2e]/85 to-transparent",
+      tags: ["SIMULADOR", "ENTREVISTAS"],
+      hoverShadow: "hover:shadow-purple-500/20",
+      glowBg: "bg-purple-500"
+    },
+    {
+      num: "06",
+      title: "Postula estratégicamente",
+      desc: "Completa tus aplicaciones con un perfil robusto y seguimiento en tiempo real.",
+      icon: Send,
+      borderColor: "border-[#fb7185]/20 hover:border-[#fb7185]/50",
+      textColor: "text-[#fb7185]",
+      iconBg: "bg-[#fb7185]/10",
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80",
+      overlay: "from-slate-950/95 via-[#330c15]/85 to-transparent",
+      tags: ["APLICACIÓN", "POSTULACIÓN"],
+      hoverShadow: "hover:shadow-rose-500/20",
+      glowBg: "bg-rose-500"
+    }
   ];
 
   // 6 Testimonials Data
@@ -584,23 +662,53 @@ export default function LandingPage({ initialAuthMode }: LandingPageProps) {
                   >
                     {/* Left/Right Container with color-matched borders */}
                     <div className="w-1/2 px-8 max-md:w-full max-md:pl-12 max-md:pr-0">
-                      <div className={`p-6 rounded-[20px] ${step.borderColor} border bg-[#f0f4f8]/30 shadow-sm text-left space-y-3 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-start gap-4`}>
-                        <div className={`w-10 h-10 rounded-xl ${step.iconBg} flex items-center justify-center shrink-0`}>
-                          <Icon className={`w-5 h-5 ${step.textColor}`} />
+                      <div className={`relative overflow-hidden rounded-[24px] border ${step.borderColor} min-h-[200px] flex flex-col justify-end p-6 shadow-sm ${step.hoverShadow} hover:-translate-y-1 transition-all duration-300 group cursor-pointer`}>
+                        {/* Background Image */}
+                        <div className="absolute inset-0 z-0">
+                          <img 
+                            src={step.image} 
+                            alt={step.title} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          {/* Colored Gradient Overlay */}
+                          <div className={`absolute inset-0 bg-gradient-to-t ${step.overlay}`} />
                         </div>
-                        <div className="space-y-1">
-                          <h4 className="font-display font-extrabold text-base text-[#00135B]">
-                            <span className={`font-display font-extrabold text-lg mr-2 ${step.textColor}`}>{step.num}</span>
-                            {step.title}
-                          </h4>
-                          <p className="text-xs text-gray-500 font-medium leading-relaxed">{step.desc}</p>
+
+                        {/* Top Badges */}
+                        <div className="flex flex-wrap gap-1.5 absolute top-5 left-5 z-10">
+                          <span className="bg-white/95 text-[#00135B] text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider shadow-sm">
+                            Paso {step.num}
+                          </span>
+                          {step.tags.map((tag, tIdx) => (
+                            <span 
+                              key={tIdx} 
+                              className="bg-black/30 backdrop-blur-md text-white border border-white/10 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Content */}
+                        <div className="relative z-10 flex items-start gap-4 mt-12">
+                          <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0 shadow-sm">
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="space-y-1">
+                            <h4 className="font-display font-extrabold text-base text-white tracking-wide">
+                              {step.title}
+                            </h4>
+                            <p className="text-xs text-slate-200/90 font-medium leading-relaxed">
+                              {step.desc}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Timeline Node dot */}
-                    <div className="absolute left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-white border-4 border-[#00135B] flex items-center justify-center z-10 shadow-sm max-md:left-4 max-md:-translate-x-0">
-                      <div className="w-2 h-2 bg-[#F5C542] rounded-full"></div>
+                    <div className="absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white border-4 border-[#00135B] flex items-center justify-center z-10 shadow-md max-md:left-4 max-md:-translate-x-0 transition-transform duration-300 hover:scale-110">
+                      <div className={`w-3 h-3 ${step.glowBg} rounded-full animate-pulse`}></div>
                     </div>
 
                     {/* Empty Space */}

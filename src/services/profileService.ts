@@ -17,6 +17,10 @@ export interface StudentProfileData {
   portfolio_url: string | null;
   bio: string | null;
   cv_url: string | null;
+  expected_graduation_date: string | null;
+  work_experience: any[] | null;
+  volunteer_experience: any[] | null;
+  general_motivation_letter: string | null;
 }
 
 export interface StudentProfileResponse extends StudentProfileData {
