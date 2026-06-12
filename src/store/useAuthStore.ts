@@ -5,7 +5,7 @@ import { auth } from "../firebase/config";
 interface UserProfile {
   id: number | string;
   email: string;
-  role: "student" | "admin" | "reviewer";
+  role: "student" | "admin" | "reviewer" | "organization" | "organization_pending";
   is_active: boolean;
   displayName?: string | null;
   photoURL?: string | null;

@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { getMyProfile, createProfile, updateProfile } from "../../services/profileService";
 import type { StudentProfileData, StudentProfileResponse } from "../../services/profileService";
+import { useAuthStore } from "../../store/useAuthStore";
+import axiosClient from "../../services/api/axiosClient";
+import { Building2, Globe, MapPin, User as UserIcon, Phone, Mail, FileText, CheckCircle2, ShieldAlert } from "lucide-react";
 
 export default function ProfilePage() {
+  const user = useAuthStore((state) => state.user);
+
+  if (user?.role === "organization") {
+    return <OrganizationProfileEditor />;
+  }
 
   // Profile state
   const [profile, setProfile] = useState<StudentProfileResponse | null>(null);
@@ -31,11 +39,52 @@ export default function ProfilePage() {
     linkedin_url: "",
     portfolio_url: "",
     bio: "",
-    cv_url: ""
+    cv_url: "",
+    expected_graduation_date: "",
+    work_experience: [],
+    volunteer_experience: [],
+    general_motivation_letter: ""
   });
 
   // Auxiliary state for adding languages
   const [newLanguage, setNewLanguage] = useState("");
+
+  const [tempWork, setTempWork] = useState({ company: "", position: "", start_date: "", end_date: "", description: "" });
+  const [tempVolunteer, setTempVolunteer] = useState({ organization: "", role: "", start_date: "", end_date: "", description: "" });
+
+  const handleAddWork = () => {
+    if (tempWork.company.trim() && tempWork.position.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        work_experience: [...(prev.work_experience || []), tempWork]
+      }));
+      setTempWork({ company: "", position: "", start_date: "", end_date: "", description: "" });
+    }
+  };
+
+  const handleRemoveWork = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      work_experience: (prev.work_experience || []).filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleAddVolunteer = () => {
+    if (tempVolunteer.organization.trim() && tempVolunteer.role.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        volunteer_experience: [...(prev.volunteer_experience || []), tempVolunteer]
+      }));
+      setTempVolunteer({ organization: "", role: "", start_date: "", end_date: "", description: "" });
+    }
+  };
+
+  const handleRemoveVolunteer = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      volunteer_experience: (prev.volunteer_experience || []).filter((_, i) => i !== index)
+    }));
+  };
 
   // Load existing profile from backend on mount
   useEffect(() => {
@@ -61,7 +110,11 @@ export default function ProfilePage() {
             linkedin_url: data.linkedin_url || "",
             portfolio_url: data.portfolio_url || "",
             bio: data.bio || "",
-            cv_url: data.cv_url || ""
+            cv_url: data.cv_url || "",
+            expected_graduation_date: data.expected_graduation_date || "",
+            work_experience: data.work_experience || [],
+            volunteer_experience: data.volunteer_experience || [],
+            general_motivation_letter: data.general_motivation_letter || ""
           });
         }
       } catch (err: any) {
@@ -212,7 +265,7 @@ export default function ProfilePage() {
       console.error(err);
       setErrorMsg(
         err.response?.data?.detail ||
-        "Hubo un error al guardar tu perfil académico. Revisa los datos ingresados."
+        "Hubo un error al guardar tu perfil EDULAB. Revisa los datos ingresados."
       );
     } finally {
       setIsSaving(false);
@@ -282,7 +335,7 @@ export default function ProfilePage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-white space-y-4">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
-        <p className="text-gray-400 text-sm">Cargando tu perfil académico estratégico...</p>
+        <p className="text-gray-400 text-sm">Cargando tu perfil EDULAB...</p>
       </div>
     );
   }
@@ -295,7 +348,7 @@ export default function ProfilePage() {
       <div className="border-b border-gray-200 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="font-display font-extrabold text-3xl text-[#00135B]">
-            Perfil Académico Estratégico
+            Perfil EDULAB
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Completa tu perfil para recibir emparejamientos inteligentes con convocatorias internacionales.
@@ -497,6 +550,17 @@ export default function ProfilePage() {
                       className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
                     />
                   </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Fecha Estimada de Graduación</label>
+                    <input
+                      type="date"
+                      name="expected_graduation_date"
+                      value={formData.expected_graduation_date || ""}
+                      onChange={handleInputChange}
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -655,12 +719,12 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* STEP 5: LINKS AND CV */}
+            {/* STEP 5: LINKS, CV & EXPERIENCES */}
             {currentStep === 5 && (
               <div className="space-y-6 animate-fadeIn">
                 <div className="border-b border-gray-100 pb-3">
-                  <h2 className="text-xl font-bold font-display text-[#00135B]">5. Enlaces y Currículum</h2>
-                  <p className="text-xs text-slate-400 mt-1">Completa tu perfil agregando enlaces a tus portafolios y redes profesionales.</p>
+                  <h2 className="text-xl font-bold font-display text-[#00135B]">5. Enlaces, Experiencia y Carta</h2>
+                  <p className="text-xs text-slate-400 mt-1">Completa tu perfil agregando enlaces a tus portafolios, tu currículum, tu trayectoria y carta de motivación.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -701,16 +765,186 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Breve Biografía Académica</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Breve Biografía</label>
                     <textarea
                       name="bio"
                       value={formData.bio || ""}
                       onChange={handleInputChange}
-                      rows={4}
+                      rows={3}
                       placeholder="Describe brevemente tus logros académicos, ambiciones profesionales y motivaciones..."
                       className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl p-4 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all resize-none"
                     />
                   </div>
+
+                  {/* General Motivation Letter (Opcional) */}
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Carta de Motivación General (Opcional)</label>
+                    <textarea
+                      name="general_motivation_letter"
+                      value={formData.general_motivation_letter || ""}
+                      onChange={handleInputChange}
+                      rows={4}
+                      placeholder="Escribe una carta de presentación general. Las organizaciones podrán verla al revisar tu perfil."
+                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl p-4 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all resize-none"
+                    />
+                  </div>
+
+                  {/* Work Experience section */}
+                  <div className="space-y-4 md:col-span-2 border-t border-gray-100 pt-6">
+                    <h3 className="font-bold text-slate-800 text-sm text-left">Experiencia Laboral</h3>
+                    
+                    {/* List of current work experiences */}
+                    <div className="space-y-2 text-left">
+                      {formData.work_experience && formData.work_experience.length > 0 ? (
+                        formData.work_experience.map((work, idx) => (
+                          <div key={idx} className="bg-slate-50 border border-gray-150 p-4 rounded-2xl flex justify-between items-start">
+                            <div>
+                              <p className="font-bold text-sm text-[#00135B]">{work.position} en {work.company}</p>
+                              <p className="text-xs text-slate-500">{work.start_date} - {work.end_date || "Presente"}</p>
+                              {work.description && <p className="text-xs text-slate-600 mt-1">{work.description}</p>}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveWork(idx)}
+                              className="text-rose-500 hover:text-rose-600 font-bold text-xs bg-transparent border-none cursor-pointer"
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-xs text-slate-400 italic">No has agregado experiencia laboral.</p>
+                      )}
+                    </div>
+
+                    {/* Form to add a work experience */}
+                    <div className="bg-slate-50/50 p-4 rounded-2xl border border-dashed border-gray-200 space-y-3 text-left">
+                      <p className="text-xs font-bold text-slate-500 uppercase">Agregar Experiencia Laboral</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input
+                          type="text"
+                          placeholder="Empresa/Organización"
+                          value={tempWork.company}
+                          onChange={(e) => setTempWork({ ...tempWork, company: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2]"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Cargo/Posición"
+                          value={tempWork.position}
+                          onChange={(e) => setTempWork({ ...tempWork, position: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2]"
+                        />
+                        <input
+                          type="date"
+                          placeholder="Fecha Inicio"
+                          value={tempWork.start_date}
+                          onChange={(e) => setTempWork({ ...tempWork, start_date: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                        />
+                        <input
+                          type="date"
+                          placeholder="Fecha Fin (Dejar vacío si es actual)"
+                          value={tempWork.end_date}
+                          onChange={(e) => setTempWork({ ...tempWork, end_date: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                        />
+                        <textarea
+                          placeholder="Descripción de funciones"
+                          value={tempWork.description}
+                          onChange={(e) => setTempWork({ ...tempWork, description: e.target.value })}
+                          rows={2}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-[#5D8CE2] md:col-span-2 resize-none"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleAddWork}
+                        className="bg-[#5D8CE2] hover:bg-[#5D8CE2]/80 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer"
+                      >
+                        Añadir Experiencia
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Volunteer Experience section */}
+                  <div className="space-y-4 md:col-span-2 border-t border-gray-100 pt-6">
+                    <h3 className="font-bold text-slate-800 text-sm text-left">Experiencia de Voluntariado</h3>
+                    
+                    {/* List of current volunteer experiences */}
+                    <div className="space-y-2 text-left">
+                      {formData.volunteer_experience && formData.volunteer_experience.length > 0 ? (
+                        formData.volunteer_experience.map((vol, idx) => (
+                          <div key={idx} className="bg-slate-50 border border-gray-150 p-4 rounded-2xl flex justify-between items-start">
+                            <div>
+                              <p className="font-bold text-sm text-[#00135B]">{vol.role} en {vol.organization}</p>
+                              <p className="text-xs text-slate-500">{vol.start_date} - {vol.end_date || "Presente"}</p>
+                              {vol.description && <p className="text-xs text-slate-600 mt-1">{vol.description}</p>}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveVolunteer(idx)}
+                              className="text-rose-500 hover:text-rose-600 font-bold text-xs bg-transparent border-none cursor-pointer"
+                            >
+                              Eliminar
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-xs text-slate-400 italic">No has agregado voluntariados.</p>
+                      )}
+                    </div>
+
+                    {/* Form to add a volunteer experience */}
+                    <div className="bg-slate-50/50 p-4 rounded-2xl border border-dashed border-gray-200 space-y-3 text-left">
+                      <p className="text-xs font-bold text-slate-500 uppercase">Agregar Voluntariado / Experiencia Social</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input
+                          type="text"
+                          placeholder="Organización"
+                          value={tempVolunteer.organization}
+                          onChange={(e) => setTempVolunteer({ ...tempVolunteer, organization: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2]"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Rol/Función"
+                          value={tempVolunteer.role}
+                          onChange={(e) => setTempVolunteer({ ...tempVolunteer, role: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2]"
+                        />
+                        <input
+                          type="date"
+                          placeholder="Fecha Inicio"
+                          value={tempVolunteer.start_date}
+                          onChange={(e) => setTempVolunteer({ ...tempVolunteer, start_date: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                        />
+                        <input
+                          type="date"
+                          placeholder="Fecha Fin (Dejar vacío si es actual)"
+                          value={tempVolunteer.end_date}
+                          onChange={(e) => setTempVolunteer({ ...tempVolunteer, end_date: e.target.value })}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none"
+                        />
+                        <textarea
+                          placeholder="Descripción de actividades"
+                          value={tempVolunteer.description}
+                          onChange={(e) => setTempVolunteer({ ...tempVolunteer, description: e.target.value })}
+                          rows={2}
+                          className="bg-white border border-gray-200 text-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-[#5D8CE2] md:col-span-2 resize-none"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleAddVolunteer}
+                        className="bg-[#5D8CE2] hover:bg-[#5D8CE2]/80 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors cursor-pointer"
+                      >
+                        Añadir Voluntariado
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             )}
@@ -756,6 +990,340 @@ export default function ProfilePage() {
         </div>
 
       </div>
+    </div>
+  );
+}
+
+// ==========================================================
+// ORGANIZATION PROFILE EDITOR
+// ==========================================================
+function OrganizationProfileEditor() {
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Profile Fields State
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [website, setWebsite] = useState("");
+  const [description, setDescription] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactPosition, setContactPosition] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [verificationDocUrl, setVerificationDocUrl] = useState("");
+
+  useEffect(() => {
+    async function fetchOrgProfile() {
+      setLoading(true);
+      try {
+        const response = await axiosClient.get("/organizations/me");
+        const o = response.data;
+        setName(o.name || "");
+        setType(o.type || "Empresa");
+        setCountry(o.country || "");
+        setCity(o.city || "");
+        setWebsite(o.website || "");
+        setDescription(o.description || "");
+        setLogoUrl(o.logo_url || "");
+        setContactName(o.contact_name || "");
+        setContactPosition(o.contact_position || "");
+        setContactEmail(o.contact_email || "");
+        setContactPhone(o.contact_phone || "");
+        setVerificationDocUrl(o.verification_document_url || "");
+      } catch (err) {
+        console.error("Failed to load organization profile:", err);
+        setErrorMsg("No se pudo cargar el perfil de la organización.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchOrgProfile();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMsg(null);
+    setErrorMsg(null);
+
+    if (!name.trim() || !country.trim() || !city.trim() || !contactName.trim() || !contactEmail.trim() || !contactPhone.trim()) {
+      setErrorMsg("Por favor, completa todos los campos obligatorios (*).");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const response = await axiosClient.put("/organizations/me", {
+        name,
+        type,
+        country,
+        city,
+        website: website.trim() || null,
+        description: description.trim() || null,
+        logo_url: logoUrl.trim() || null,
+        contact_name: contactName,
+        contact_position: contactPosition,
+        contact_email: contactEmail,
+        contact_phone: contactPhone,
+        verification_document_url: verificationDocUrl.trim() || null
+      });
+      
+      const o = response.data;
+      setName(o.name || "");
+      setType(o.type || "");
+      setCountry(o.country || "");
+      setCity(o.city || "");
+      setWebsite(o.website || "");
+      setDescription(o.description || "");
+      setLogoUrl(o.logo_url || "");
+      setContactName(o.contact_name || "");
+      setContactPosition(o.contact_position || "");
+      setContactEmail(o.contact_email || "");
+      setContactPhone(o.contact_phone || "");
+      setVerificationDocUrl(o.verification_document_url || "");
+
+      setSuccessMsg("¡Perfil organizacional actualizado con éxito!");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err: any) {
+      console.error("Failed to update organization profile:", err);
+      setErrorMsg(err.response?.data?.detail || "Error al actualizar el perfil.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-white space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-secondary"></div>
+        <p className="text-gray-400 text-sm">Cargando perfil organizacional...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 text-slate-700 animate-fadeIn max-w-4xl mx-auto pb-12 text-left">
+      
+      {/* Page Header */}
+      <div className="border-b border-gray-200 pb-4">
+        <h1 className="font-display font-extrabold text-3xl text-[#00135B]">
+          Perfil de la Organización
+        </h1>
+        <p className="text-sm text-slate-500 mt-1">
+          Actualiza los datos institucionales de tu organización y la información de la persona responsable.
+        </p>
+      </div>
+
+      {/* Success and Error Alerts */}
+      {successMsg && (
+        <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 p-4 rounded-2xl text-sm flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+          <span className="font-semibold">{successMsg}</span>
+        </div>
+      )}
+      {errorMsg && (
+        <div className="bg-rose-500/10 border border-rose-500/20 text-rose-600 p-4 rounded-2xl text-sm flex items-center gap-3">
+          <ShieldAlert className="w-5 h-5 text-rose-500" />
+          <span className="font-semibold">{errorMsg}</span>
+        </div>
+      )}
+
+      <form onSubmit={handleSave} className="bg-white p-8 rounded-3xl border border-gray-150 shadow-lg space-y-8">
+        
+        {/* SECTION 1: ORG DETAILS */}
+        <div className="space-y-6">
+          <div className="border-b border-gray-100 pb-3 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-[#5D8CE2]" />
+            <h2 className="text-lg font-bold font-display text-[#00135B]">1. Datos de la Organización</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Nombre de la Organización *</label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Tipo de Organización *</label>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all bg-white"
+              >
+                <option value="ONG">ONG</option>
+                <option value="Universidad">Universidad</option>
+                <option value="Fundación">Fundación</option>
+                <option value="Empresa">Empresa</option>
+                <option value="Organismo Internacional">Organismo Internacional</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">País *</label>
+              <div className="relative">
+                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  required
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="w-full pl-11 pr-4 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Ciudad *</label>
+              <div className="relative">
+                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  required
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full pl-11 pr-4 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Sitio Web Oficial</label>
+              <div className="relative">
+                <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="url"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                  className="w-full pl-11 pr-4 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">URL del Logo (Opcional)</label>
+              <input
+                type="text"
+                value={logoUrl}
+                onChange={(e) => setLogoUrl(e.target.value)}
+                className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Descripción Breve</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl p-4 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 2: CONTACT DETAILS */}
+        <div className="space-y-6">
+          <div className="border-b border-gray-100 pb-3 flex items-center gap-2">
+            <UserIcon className="w-5 h-5 text-[#5D8CE2]" />
+            <h2 className="text-lg font-bold font-display text-[#00135B]">2. Datos del Responsable</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Nombre Completo *</label>
+              <input
+                type="text"
+                required
+                value={contactName}
+                onChange={(e) => setContactName(e.target.value)}
+                className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Cargo en la Organización *</label>
+              <input
+                type="text"
+                required
+                value={contactPosition}
+                onChange={(e) => setContactPosition(e.target.value)}
+                className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Correo Electrónico Institucional *</label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="email"
+                  required
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  className="w-full pl-11 pr-4 bg-slate-50 border border-gray-200 focus:bg-white text-slate-850 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Teléfono / WhatsApp *</label>
+              <div className="relative">
+                <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  required
+                  value={contactPhone}
+                  onChange={(e) => setContactPhone(e.target.value)}
+                  className="w-full pl-11 pr-4 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">URL del Documento de Respaldo</label>
+              <div className="relative">
+                <FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="url"
+                  value={verificationDocUrl}
+                  onChange={(e) => setVerificationDocUrl(e.target.value)}
+                  className="w-full pl-11 pr-4 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit */}
+        <div className="pt-6 border-t border-gray-150 flex justify-end">
+          <button
+            type="submit"
+            disabled={saving}
+            className="bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:opacity-95 text-white font-bold px-8 py-3 rounded-xl text-sm transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            {saving ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                <span>Guardando...</span>
+              </>
+            ) : (
+              <span>Guardar Cambios</span>
+            )}
+          </button>
+        </div>
+
+      </form>
     </div>
   );
 }

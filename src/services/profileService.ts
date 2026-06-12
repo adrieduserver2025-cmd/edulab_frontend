@@ -17,6 +17,10 @@ export interface StudentProfileData {
   portfolio_url: string | null;
   bio: string | null;
   cv_url: string | null;
+  expected_graduation_date: string | null;
+  work_experience: any[] | null;
+  volunteer_experience: any[] | null;
+  general_motivation_letter: string | null;
 }
 
 export interface StudentProfileResponse extends StudentProfileData {
@@ -72,4 +76,17 @@ export const updateProfile = async (data: Partial<StudentProfileData>): Promise<
  */
 export const canApply = (profile: { profile_completion: number } | null | undefined): boolean => {
   return profile?.profile_completion === 100;
+};
+
+/**
+ * Update the authenticated user's base info (like full_name).
+ */
+export const updateUser = async (data: { full_name?: string; photo_url?: string }): Promise<any> => {
+  try {
+    const response = await axiosClient.patch("/users/me", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user base info:", error);
+    throw error;
+  }
 };

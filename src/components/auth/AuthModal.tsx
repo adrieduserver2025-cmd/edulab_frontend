@@ -15,6 +15,7 @@ import {
 import { useAuthStore } from "../../store/useAuthStore";
 import { loginWithGoogle, loginWithEmail, registerWithEmail } from "../../services/authService";
 import axiosClient from "../../services/api/axiosClient";
+import OrganizationRegisterForm from "./OrganizationRegisterForm";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
   // States
   const [mode, setMode] = useState<"login" | "register">(initialMode);
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [isOrgRegister, setIsOrgRegister] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -198,7 +200,17 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
           {/* Form Content / Transitions */}
           <div className="my-auto py-4">
             <AnimatePresence mode="wait">
-              {!showEmailForm ? (
+              {isOrgRegister ? (
+                <motion.div
+                  key="org-register"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <OrganizationRegisterForm onBack={() => setIsOrgRegister(false)} />
+                </motion.div>
+              ) : !showEmailForm ? (
                 // SCREEN A: OAuth choices
                 <motion.div
                   key="oauth"
@@ -359,7 +371,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
           </div>
 
           {/* Bottom toggle link */}
-          <div className="text-center text-xs text-gray-500 pt-2">
+          <div className="text-center text-xs text-gray-500 pt-2 space-y-3">
             <button
               onClick={toggleMode}
               className="hover:text-[#5D8CE2] font-semibold underline cursor-pointer bg-transparent border-none"
@@ -368,6 +380,18 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
                 ? "¿No tienes cuenta? Regístrate gratis"
                 : "¿Ya tienes cuenta? Inicia Sesión"}
             </button>
+            
+            {mode === "login" && !isOrgRegister && (
+              <div className="pt-2.5 border-t border-gray-150 flex flex-col items-center">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">¿Eres una organización?</span>
+                <button
+                  onClick={() => setIsOrgRegister(true)}
+                  className="text-xs font-semibold text-[#00135B] hover:text-[#5D8CE2] underline cursor-pointer bg-transparent border-none mt-1"
+                >
+                  Registra tu organización en EDULAB
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
