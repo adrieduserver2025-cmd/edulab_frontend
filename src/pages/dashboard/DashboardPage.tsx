@@ -20,7 +20,9 @@ import {
   Building2,
   Users,
   CheckCircle2,
-  Globe
+  Globe,
+  Edit,
+  Trash2
 } from "lucide-react";
 import axiosClient from "../../services/api/axiosClient";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -265,7 +267,7 @@ export default function DashboardPage() {
       value: String(applications.length), 
       icon: TrendingUp, 
       color: "text-[#00135B]", 
-      trend: applications.length > 0 ? `${applications.filter((a: any) => a.status === 'started' || a.status === 'under_review').length} en proceso` : "Sin postulaciones" 
+      trend: applications.length > 0 ? `${applications.filter((a: any) => a.status === 'started' || a.status === 'pending' || a.status === 'in_review').length} en proceso` : "Sin postulaciones" 
     },
     { 
       title: "Documentos Verificados", 
@@ -898,6 +900,18 @@ function OrganizationDashboard() {
     }
   };
 
+  const handleDeleteApplication = async (appId: number) => {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar permanentemente esta postulación? Esta acción no se puede deshacer.")) return;
+    try {
+      await axiosClient.delete(`/applications/${appId}`);
+      alert("Postulación eliminada con éxito.");
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.detail || "Error al eliminar la postulación.");
+    }
+  };
+
   const handleLogout = async () => {
     await logoutStore();
     window.location.href = "/";
@@ -1011,6 +1025,7 @@ function OrganizationDashboard() {
                     <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">País</th>
                     <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Límite</th>
                     <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Cupos</th>
+                    <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Estado</th>
                     <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Slug</th>
                   </tr>
                 </thead>
@@ -1026,6 +1041,33 @@ function OrganizationDashboard() {
                       <td className="p-4.5 text-sm text-slate-500">{p.country}</td>
                       <td className="p-4.5 text-sm text-amber-600 font-semibold">{p.deadline || "Abierto"}</td>
                       <td className="p-4.5 text-sm text-slate-600">{p.slots || "N/A"}</td>
+                      <td className="p-4.5">
+                        {p.status === "pending_review" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-amber-50 border border-amber-100 text-amber-600 uppercase">
+                            En revisión
+                          </span>
+                        )}
+                        {p.status === "approved" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 uppercase">
+                            Aprobada
+                          </span>
+                        )}
+                        {p.status === "rejected" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-rose-50 border border-rose-100 text-rose-700 uppercase">
+                            Rechazada
+                          </span>
+                        )}
+                        {p.status === "inactive" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500 uppercase">
+                            Inactiva
+                          </span>
+                        )}
+                        {!p.status && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500 uppercase">
+                            Pendiente
+                          </span>
+                        )}
+                      </td>
                       <td className="p-4.5 text-xs font-mono text-slate-400 select-all">{p.slug}</td>
                     </tr>
                   ))}
@@ -1065,22 +1107,58 @@ function OrganizationDashboard() {
                         <p className="text-xs text-slate-400">{app.student_email}</p>
                       </td>
                       <td className="p-4.5 text-sm font-semibold text-[#00135B]">{app.program_title}</td>
-                      <td className="p-4.5">
-                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 uppercase">
-                          {app.status}
-                        </span>
+                      <td className="p-4.5 text-xs font-semibold">
+                        {app.status === "started" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-blue-50 border border-blue-100 text-blue-600 uppercase">
+                            Iniciada
+                          </span>
+                        )}
+                        {app.status === "pending" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-amber-50 border border-amber-100 text-amber-600 uppercase">
+                            Pendiente
+                          </span>
+                        )}
+                        {app.status === "in_review" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-indigo-50 border border-indigo-100 text-[#00135B] uppercase">
+                            En revisión
+                          </span>
+                        )}
+                        {app.status === "accepted" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 uppercase">
+                            Aceptado
+                          </span>
+                        )}
+                        {app.status === "rejected" && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-rose-50 border border-rose-100 text-rose-700 uppercase">
+                            Rechazado
+                          </span>
+                        )}
+                        {!["started", "pending", "in_review", "accepted", "rejected"].includes(app.status) && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500 uppercase">
+                            {app.status}
+                          </span>
+                        )}
                       </td>
                       <td className="p-4.5 text-sm text-slate-500">
                         {app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Iniciada"}
                       </td>
                       <td className="p-4.5">
-                        <button
-                          onClick={() => setSelectedApplicant(app)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-[#5D8CE2]/50 hover:bg-slate-50 text-xs font-bold text-[#00135B] transition-all cursor-pointer"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>Ver Perfil</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setSelectedApplicant(app)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-[#5D8CE2]/50 hover:bg-slate-50 text-xs font-bold text-[#00135B] transition-all cursor-pointer"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Ver Perfil</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteApplication(app.id)}
+                            className="p-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 text-rose-600 transition-all cursor-pointer"
+                            title="Eliminar Postulación"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1476,13 +1554,11 @@ function OrganizationDashboard() {
                       onChange={(e) => handleUpdateStatus(selectedApplicant.id, e.target.value)}
                       className="bg-white border border-gray-250 text-[#00135B] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#5D8CE2] cursor-pointer"
                     >
-                      <option value="PENDING">PENDING</option>
-                      <option value="IN_REVIEW">IN_REVIEW</option>
-                      <option value="INTERVIEW">INTERVIEW</option>
-                      <option value="PRESELECTED">PRESELECTED</option>
-                      <option value="ACCEPTED">ACCEPTED</option>
-                      <option value="REJECTED">REJECTED</option>
-                      <option value="WITHDRAWN">WITHDRAWN</option>
+                      <option value="started">Iniciada (Borrador)</option>
+                      <option value="pending">Pendiente</option>
+                      <option value="in_review">En revisión</option>
+                      <option value="accepted">Aceptado / Aprobado</option>
+                      <option value="rejected">Rechazado</option>
                     </select>
                   </div>
                   {statusError && <span className="text-[10px] text-rose-500 font-bold">{statusError}</span>}
@@ -1709,54 +1785,212 @@ function OrganizationDashboard() {
   );
 }
 
-// ==========================================================
-// ADMIN DASHBOARD (ORGANIZATION APPROVAL)
-// ==========================================================
 function AdminDashboard() {
   const logoutStore = useAuthStore((state) => state.logout);
-  const [pendingOrgs, setPendingOrgs] = useState<any[]>([]);
+  
+  // Tabs state
+  const [mainTab, setMainTab] = useState<"organizations" | "programs" | "applicants">("organizations");
+  const [orgStatus, setOrgStatus] = useState<"PENDING" | "APPROVED" | "REJECTED">("PENDING");
+  const [progStatus, setProgStatus] = useState<"pending_review" | "approved" | "rejected">("pending_review");
+
+  // Data states
+  const [orgs, setOrgs] = useState<any[]>([]);
+  const [progs, setProgs] = useState<any[]>([]);
+  const [adminApplicants, setAdminApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPending = async () => {
+  // Edit Modals state
+  const [editingOrg, setEditingOrg] = useState<any | null>(null);
+  const [orgEditForm, setOrgEditForm] = useState<any>({});
+  
+  const [editingProg, setEditingProg] = useState<any | null>(null);
+  const [progEditForm, setProgEditForm] = useState<any>({});
+
+  const [adminSelectedApp, setAdminSelectedApp] = useState<any | null>(null);
+  const [updatingAppStatus, setUpdatingAppStatus] = useState(false);
+  const [appStatusError, setAppStatusError] = useState<string | null>(null);
+
+  const loadData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axiosClient.get("/admin/organizations/pending");
-      setPendingOrgs(response.data);
+      if (mainTab === "organizations") {
+        const response = await axiosClient.get(`/admin/organizations?status=${orgStatus}`);
+        setOrgs(response.data);
+      } else if (mainTab === "programs") {
+        const response = await axiosClient.get(`/admin/programs?status=${progStatus}`);
+        setProgs(response.data);
+      } else if (mainTab === "applicants") {
+        const response = await axiosClient.get(`/applications/admin`);
+        setAdminApplicants(response.data);
+      }
     } catch (err: any) {
-      console.error("Error fetching pending orgs:", err);
-      setError("Error al obtener las organizaciones pendientes.");
+      console.error("Error loading admin data:", err);
+      setError("Error al obtener los registros del panel de administración.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPending();
-  }, []);
+    loadData();
+  }, [mainTab, orgStatus, progStatus]);
 
-  const handleApprove = async (id: number) => {
+  // Actions for Organizations
+  const handleApproveOrg = async (id: number) => {
     if (!window.confirm("¿Estás seguro de que deseas APROBAR esta organización?")) return;
     try {
       await axiosClient.patch(`/admin/organizations/${id}/approve`);
       alert("Organización aprobada con éxito.");
-      await fetchPending();
+      await loadData();
     } catch (err) {
       console.error("Error approving organization:", err);
       alert("Error al aprobar la organización.");
     }
   };
 
-  const handleReject = async (id: number) => {
+  const handleRejectOrg = async (id: number) => {
     if (!window.confirm("¿Estás seguro de que deseas RECHAZAR esta organización?")) return;
     try {
       await axiosClient.patch(`/admin/organizations/${id}/reject`);
       alert("Organización rechazada.");
-      await fetchPending();
+      await loadData();
     } catch (err) {
       console.error("Error rejecting organization:", err);
       alert("Error al rechazar la organización.");
+    }
+  };
+
+  // Actions for Programs (Convocatorias)
+  const handleApproveProgram = async (id: number) => {
+    if (!window.confirm("¿Estás seguro de que deseas APROBAR esta convocatoria?")) return;
+    try {
+      await axiosClient.patch(`/admin/programs/${id}/approve`);
+      alert("Convocatoria aprobada con éxito.");
+      await loadData();
+    } catch (err) {
+      console.error("Error approving program:", err);
+      alert("Error al aprobar la convocatoria.");
+    }
+  };
+
+  const handleRejectProgram = async (id: number) => {
+    if (!window.confirm("¿Estás seguro de que deseas RECHAZAR esta convocatoria?")) return;
+    try {
+      await axiosClient.patch(`/admin/programs/${id}/reject`);
+      alert("Convocatoria rechazada.");
+      await loadData();
+    } catch (err) {
+      console.error("Error rejecting program:", err);
+      alert("Error al rechazar la convocatoria.");
+    }
+  };
+
+  // Admin CRUD for Organizations
+  const handleEditOrg = (org: any) => {
+    setOrgEditForm({ ...org });
+    setEditingOrg(org);
+  };
+
+  const handleSaveOrg = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await axiosClient.put(`/admin/organizations/${orgEditForm.id}`, orgEditForm);
+      alert("Organización actualizada con éxito.");
+      setEditingOrg(null);
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.detail || "Error al actualizar la organización.");
+    }
+  };
+
+  const handleDeleteOrg = async (id: number) => {
+    if (!window.confirm("¿Estás seguro de que deseas ELIMINAR esta organización y todas sus dependencias (usuarios, convocatorias, postulaciones)? Esta acción es irreversible.")) return;
+    try {
+      await axiosClient.delete(`/admin/organizations/${id}`);
+      alert("Organización eliminada con éxito.");
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.detail || "Error al eliminar la organización.");
+    }
+  };
+
+  // Admin CRUD for Convocatorias
+  const handleEditProg = (prog: any) => {
+    setProgEditForm({ ...prog });
+    setEditingProg(prog);
+  };
+
+  const handleSaveProg = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await axiosClient.put(`/admin/programs/${progEditForm.id}`, progEditForm);
+      alert("Convocatoria actualizada con éxito.");
+      setEditingProg(null);
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.detail || "Error al actualizar la convocatoria.");
+    }
+  };
+
+  const handleDeleteProgram = async (id: number) => {
+    if (!window.confirm("¿Estás seguro de que deseas ELIMINAR esta convocatoria y todas sus postulaciones asociadas? Esta acción es irreversible.")) return;
+    try {
+      await axiosClient.delete(`/admin/programs/${id}`);
+      alert("Convocatoria eliminada con éxito.");
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.detail || "Error al eliminar la convocatoria.");
+    }
+  };
+
+  // Admin CRUD for Applications
+  const handleDeleteAdminApplication = async (appId: number) => {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar permanentemente esta postulación? Esta acción es irreversible.")) return;
+    try {
+      await axiosClient.delete(`/applications/${appId}`);
+      alert("Postulación eliminada con éxito.");
+      await loadData();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.detail || "Error al eliminar la postulación.");
+    }
+  };
+
+  const handleUpdateAdminApplicationStatus = async (appId: number, nextStatus: string) => {
+    setUpdatingAppStatus(true);
+    setAppStatusError(null);
+    try {
+      await axiosClient.put(`/applications/${appId}`, {
+        status: nextStatus
+      });
+      await loadData();
+      
+      setAdminSelectedApp((prev: any) => {
+        if (!prev) return null;
+        const newAudit = {
+          id: Date.now(),
+          old_status: prev.status,
+          new_status: nextStatus,
+          changed_by: "admin",
+          created_at: new Date().toISOString()
+        };
+        return {
+          ...prev,
+          status: nextStatus,
+          status_history: [newAudit, ...(prev.status_history || [])]
+        };
+      });
+    } catch (err: any) {
+      console.error(err);
+      setAppStatusError(err.response?.data?.detail || "Error al actualizar el estado.");
+    } finally {
+      setUpdatingAppStatus(false);
     }
   };
 
@@ -1775,7 +2009,7 @@ function AdminDashboard() {
             Panel de Administración
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Revisión y aprobación de solicitudes de registro de Organizaciones en EDULAB.
+            Revisión, aprobación e historial de solicitudes de organizaciones y convocatorias en EDULAB.
           </p>
         </div>
 
@@ -1794,121 +2028,1090 @@ function AdminDashboard() {
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
-          <div className="space-y-1.5">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Solicitudes Pendientes</p>
-            <p className="text-3xl font-extrabold font-display text-amber-500">{pendingOrgs.length}</p>
-            <p className="text-[10px] text-slate-500 font-semibold">Organizaciones esperando revisión de 24 horas</p>
+      {/* Main Tab Bar (Organizations vs Convocatorias vs Postulantes) */}
+      <div className="flex border-b border-gray-200">
+        <button
+          onClick={() => {
+            setMainTab("organizations");
+            setOrgStatus("PENDING");
+          }}
+          className={`py-3.5 px-6 font-bold text-sm border-b-2 transition-all cursor-pointer ${
+            mainTab === "organizations"
+              ? "border-[#00135B] text-[#00135B]"
+              : "border-transparent text-slate-400 hover:text-slate-655 bg-transparent"
+          }`}
+        >
+          📁 Registro de Organizaciones
+        </button>
+        <button
+          onClick={() => {
+            setMainTab("programs");
+            setProgStatus("pending_review");
+          }}
+          className={`py-3.5 px-6 font-bold text-sm border-b-2 transition-all cursor-pointer ${
+            mainTab === "programs"
+              ? "border-[#00135B] text-[#00135B]"
+              : "border-transparent text-slate-400 hover:text-slate-655 bg-transparent"
+          }`}
+        >
+          📝 Convocatorias
+        </button>
+        <button
+          onClick={() => {
+            setMainTab("applicants");
+          }}
+          className={`py-3.5 px-6 font-bold text-sm border-b-2 transition-all cursor-pointer ${
+            mainTab === "applicants"
+              ? "border-[#00135B] text-[#00135B]"
+              : "border-transparent text-slate-400 hover:text-slate-655 bg-transparent"
+          }`}
+        >
+          👥 Control de Postulantes
+        </button>
+      </div>
+
+      {/* Sub-status Tab Filters */}
+      {mainTab === "organizations" && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex bg-slate-100 p-1 rounded-xl">
+              {[
+                { key: "PENDING", label: "Pendientes" },
+                { key: "APPROVED", label: "Aprobadas" },
+                { key: "REJECTED", label: "Rechazadas" }
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setOrgStatus(tab.key as any)}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    orgStatus === tab.key
+                      ? "bg-white text-[#00135B] shadow-sm"
+                      : "text-slate-500 hover:text-slate-800 bg-transparent border-none"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            
+            <div className="text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-150 px-3 py-1.5 rounded-xl">
+              Total en esta pestaña: <span className="text-[#00135B] font-bold">{orgs.length}</span>
+            </div>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-100">
-            <Building2 className="w-6 h-6 text-amber-500" />
+
+          {/* Organizations List */}
+          <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+            {loading ? (
+              <div className="py-12 flex items-center justify-center">
+                <div className="w-10 h-10 border-t-2 border-r-2 border-[#00135B] rounded-full animate-spin"></div>
+              </div>
+            ) : orgs.length === 0 ? (
+              <div className="p-12 text-center space-y-3">
+                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
+                <h4 className="font-bold text-slate-600">No hay organizaciones en esta categoría</h4>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                  No se encontraron registros de organizaciones con estado <span className="font-mono text-slate-600">{orgStatus}</span>.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-gray-200">
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Organización</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Tipo</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Ubicación</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Responsable</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Respaldo</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Estado</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {orgs.map((org) => (
+                      <tr key={org.id} className="hover:bg-slate-50/50 transition-all">
+                        <td className="p-4.5">
+                          <div className="flex items-center gap-3">
+                            {org.logo_url ? (
+                              <img src={org.logo_url} alt="Logo" className="w-8 h-8 rounded-full border border-gray-200 object-cover" />
+                            ) : (
+                              <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-150 text-[#00135B] flex items-center justify-center font-bold text-xs">
+                                {org.name.substring(0, 2).toUpperCase()}
+                              </div>
+                            )}
+                            <div>
+                              <p className="text-sm font-bold text-slate-700">{org.name}</p>
+                              {org.website && (
+                                <a href={org.website} target="_blank" rel="noopener noreferrer" className="text-xs text-[#5D8CE2] hover:underline">
+                                  Sitio Web
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4.5">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 border border-gray-200 text-slate-600 uppercase">
+                            {org.type}
+                          </span>
+                        </td>
+                        <td className="p-4.5 text-sm text-slate-500">{org.city}, {org.country}</td>
+                        <td className="p-4.5">
+                          <p className="text-sm font-semibold text-slate-700">{org.contact_name}</p>
+                          <p className="text-[11px] text-slate-400">{org.contact_position} | {org.contact_phone}</p>
+                          <p className="text-xs text-slate-500 font-medium">{org.contact_email}</p>
+                        </td>
+                        <td className="p-4.5">
+                          {org.verification_document_url ? (
+                            <a
+                              href={org.verification_document_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs text-[#5D8CE2] hover:underline font-bold"
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>Ver Respaldo</span>
+                            </a>
+                          ) : (
+                            <span className="text-xs text-slate-400">Sin archivo</span>
+                          )}
+                        </td>
+                        <td className="p-4.5">
+                          {org.status === "PENDING" && (
+                            <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded bg-amber-50 border border-amber-100 text-amber-600 uppercase">
+                              Pendiente
+                            </span>
+                          )}
+                          {org.status === "APPROVED" && (
+                            <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 uppercase">
+                              Aprobada
+                            </span>
+                          )}
+                          {org.status === "REJECTED" && (
+                            <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded bg-rose-50 border border-rose-100 text-rose-700 uppercase">
+                              Rechazada
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4.5">
+                          <div className="flex items-center gap-2">
+                            {org.status === "PENDING" && (
+                              <>
+                                <button
+                                  onClick={() => handleApproveOrg(org.id)}
+                                  className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 hover:text-emerald-700 transition-all cursor-pointer"
+                                  title="Aprobar Organización"
+                                >
+                                  <Check className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleRejectOrg(org.id)}
+                                  className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 hover:text-rose-700 transition-all cursor-pointer"
+                                  title="Rechazar Organización"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </>
+                            )}
+                            <button
+                              onClick={() => handleEditOrg(org)}
+                              className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 hover:text-blue-750 transition-all cursor-pointer"
+                              title="Editar Organización"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteOrg(org.id)}
+                              className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-650 hover:text-rose-700 transition-all cursor-pointer"
+                              title="Eliminar Organización"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Main List */}
-      <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="py-12 flex items-center justify-center">
-            <div className="w-10 h-10 border-t-2 border-r-2 border-[#00135B] rounded-full animate-spin"></div>
+      {mainTab === "programs" && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex bg-slate-100 p-1 rounded-xl">
+              {[
+                { key: "pending_review", label: "Pendientes" },
+                { key: "approved", label: "Aprobadas" },
+                { key: "rejected", label: "Rechazadas" }
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setProgStatus(tab.key as any)}
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    progStatus === tab.key
+                      ? "bg-white text-[#00135B] shadow-sm"
+                      : "text-slate-500 hover:text-slate-800 bg-transparent border-none"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            
+            <div className="text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-150 px-3 py-1.5 rounded-xl">
+              Total en esta pestaña: <span className="text-[#00135B] font-bold">{progs.length}</span>
+            </div>
           </div>
-        ) : pendingOrgs.length === 0 ? (
-          <div className="p-12 text-center space-y-3">
-            <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
-            <h4 className="font-bold text-slate-600">¡Al día! No hay solicitudes pendientes</h4>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              Todas las organizaciones registradas han sido procesadas por el equipo administrativo.
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50 border-b border-gray-200">
-                  <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Organización</th>
-                  <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Tipo</th>
-                  <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Ubicación</th>
-                  <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Responsable</th>
-                  <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Respaldo</th>
-                  <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {pendingOrgs.map((org) => (
-                  <tr key={org.id} className="hover:bg-slate-50/50 transition-all">
-                    <td className="p-4.5">
-                      <div className="flex items-center gap-3">
-                        {org.logo_url ? (
-                          <img src={org.logo_url} alt="Logo" className="w-8 h-8 rounded-full border border-gray-200 object-cover" />
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs">
-                            {org.name.substring(0, 2).toUpperCase()}
-                          </div>
-                        )}
-                        <div>
-                          <p className="text-sm font-bold text-slate-700">{org.name}</p>
-                          {org.website && (
-                            <a href={org.website} target="_blank" rel="noopener noreferrer" className="text-xs text-[#5D8CE2] hover:underline">
-                              Sitio Web
-                            </a>
+
+          {/* Convocatorias List */}
+          <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+            {loading ? (
+              <div className="py-12 flex items-center justify-center">
+                <div className="w-10 h-10 border-t-2 border-r-2 border-[#00135B] rounded-full animate-spin"></div>
+              </div>
+            ) : progs.length === 0 ? (
+              <div className="p-12 text-center space-y-3">
+                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
+                <h4 className="font-bold text-slate-600">No hay convocatorias en esta categoría</h4>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                  No se encontraron convocatorias con estado <span className="font-mono text-slate-600">{progStatus}</span>.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-gray-200">
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Convocatoria</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Organización</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Tipo</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Ubicación</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Límite</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Cupos</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Estado</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {progs.map((p) => (
+                      <tr key={p.id} className="hover:bg-slate-50/50 transition-all">
+                        <td className="p-4.5">
+                          <p className="text-sm font-bold text-slate-700">{p.title}</p>
+                          <p className="text-[10px] text-slate-400 font-mono select-all">{p.slug}</p>
+                        </td>
+                        <td className="p-4.5 text-sm font-semibold text-[#00135B]">{p.organization_name || p.organization}</td>
+                        <td className="p-4.5">
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-indigo-50 border border-indigo-100 text-[#00135B] uppercase">
+                            {p.type}
+                          </span>
+                        </td>
+                        <td className="p-4.5 text-sm text-slate-500">{p.country}</td>
+                        <td className="p-4.5 text-sm text-amber-600 font-semibold">{p.deadline || "Abierto"}</td>
+                        <td className="p-4.5 text-sm text-slate-600">{p.slots || "N/A"}</td>
+                        <td className="p-4.5">
+                          {p.status === "pending_review" && (
+                            <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded bg-amber-50 border border-amber-100 text-amber-600 uppercase">
+                              En revisión
+                            </span>
                           )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4.5">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 border border-gray-200 text-slate-600 uppercase">
-                        {org.type}
-                      </span>
-                    </td>
-                    <td className="p-4.5 text-sm text-slate-500">{org.city}, {org.country}</td>
-                    <td className="p-4.5">
-                      <p className="text-sm font-semibold text-slate-700">{org.contact_name}</p>
-                      <p className="text-[11px] text-slate-400">{org.contact_position} | {org.contact_phone}</p>
-                      <p className="text-xs text-slate-500 font-medium">{org.contact_email}</p>
-                    </td>
-                    <td className="p-4.5">
-                      {org.verification_document_url ? (
-                        <a
-                          href={org.verification_document_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-[#5D8CE2] hover:underline font-bold"
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                          <span>Ver Respaldo</span>
-                        </a>
-                      ) : (
-                        <span className="text-xs text-slate-400">Sin archivo</span>
-                      )}
-                    </td>
-                    <td className="p-4.5">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleApprove(org.id)}
-                          className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 hover:text-emerald-700 transition-all cursor-pointer"
-                          title="Aprobar Organización"
-                        >
-                          <Check className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleReject(org.id)}
-                          className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 hover:text-rose-700 transition-all cursor-pointer"
-                          title="Rechazar Organización"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          {p.status === "approved" && (
+                            <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 uppercase">
+                              Aprobada
+                            </span>
+                          )}
+                          {p.status === "rejected" && (
+                            <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded bg-rose-50 border border-rose-100 text-rose-700 uppercase">
+                              Rechazada
+                            </span>
+                          )}
+                          {p.status === "inactive" && (
+                            <span className="text-[9px] font-extrabold px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500 uppercase">
+                              Inactiva
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4.5">
+                          <div className="flex items-center gap-2">
+                            {p.status === "pending_review" && (
+                              <>
+                                <button
+                                  onClick={() => handleApproveProgram(p.id)}
+                                  className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 hover:text-emerald-700 transition-all cursor-pointer"
+                                  title="Aprobar Convocatoria"
+                                >
+                                  <Check className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleRejectProgram(p.id)}
+                                  className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 hover:text-rose-700 transition-all cursor-pointer"
+                                  title="Rechazar Convocatoria"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </>
+                            )}
+                            <button
+                              onClick={() => handleEditProg(p)}
+                              className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 hover:text-blue-750 transition-all cursor-pointer"
+                              title="Editar Convocatoria"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteProgram(p.id)}
+                              className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-650 hover:text-rose-700 transition-all cursor-pointer"
+                              title="Eliminar Convocatoria"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
+      {mainTab === "applicants" && (
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-150 px-3 py-1.5 rounded-xl">
+              Total de Postulaciones: <span className="text-[#00135B] font-bold">{adminApplicants.length}</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+            {loading ? (
+              <div className="py-12 flex items-center justify-center">
+                <div className="w-10 h-10 border-t-2 border-r-2 border-[#00135B] rounded-full animate-spin"></div>
+              </div>
+            ) : adminApplicants.length === 0 ? (
+              <div className="p-12 text-center space-y-3">
+                <Users className="w-12 h-12 text-slate-300 mx-auto" />
+                <h4 className="font-bold text-slate-600">No hay postulaciones registradas</h4>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                  Las postulaciones de los estudiantes a las distintas convocatorias aparecerán aquí.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-gray-200">
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Estudiante</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Convocatoria</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Estado</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Fecha</th>
+                      <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {adminApplicants.map((app) => (
+                      <tr key={app.id} className="hover:bg-slate-50/50 transition-all">
+                        <td className="p-4.5">
+                          <p className="text-sm font-bold text-slate-700">{app.student_name}</p>
+                          <p className="text-xs text-slate-400">{app.student_email}</p>
+                        </td>
+                        <td className="p-4.5 text-sm font-semibold text-[#00135B]">
+                          {app.program_title}
+                        </td>
+                        <td className="p-4.5 text-xs font-semibold">
+                          {app.status === "started" && (
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-blue-50 border border-blue-100 text-blue-600 uppercase">
+                              Iniciada
+                            </span>
+                          )}
+                          {app.status === "pending" && (
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-amber-50 border border-amber-100 text-amber-600 uppercase">
+                              Pendiente
+                            </span>
+                          )}
+                          {app.status === "in_review" && (
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-indigo-50 border border-indigo-100 text-[#00135B] uppercase">
+                              En revisión
+                            </span>
+                          )}
+                          {app.status === "accepted" && (
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 uppercase">
+                              Aceptado
+                            </span>
+                          )}
+                          {app.status === "rejected" && (
+                            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-rose-50 border border-rose-100 text-rose-700 uppercase">
+                              Rechazado
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4.5 text-sm text-slate-500">
+                          {app.applied_at ? new Date(app.applied_at).toLocaleDateString() : "Iniciada"}
+                        </td>
+                        <td className="p-4.5">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setAdminSelectedApp(app)}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-[#5D8CE2]/50 hover:bg-slate-50 text-xs font-bold text-[#00135B] transition-all cursor-pointer"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>Ver Ficha</span>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteAdminApplication(app.id)}
+                              className="p-1.5 rounded-lg border border-rose-200 hover:bg-rose-50 text-rose-600 transition-all cursor-pointer"
+                              title="Eliminar Postulación"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* EDIT ORGANIZATION MODAL */}
+      {editingOrg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] animate-scaleUp">
+            
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between text-left">
+              <h3 className="font-display font-extrabold text-xl text-[#00135B]">
+                Editar Organización
+              </h3>
+              <button 
+                onClick={() => setEditingOrg(null)}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-all cursor-pointer border-none"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleSaveOrg} className="p-6 overflow-y-auto space-y-4 flex-1 text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Nombre de la Organización *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={orgEditForm.name || ""}
+                    onChange={(e) => setOrgEditForm({ ...orgEditForm, name: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Tipo de Organización *
+                  </label>
+                  <select
+                    value={orgEditForm.type || ""}
+                    onChange={(e) => setOrgEditForm({ ...orgEditForm, type: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all bg-white"
+                  >
+                    <option value="ONG">ONG</option>
+                    <option value="Universidad">Universidad</option>
+                    <option value="Fundación">Fundación</option>
+                    <option value="Empresa">Empresa</option>
+                    <option value="Organismo Internacional">Organismo Internacional</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    País *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={orgEditForm.country || ""}
+                    onChange={(e) => setOrgEditForm({ ...orgEditForm, country: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Ciudad *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={orgEditForm.city || ""}
+                    onChange={(e) => setOrgEditForm({ ...orgEditForm, city: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Sitio Web
+                  </label>
+                  <input
+                    type="url"
+                    value={orgEditForm.website || ""}
+                    onChange={(e) => setOrgEditForm({ ...orgEditForm, website: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Estado de Aprobación *
+                  </label>
+                  <select
+                    value={orgEditForm.status || ""}
+                    onChange={(e) => setOrgEditForm({ ...orgEditForm, status: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all bg-white"
+                  >
+                    <option value="PENDING">Pendiente</option>
+                    <option value="APPROVED">Aprobada</option>
+                    <option value="REJECTED">Rechazada</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                  Descripción
+                </label>
+                <textarea
+                  value={orgEditForm.description || ""}
+                  onChange={(e) => setOrgEditForm({ ...orgEditForm, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all resize-none"
+                />
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <h4 className="font-bold text-xs text-[#00135B] uppercase tracking-wider mb-3">Datos del Contacto / Responsable</h4>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                      Nombre del Contacto *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={orgEditForm.contact_name || ""}
+                      onChange={(e) => setOrgEditForm({ ...orgEditForm, contact_name: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                      Email del Contacto *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={orgEditForm.contact_email || ""}
+                      onChange={(e) => setOrgEditForm({ ...orgEditForm, contact_email: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                      Cargo del Contacto *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={orgEditForm.contact_position || ""}
+                      onChange={(e) => setOrgEditForm({ ...orgEditForm, contact_position: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                      Teléfono del Contacto *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={orgEditForm.contact_phone || ""}
+                      onChange={(e) => setOrgEditForm({ ...orgEditForm, contact_phone: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEditingOrg(null)}
+                  className="px-5 py-2.5 rounded-xl border border-gray-200 hover:bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:opacity-95 text-white text-xs font-bold uppercase tracking-wider shadow-md transition-all cursor-pointer"
+                >
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT PROGRAM/CONVOCATORIA MODAL */}
+      {editingProg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] animate-scaleUp">
+            
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between text-left">
+              <h3 className="font-display font-extrabold text-xl text-[#00135B]">
+                Editar Convocatoria
+              </h3>
+              <button 
+                onClick={() => setEditingProg(null)}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 transition-all cursor-pointer border-none"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleSaveProg} className="p-6 overflow-y-auto space-y-4 flex-1 text-left">
+              <div className="relative">
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                  Título de la Convocatoria *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={progEditForm.title || ""}
+                  onChange={(e) => setProgEditForm({ ...progEditForm, title: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Tipo de Convocatoria *
+                  </label>
+                  <select
+                    value={progEditForm.type || ""}
+                    onChange={(e) => setProgEditForm({ ...progEditForm, type: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all bg-white"
+                  >
+                    <option value="scholarship">Beca</option>
+                    <option value="volunteering">Voluntariado</option>
+                    <option value="exchange">Intercambio</option>
+                    <option value="summer_school">Summer School</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    País Destino
+                  </label>
+                  <input
+                    type="text"
+                    value={progEditForm.country || ""}
+                    onChange={(e) => setProgEditForm({ ...progEditForm, country: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Fecha Límite
+                  </label>
+                  <input
+                    type="date"
+                    value={progEditForm.deadline || ""}
+                    onChange={(e) => setProgEditForm({ ...progEditForm, deadline: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Cupos Disponibles
+                  </label>
+                  <input
+                    type="number"
+                    value={progEditForm.slots !== undefined && progEditForm.slots !== null ? progEditForm.slots : ""}
+                    onChange={(e) => setProgEditForm({ ...progEditForm, slots: e.target.value ? parseInt(e.target.value) : null })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                    Estado de Aprobación *
+                  </label>
+                  <select
+                    value={progEditForm.status || ""}
+                    onChange={(e) => setProgEditForm({ ...progEditForm, status: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all bg-white"
+                  >
+                    <option value="pending_review">En revisión</option>
+                    <option value="approved">Aprobada</option>
+                    <option value="rejected">Rechazada</option>
+                    <option value="inactive">Inactiva</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                  Descripción Detallada *
+                </label>
+                <textarea
+                  required
+                  value={progEditForm.description || ""}
+                  onChange={(e) => setProgEditForm({ ...progEditForm, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                  Elegibilidad / Requisitos
+                </label>
+                <textarea
+                  value={progEditForm.eligibility || ""}
+                  onChange={(e) => setProgEditForm({ ...progEditForm, eligibility: e.target.value })}
+                  rows={2}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
+                  Beneficios Ofrecidos
+                </label>
+                <textarea
+                  value={progEditForm.benefits || ""}
+                  onChange={(e) => setProgEditForm({ ...progEditForm, benefits: e.target.value })}
+                  rows={2}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all resize-none"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEditingProg(null)}
+                  className="px-5 py-2.5 rounded-xl border border-gray-200 hover:bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:opacity-95 text-white text-xs font-bold uppercase tracking-wider shadow-md transition-all cursor-pointer"
+                >
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADMIN SELECTED APPLICANT DETAIL MODAL */}
+      {adminSelectedApp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] animate-scaleUp">
+            
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between text-left">
+              <div>
+                <h3 className="font-display font-extrabold text-xl text-[#00135B]">
+                  Ficha de Postulación (Admin)
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Postulado a: <span className="font-semibold text-[#00135B]">{adminSelectedApp.program_title}</span>
+                </p>
+              </div>
+              <button 
+                onClick={() => setAdminSelectedApp(null)}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-805 transition-all cursor-pointer border-none"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-6 text-left flex-1">
+              
+              {/* Profile header */}
+              <div className="flex items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border border-gray-150">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#00135B] to-[#5D8CE2] flex items-center justify-center font-bold text-white text-lg shadow-sm">
+                    {adminSelectedApp.student_name.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-base text-[#00135B]">{adminSelectedApp.student_name}</h4>
+                    <p className="text-xs text-slate-500 font-medium">{adminSelectedApp.student_email}</p>
+                  </div>
+                </div>
+
+                {/* Status Dropdown selector */}
+                <div className="flex flex-col items-end gap-1">
+                  <span className="text-[9px] uppercase font-bold text-slate-400">Estado Postulación</span>
+                  <div className="flex items-center gap-2">
+                    {updatingAppStatus && <div className="w-4 h-4 border-2 border-[#00135B] border-t-transparent rounded-full animate-spin"></div>}
+                    <select
+                      value={adminSelectedApp.status}
+                      disabled={updatingAppStatus}
+                      onChange={(e) => handleUpdateAdminApplicationStatus(adminSelectedApp.id, e.target.value)}
+                      className="bg-white border border-gray-250 text-[#00135B] rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:border-[#5D8CE2] cursor-pointer"
+                    >
+                      <option value="started">Iniciada (Borrador)</option>
+                      <option value="pending">Pendiente</option>
+                      <option value="in_review">En revisión</option>
+                      <option value="accepted">Aceptado / Aprobado</option>
+                      <option value="rejected">Rechazado</option>
+                    </select>
+                  </div>
+                  {appStatusError && <span className="text-[10px] text-rose-500 font-bold">{appStatusError}</span>}
+                </div>
+              </div>
+
+              {/* Grid 1: Basic Info */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50/50 p-4 rounded-2xl border border-gray-150 text-xs">
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Ubicación</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_city}, {adminSelectedApp.student_country}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Teléfono</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_phone || "No provisto"}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Fecha de Nacimiento</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_birth_date || "No provisto"}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Nivel de Educación</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_education_level}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Institución</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_current_institution || "N/A"}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Carrera / Área</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_area || "N/A"}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Nivel de Inglés</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_english_level || "N/A"}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Graduación Estimada</span>
+                  <span className="text-slate-800 font-semibold">{adminSelectedApp.student_expected_graduation_date || "N/A"}</span>
+                </div>
+                {adminSelectedApp.student_other_languages && adminSelectedApp.student_other_languages.length > 0 && (
+                  <div>
+                    <span className="text-slate-400 font-bold uppercase block text-[9px] tracking-wider">Otros Idiomas</span>
+                    <span className="text-slate-800 font-semibold">{adminSelectedApp.student_other_languages.join(", ")}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Links and Bio */}
+              <div className="space-y-3">
+                {adminSelectedApp.student_bio && (
+                  <div>
+                    <h5 className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Biografía</h5>
+                    <p className="text-xs text-slate-650 leading-relaxed mt-1 bg-slate-50/50 p-3 rounded-xl border border-gray-150">
+                      {adminSelectedApp.student_bio}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-3">
+                  {adminSelectedApp.student_cv_url && (
+                    <a
+                      href={adminSelectedApp.student_cv_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-250 text-xs font-bold text-emerald-700 transition-all"
+                    >
+                      <FileText className="w-4 h-4 text-emerald-600" />
+                      <span>Ver Currículum Vitae (CV)</span>
+                    </a>
+                  )}
+                  {adminSelectedApp.student_linkedin_url && (
+                    <a
+                      href={adminSelectedApp.student_linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-xs font-bold text-blue-700 transition-all"
+                    >
+                      <span>LinkedIn</span>
+                    </a>
+                  )}
+                  {adminSelectedApp.student_portfolio_url && (
+                    <a
+                      href={adminSelectedApp.student_portfolio_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-gray-250 text-xs font-bold text-slate-700 transition-all"
+                    >
+                      <span>Portafolio</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Chronological Trajectory */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-gray-100 pt-4 text-xs">
+                {/* Work experience list */}
+                <div>
+                  <h5 className="font-bold text-[#00135B] uppercase tracking-wider text-[10px] mb-2">Trayectoria Laboral</h5>
+                  {adminSelectedApp.student_work_experience && adminSelectedApp.student_work_experience.length > 0 ? (
+                    <div className="space-y-2">
+                      {adminSelectedApp.student_work_experience.map((work: any, idx: number) => (
+                        <div key={idx} className="bg-slate-50/50 p-3 rounded-xl border border-gray-150">
+                          <p className="font-bold text-slate-700">{work.position} — {work.company}</p>
+                          <p className="text-[10px] text-slate-400">{work.start_date} - {work.end_date || "Presente"}</p>
+                          {work.description && <p className="text-slate-500 mt-1">{work.description}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-slate-400 italic">Sin experiencia laboral declarada.</p>
+                  )}
+                </div>
+
+                {/* Volunteer experience list */}
+                <div>
+                  <h5 className="font-bold text-[#00135B] uppercase tracking-wider text-[10px] mb-2">Trayectoria de Voluntariado</h5>
+                  {adminSelectedApp.student_volunteer_experience && adminSelectedApp.student_volunteer_experience.length > 0 ? (
+                    <div className="space-y-2">
+                      {adminSelectedApp.student_volunteer_experience.map((vol: any, idx: number) => (
+                        <div key={idx} className="bg-slate-50/50 p-3 rounded-xl border border-gray-150">
+                          <p className="font-bold text-slate-700">{vol.role} — {vol.organization}</p>
+                          <p className="text-[10px] text-slate-400">{vol.start_date} - {vol.end_date || "Presente"}</p>
+                          {vol.description && <p className="text-slate-500 mt-1">{vol.description}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-slate-400 italic">Sin voluntariados declarados.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* General Motivation Letter */}
+              {adminSelectedApp.student_general_motivation_letter && (
+                <div className="border-t border-gray-100 pt-4">
+                  <h5 className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Carta de Motivación General</h5>
+                  <p className="text-xs text-slate-655 leading-relaxed bg-indigo-50/30 p-4 rounded-2xl border border-indigo-100 whitespace-pre-line">
+                    {adminSelectedApp.student_general_motivation_letter}
+                  </p>
+                </div>
+              )}
+
+              {/* Custom Answers */}
+              {adminSelectedApp.answers && adminSelectedApp.answers.length > 0 && (
+                <div className="border-t border-gray-100 pt-4 text-xs space-y-3">
+                  <h5 className="font-bold text-[#00135B] uppercase tracking-wider text-[10px]">Respuestas al Cuestionario</h5>
+                  <div className="space-y-3">
+                    {adminSelectedApp.answers.map((ans: any, idx: number) => (
+                      <div key={idx} className="bg-slate-50 p-3.5 rounded-xl border border-gray-150">
+                        <p className="font-bold text-slate-800">Pregunta ID: {ans.question_id}</p>
+                        <p className="text-slate-655 mt-1 bg-white p-2.5 rounded-lg border border-gray-100">{ans.answer}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Uploaded Documents */}
+              {adminSelectedApp.uploaded_documents && Object.keys(adminSelectedApp.uploaded_documents).length > 0 && (
+                <div className="border-t border-gray-100 pt-4 text-xs space-y-3">
+                  <h5 className="font-bold text-[#00135B] uppercase tracking-wider text-[10px]">Documentos Específicos Subidos</h5>
+                  <div className="flex flex-wrap gap-3">
+                    {Object.entries(adminSelectedApp.uploaded_documents).map(([docName, docUrl]: any) => (
+                      <a
+                        key={docName}
+                        href={docUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-gray-250 font-semibold text-slate-700"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-slate-505" />
+                        <span>{docName} &rarr;</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Chronological Status History Audit Trail */}
+              {adminSelectedApp.status_history && adminSelectedApp.status_history.length > 0 && (
+                <div className="border-t border-gray-100 pt-4 text-xs space-y-3">
+                  <h5 className="font-bold text-[#00135B] uppercase tracking-wider text-[10px]">Historial de Cambios de Estado (Auditoría)</h5>
+                  <div className="space-y-2 border-l-2 border-slate-200 pl-4 py-1 ml-2 text-left">
+                    {adminSelectedApp.status_history.map((h: any, idx: number) => (
+                      <div key={idx} className="relative space-y-0.5">
+                        <div className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-slate-300 border-2 border-white"></div>
+                        <p className="font-semibold text-slate-700">
+                          {h.old_status || "None"} &rarr; <span className="font-extrabold text-[#5D8CE2]">{h.new_status}</span>
+                        </p>
+                        <p className="text-[10px] text-slate-400">
+                          Por ID de usuario: <span className="font-medium">{h.changed_by}</span> | {new Date(h.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-gray-100 flex justify-end">
+                <button
+                  onClick={() => setAdminSelectedApp(null)}
+                  className="px-6 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-655 text-xs font-bold uppercase tracking-wider cursor-pointer transition-all"
+                >
+                  Cerrar Ficha
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }

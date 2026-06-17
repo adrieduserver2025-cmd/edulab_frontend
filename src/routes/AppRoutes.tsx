@@ -9,6 +9,7 @@ import ProfilePage from "../pages/profile/ProfilePage";
 import OnboardingPage from "../pages/onboarding/OnboardingPage";
 import AIToolsPage from "../pages/ai/AIToolsPage";
 import OpportunityDetailPage from "../pages/programs/OpportunityDetailPage";
+import PremiumScholarshipPage from "../pages/programs/PremiumScholarshipPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRoutes() {
@@ -20,6 +21,15 @@ export default function AppRoutes() {
       <Route path="/register" element={<LandingPage initialAuthMode="register" />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+      {/* 
+        Premium Scholarship pages — dynamic template (PremiumScholarshipPage).
+        Uses /becas/:slug for all scholarships (loaded from backend).
+        React Router v6 matches specific paths before generic ones when listed first.
+      */}
+      <Route path="/becas/:slug" element={<PremiumScholarshipPage />} />
+      
+      {/* Generic opportunity detail pages */}
       <Route path="/opportunities/:slug" element={<OpportunityDetailPage />} />
       <Route path="/voluntariados/:slug" element={<OpportunityDetailPage />} />
 

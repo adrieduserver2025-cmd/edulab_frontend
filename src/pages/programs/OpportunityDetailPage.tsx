@@ -15,8 +15,18 @@ import {
   UserCheck, 
   ShieldCheck, 
   Building,
-  ArrowRight
+  ArrowRight,
+  ChevronDown,
+  BookOpen,
+  Users,
+  Leaf,
+  Compass,
+  Network
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import useEmblaCarousel from "embla-carousel-react";
+import aiesecBg from "../../assets/iaesec/fondo.jpeg";
+
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -142,6 +152,354 @@ interface ProgramDetail {
   required_documents?: string[];
 }
 
+// Data structures for interactive accordions
+const BENEFIT_ITEMS = [
+  {
+    emoji: "🌍",
+    title: "Experiencia internacional",
+    desc: "Vive una experiencia transformadora en otro país, sumérgete en una nueva cultura y amplía tu perspectiva del mundo. Trabaja junto a jóvenes de más de 120 países.",
+    highlights: [
+      "Intercambio cultural real",
+      "Vivencia en el extranjero",
+      "Red internacional activa"
+    ],
+    gradient: "from-[#3B82F6] to-[#1D4ED8]",
+    openBg: "bg-blue-50/70 border-blue-200/60 shadow-blue-100/50",
+    textColor: "text-blue-600",
+    icon: Globe
+  },
+  {
+    emoji: "💖",
+    title: "Desarrollo de liderazgo",
+    desc: "Desarrolla habilidades blandas críticas como la inteligencia emocional, resolución de conflictos y adaptabilidad mientras lideras proyectos con impacto social.",
+    highlights: [
+      "Toma de decisiones",
+      "Trabajo bajo presión",
+      "Empatía y resiliencia"
+    ],
+    gradient: "from-[#F43F5E] to-[#BE123C]",
+    openBg: "bg-rose-50/70 border-rose-200/60 shadow-rose-100/50",
+    textColor: "text-rose-600",
+    icon: Users
+  },
+  {
+    emoji: "🤝",
+    title: "Red global de contactos",
+    desc: "Conéctate con una comunidad global de jóvenes líderes, profesionales y organizaciones que comparten tu visión de cambiar el mundo y generar un impacto duradero.",
+    highlights: [
+      "Contactos profesionales",
+      "Eventos y networking",
+      "Mentoría personalizada"
+    ],
+    gradient: "from-[#F59E0B] to-[#B45309]",
+    openBg: "bg-amber-50/70 border-amber-200/60 shadow-amber-100/50",
+    textColor: "text-amber-600",
+    icon: Network
+  },
+  {
+    emoji: "📜",
+    title: "Certificado internacional",
+    desc: "Recibe una certificación oficial emitida por EDULAB y la organización anfitriona al culminar tu programa, que validará tu experiencia y competencias adquiridas.",
+    highlights: [
+      "Acreditación formal",
+      "Mejora para tu CV",
+      "Reconocimiento global"
+    ],
+    gradient: "from-[#10B981] to-[#047857]",
+    openBg: "bg-emerald-50/70 border-emerald-200/60 shadow-emerald-100/50",
+    textColor: "text-emerald-600",
+    icon: Award
+  }
+];
+
+const ACTIVITY_ITEMS = [
+  {
+    emoji: "📚",
+    title: "Enseñanza en comunidades",
+    desc: "Diseña e imparte talleres educativos para niños y jóvenes en comunidades vulnerables, promoviendo el aprendizaje continuo y el desarrollo de habilidades locales.",
+    highlights: [
+      "Planificación educativa",
+      "Taller y dinámicas",
+      "Impacto educativo directo"
+    ],
+    gradient: "from-[#8B5CF6] to-[#6D28D9]",
+    openBg: "bg-violet-50/70 border-violet-200/60 shadow-violet-100/50",
+    textColor: "text-violet-600",
+    icon: BookOpen
+  },
+  {
+    emoji: "🤝",
+    title: "Proyectos sociales",
+    desc: "Colabora en iniciativas de desarrollo comunitario, empoderamiento social y estructuración de proyectos sostenibles que resuelven problemas del entorno real.",
+    highlights: [
+      "Gestión de proyectos",
+      "Trabajo comunitario",
+      "Soluciones de impacto social"
+    ],
+    gradient: "from-[#F97316] to-[#C2410C]",
+    openBg: "bg-orange-50/70 border-orange-200/60 shadow-orange-100/50",
+    textColor: "text-orange-600",
+    icon: Users
+  },
+  {
+    emoji: "🌱",
+    title: "Campañas ambientales",
+    desc: "Participa en jornadas de reforestación, educación ambiental, reciclaje y concientización ecológica para preservar los ecosistemas locales y promover el desarrollo verde.",
+    highlights: [
+      "Educación ecológica",
+      "Acción ambiental directa",
+      "Sostenibilidad comunitaria"
+    ],
+    gradient: "from-[#34D399] to-[#059669]",
+    openBg: "bg-teal-50/70 border-teal-200/60 shadow-teal-100/50",
+    textColor: "text-teal-600",
+    icon: Leaf
+  },
+  {
+    emoji: "🌍",
+    title: "Actividades interculturales",
+    desc: "Comparte tus costumbres, gastronomía y cultura con voluntarios de otros países y familias anfitrionas, creando lazos de amistad e intercambio duraderos.",
+    highlights: [
+      "Intercambio cultural",
+      "Presentaciones culinarias",
+      "Integración global"
+    ],
+    gradient: "from-[#06B6D4] to-[#0E7490]",
+    openBg: "bg-cyan-50/70 border-cyan-200/60 shadow-cyan-100/50",
+    textColor: "text-cyan-600",
+    icon: Compass
+  }
+];
+
+const CAROUSEL_IMAGES = [
+  {
+    url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800",
+    caption: "Voluntarios en acción"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&q=80&w=800",
+    caption: "Liderazgo global"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800",
+    caption: "Trabajo en equipo"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800",
+    caption: "Comunidades locales"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800",
+    caption: "Diversidad cultural"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800",
+    caption: "Experiencia internacional"
+  }
+];
+
+interface InteractiveAccordionCardProps {
+  item: typeof BENEFIT_ITEMS[0];
+  index: number;
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+function InteractiveAccordionCard({ item, index, isOpen, onToggle }: InteractiveAccordionCardProps) {
+  const Icon = item.icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ 
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        delay: index * 0.1,
+      }}
+    >
+      <motion.div
+        animate={{
+          y: isOpen ? 0 : [0, -6, 0, -4, 0],
+          rotate: isOpen ? 0 : [0, 0.6, 0, -0.6, 0],
+        }}
+        transition={{
+          y: {
+            repeat: Infinity,
+            duration: 4,
+            ease: "easeInOut",
+            delay: index * 0.4,
+          },
+          rotate: {
+            repeat: Infinity,
+            duration: 4,
+            ease: "easeInOut",
+            delay: index * 0.4,
+          }
+        }}
+        whileHover={{
+          y: -14,
+          scale: 1.02,
+          boxShadow: "0 20px 48px -8px rgba(0,0,0,0.18)",
+          transition: { duration: 0.3, ease: "easeOut" }
+        }}
+        className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 cursor-pointer select-none bg-white ${
+          isOpen 
+            ? `${item.openBg} shadow-md border-opacity-100` 
+            : "border-gray-200/70 shadow-sm hover:border-gray-300"
+        }`}
+        onClick={onToggle}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shadow-md shadow-black/10 shrink-0`}>
+              <Icon className="w-5.5 h-5.5 stroke-[2]" />
+            </div>
+            
+            <div>
+              <h3 className="font-display font-bold text-sm text-[#00135B] flex items-center gap-1.5 leading-snug">
+                {item.title} <span className="text-base">{item.emoji}</span>
+              </h3>
+            </div>
+          </div>
+
+          <div className={`w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 ${
+            isOpen ? "rotate-180 bg-[#00135B] text-white" : "hover:bg-slate-200"
+          }`}>
+            <ChevronDown className="w-4 h-4 stroke-[2.5]" />
+          </div>
+        </div>
+
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ 
+                height: "auto", 
+                opacity: 1,
+                transition: {
+                  height: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
+                  opacity: { duration: 0.25, delay: 0.05 }
+                }
+              }}
+              exit={{ 
+                height: 0, 
+                opacity: 0,
+                transition: {
+                  height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+                  opacity: { duration: 0.15 }
+                }
+              }}
+              style={{ overflow: "hidden" }}
+            >
+              <div className="pt-4 pl-15 pr-2 space-y-4">
+                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                  {item.desc}
+                </p>
+
+                <div className="flex flex-col gap-2 pt-1">
+                  {item.highlights.map((highlight, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-[11px] font-semibold text-slate-700">
+                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${item.gradient}`} />
+                      <span>{highlight}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+interface PremiumImageCarouselProps {
+  images: { url: string; caption: string }[];
+}
+
+function PremiumImageCarousel({ images }: PremiumImageCarouselProps) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    const intervalId = setInterval(() => {
+      if (emblaApi.canScrollNext()) {
+        emblaApi.scrollNext();
+      } else {
+        emblaApi.scrollTo(0);
+      }
+    }, 3500);
+
+    return () => clearInterval(intervalId);
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi]);
+
+  const scrollTo = (index: number) => {
+    if (emblaApi) emblaApi.scrollTo(index);
+  };
+
+  return (
+    <div className="w-full self-start lg:sticky lg:top-28 z-20 space-y-4">
+      <div className="relative rounded-3xl overflow-hidden border border-gray-200/80 shadow-md group aspect-[4/3] sm:aspect-video md:aspect-[4/3] lg:aspect-[4/3] bg-slate-900">
+        <div className="overflow-hidden w-full h-full" ref={emblaRef}>
+          <div className="flex w-full h-full">
+            {images.map((image, idx) => (
+              <div key={idx} className="relative flex-[0_0_100%] min-w-0 h-full">
+                <img
+                  src={image.url}
+                  alt={image.caption}
+                  className="w-full h-full object-cover select-none transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <span className="inline-block px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-extrabold tracking-wide shadow-lg uppercase">
+                    {image.caption}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="absolute bottom-6 right-6 flex items-center gap-1.5 z-30">
+          {images.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => scrollTo(idx)}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                selectedIndex === idx 
+                  ? "w-6 bg-white shadow-md" 
+                  : "w-2 bg-white/40 hover:bg-white/70"
+              }`}
+              aria-label={`Ir al slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function OpportunityDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -149,6 +507,7 @@ export default function OpportunityDetailPage() {
   // Auth & Profile states
   const { isAuthenticated, user, setUser } = useAuthStore();
   const [profile, setProfile] = useState<StudentProfileResponse | null>(null);
+  const [applications, setApplications] = useState<any[]>([]);
 
   // Detail States
   const [opportunity, setOpportunity] = useState<ProgramDetail | null>(null);
@@ -157,6 +516,8 @@ export default function OpportunityDetailPage() {
 
   // UI Interactivity States
   const [activeTab, setActiveTab] = useState("descripcion");
+  const [openBenefitIndex, setOpenBenefitIndex] = useState<number | null>(0);
+  const [openActivityIndex, setOpenActivityIndex] = useState<number | null>(0);
   const [savedPrograms, setSavedPrograms] = useState<number[]>(() => {
     const saved = localStorage.getItem("edulab_saved_programs");
     return saved ? JSON.parse(saved) : [];
@@ -164,6 +525,8 @@ export default function OpportunityDetailPage() {
   
   // Video embed inline toggle
   const [playVideo, setPlayVideo] = useState(false);
+  const [playTestimonial1, setPlayTestimonial1] = useState(false);
+  const [playTestimonial2, setPlayTestimonial2] = useState(false);
 
   // Modals
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -275,14 +638,19 @@ export default function OpportunityDetailPage() {
     fetchOpportunity();
   }, [slug]);
 
-  // Load student profile for completeness check
+  // Load student profile and applications for completeness and check-applied checks
   useEffect(() => {
     if (isAuthenticated) {
       getMyProfile()
         .then((data) => setProfile(data))
         .catch((err) => console.error("Could not fetch profile:", err));
+
+      axiosClient.get("/applications/")
+        .then((res) => setApplications(res.data))
+        .catch((err) => console.error("Could not fetch applications:", err));
     } else {
       setProfile(null);
+      setApplications([]);
     }
   }, [isAuthenticated]);
 
@@ -353,6 +721,23 @@ export default function OpportunityDetailPage() {
     setApplyStep(1);
     setApplyError(null);
     setShowApplyModal(true);
+
+    // Securely register the started draft in the backend database
+    try {
+      await axiosClient.post("/applications/", {
+        program_id: opportunity.id,
+        status: "started"
+      });
+      // Sync the profile and applications state in case the backend auto-created a stub profile/application draft
+      const [updatedProfile, updatedAppsRes] = await Promise.all([
+        getMyProfile(),
+        axiosClient.get("/applications/")
+      ]);
+      setProfile(updatedProfile);
+      setApplications(updatedAppsRes.data);
+    } catch (draftErr) {
+      console.warn("Could not save initial draft application in backend:", draftErr);
+    }
   };
 
   const handleFinalSubmit = async () => {
@@ -388,9 +773,14 @@ export default function OpportunityDetailPage() {
 
       await axiosClient.post("/applications/", {
         program_id: opportunity.id,
+        status: "pending",
         answers: answersList,
         uploaded_documents: uploadedDocs
       });
+
+      // Refresh applications list
+      const appsRes = await axiosClient.get("/applications/");
+      setApplications(appsRes.data);
 
       setShowApplyModal(false);
       setShowPostulationModal(true);
@@ -461,6 +851,8 @@ export default function OpportunityDetailPage() {
     );
   }
 
+  const existingApp = opportunity ? applications.find((a) => a.program_id === opportunity.id) : null;
+
   return (
     <div className="w-full min-h-screen bg-[#f8fafc] text-slate-700 flex flex-col justify-between overflow-x-hidden pt-20">
       <PublicNavbar onOpenAuth={openAuthModal} />
@@ -476,6 +868,12 @@ export default function OpportunityDetailPage() {
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-b from-[#00135B] via-[#001a7a] to-[#0d288c] text-white overflow-hidden py-16 px-6 md:px-12 z-10 flex flex-col items-center">
         
+        {/* Transparent AIESEC Background Image Overlay */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center mix-blend-overlay opacity-30 pointer-events-none"
+          style={{ backgroundImage: `url(${aiesecBg})` }}
+        />
+
         {/* Tech Grid Background lines */}
         <div className="absolute inset-0 tech-grid opacity-35 pointer-events-none z-0"></div>
 
@@ -555,13 +953,33 @@ export default function OpportunityDetailPage() {
 
             {/* Buttons Row */}
             <div className="flex items-center gap-4 pt-4">
-              <button
-                onClick={handleStartPostulation}
-                disabled={postulating}
-                className="px-8 py-3.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
-              >
-                {postulating ? "Procesando..." : "Iniciar mi postulación"}
-              </button>
+              {!existingApp || existingApp.status === "started" ? (
+                <button
+                  onClick={handleStartPostulation}
+                  disabled={postulating}
+                  className="px-8 py-3.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                >
+                  {postulating ? "Procesando..." : (existingApp?.status === "started" ? "Continuar postulación" : "Iniciar mi postulación")}
+                </button>
+              ) : (
+                <button
+                  disabled
+                  className={`px-8 py-3.5 rounded-xl text-xs font-extrabold uppercase tracking-wider border cursor-not-allowed select-none transition-all shadow-sm ${
+                    existingApp.status === "pending"
+                      ? "bg-amber-50 border-amber-250 text-amber-700"
+                      : existingApp.status === "in_review"
+                      ? "bg-blue-50 border-blue-250 text-blue-700"
+                      : existingApp.status === "accepted"
+                      ? "bg-emerald-50 border-emerald-250 text-emerald-700"
+                      : "bg-rose-50 border-rose-250 text-rose-700"
+                  }`}
+                >
+                  {existingApp.status === "pending" && "Postulado - Esperando revisión"}
+                  {existingApp.status === "in_review" && "Postulación en revisión"}
+                  {existingApp.status === "accepted" && "Postulación Aceptada 🎉"}
+                  {existingApp.status === "rejected" && "Postulación Rechazada"}
+                </button>
+              )}
               
               <button
                 onClick={() => scrollToSection("requisitos")}
@@ -666,47 +1084,60 @@ export default function OpportunityDetailPage() {
             </div>
 
             {/* Beneficios */}
-            <div id="beneficios" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
-              <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Beneficios</span>
-              <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">Lo que ganarás con esta experiencia</h2>
+            <div id="beneficios" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-8 text-left">
+              <div className="space-y-2">
+                <span className="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[10px] font-extrabold uppercase tracking-wider">
+                  Beneficios
+                </span>
+                <h2 className="font-display font-bold text-2xl md:text-3xl text-[#00135B] mt-1">Lo que ganarás con esta experiencia</h2>
+              </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {(opportunity.benefits_json || [
-                  "Experiencia internacional 🌍",
-                  "Desarrollo de liderazgo 🧠",
-                  "Red global de contactos 🤝",
-                  "Certificado internacional 📜",
-                  "Crecimiento personal 🌱"
-                ]).map((ben, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 border border-gray-200/50 rounded-2xl flex flex-col justify-between space-y-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#5D8CE2]/10 border border-[#5D8CE2]/20 flex items-center justify-center text-[#5D8CE2] font-bold text-sm shrink-0">
-                      {idx + 1}
-                    </div>
-                    <span className="font-bold text-xs text-[#00135B] leading-snug">{ben}</span>
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {/* Left: Accordion list */}
+                <div className="space-y-4">
+                  {BENEFIT_ITEMS.map((item, idx) => (
+                    <InteractiveAccordionCard
+                      key={idx}
+                      item={item}
+                      index={idx}
+                      isOpen={openBenefitIndex === idx}
+                      onToggle={() => setOpenBenefitIndex(openBenefitIndex === idx ? null : idx)}
+                    />
+                  ))}
+                </div>
+
+                {/* Right: Carousel */}
+                <PremiumImageCarousel images={CAROUSEL_IMAGES} />
               </div>
             </div>
 
             {/* Actividades */}
-            <div id="actividades" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
-              <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Actividades</span>
-              <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">¿Qué harás?</h2>
+            <div id="actividades" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-8 text-left">
+              <div className="space-y-2">
+                <span className="inline-block px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-[10px] font-extrabold uppercase tracking-wider">
+                  Actividades
+                </span>
+                <h2 className="font-display font-bold text-2xl md:text-3xl text-[#00135B] mt-1">¿Qué harás?</h2>
+              </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {(opportunity.activities || [
-                  "Enseñanza en comunidades 📚",
-                  "Proyectos sociales 🤝",
-                  "Campañas ambientales 🌱",
-                  "Actividades interculturales 🌍"
-                ]).map((act, idx) => (
-                  <div key={idx} className="p-4 bg-slate-50 border border-gray-200/50 rounded-2xl flex flex-col justify-between space-y-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#F5C542]/10 border border-[#F5C542]/30 flex items-center justify-center text-[#00135B] font-bold text-xs shrink-0">
-                      {idx + 1}
-                    </div>
-                    <span className="font-bold text-xs text-slate-700 leading-snug">{act}</span>
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {/* Left: Carousel (on left because alternating!) */}
+                <div className="order-2 lg:order-1">
+                  <PremiumImageCarousel images={[...CAROUSEL_IMAGES].reverse()} />
+                </div>
+
+                {/* Right: Accordion list */}
+                <div className="space-y-4 order-1 lg:order-2">
+                  {ACTIVITY_ITEMS.map((item, idx) => (
+                    <InteractiveAccordionCard
+                      key={idx}
+                      item={item}
+                      index={idx}
+                      isOpen={openActivityIndex === idx}
+                      onToggle={() => setOpenActivityIndex(openActivityIndex === idx ? null : idx)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -742,14 +1173,29 @@ export default function OpportunityDetailPage() {
                 {/* Video Card 1 */}
                 <div className="border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="relative aspect-video bg-slate-900 flex items-center justify-center">
-                    <img 
-                      src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" 
-                      alt="AIESEC volunteer story 1" 
-                      className="absolute inset-0 w-full h-full object-cover opacity-60"
-                    />
-                    <button className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer">
-                      <Play className="w-4 h-4 fill-current translate-x-0.5" />
-                    </button>
+                    {playTestimonial1 ? (
+                      <iframe
+                        className="absolute inset-0 w-full h-full border-none rounded-t-3xl"
+                        src="https://www.youtube.com/embed/7C7E1l5kpT8?autoplay=1"
+                        title="Experiencias AIESEC"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    ) : (
+                      <>
+                        <img 
+                          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" 
+                          alt="AIESEC volunteer story 1" 
+                          className="absolute inset-0 w-full h-full object-cover opacity-60"
+                        />
+                        <button 
+                          onClick={() => setPlayTestimonial1(true)}
+                          className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer z-10"
+                        >
+                          <Play className="w-4 h-4 fill-current translate-x-0.5" />
+                        </button>
+                      </>
+                    )}
                   </div>
                   <div className="p-4 text-left space-y-1">
                     <h4 className="font-bold text-xs text-[#00135B]">Experiencias AIESEC alrededor del mundo</h4>
@@ -762,14 +1208,29 @@ export default function OpportunityDetailPage() {
                 {/* Video Card 2 */}
                 <div className="border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="relative aspect-video bg-slate-900 flex items-center justify-center">
-                    <img 
-                      src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400" 
-                      alt="AIESEC volunteer story 2" 
-                      className="absolute inset-0 w-full h-full object-cover opacity-60"
-                    />
-                    <button className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer">
-                      <Play className="w-4 h-4 fill-current translate-x-0.5" />
-                    </button>
+                    {playTestimonial2 ? (
+                      <iframe
+                        className="absolute inset-0 w-full h-full border-none rounded-t-3xl"
+                        src="https://www.youtube.com/embed/h1I_q9PpjxA?autoplay=1"
+                        title="Voluntariado internacional"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    ) : (
+                      <>
+                        <img 
+                          src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400" 
+                          alt="AIESEC volunteer story 2" 
+                          className="absolute inset-0 w-full h-full object-cover opacity-60"
+                        />
+                        <button 
+                          onClick={() => setPlayTestimonial2(true)}
+                          className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer z-10"
+                        >
+                          <Play className="w-4 h-4 fill-current translate-x-0.5" />
+                        </button>
+                      </>
+                    )}
                   </div>
                   <div className="p-4 text-left space-y-1">
                     <h4 className="font-bold text-xs text-[#00135B]">Voluntariado internacional con impacto</h4>
@@ -921,17 +1382,30 @@ export default function OpportunityDetailPage() {
           {/* Center yellow CTA card */}
           <div className="bg-[#F5C542] p-6 rounded-3xl text-[#00135B] flex flex-col md:flex-row items-center gap-6 shadow-xl max-w-md w-full shrink-0">
             <div className="text-left flex-1 space-y-1">
-              <h4 className="font-bold text-sm">Comenzar postulación</h4>
-              <p className="text-[10px] text-[#00135B]/80 font-semibold">
-                Da el primer paso para vivir una experiencia que te transformará.
+              <h4 className="font-bold text-sm font-display">
+                {!existingApp || existingApp.status === "started" ? "Comenzar postulación" : "Estado de tu postulación"}
+              </h4>
+              <p className="text-[10px] text-[#00135B]/80 font-semibold font-medium">
+                {!existingApp || existingApp.status === "started" 
+                  ? "Da el primer paso para vivir una experiencia que te transformará."
+                  : "Tu postulación ha sido enviada con éxito y está bajo revisión."}
               </p>
             </div>
-            <button
-              onClick={handleStartPostulation}
-              className="px-5 py-3 rounded-xl bg-[#00135B] hover:bg-[#0d288c] text-white font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 shrink-0 border-none cursor-pointer"
-            >
-              Quiero postular ahora
-            </button>
+            {!existingApp || existingApp.status === "started" ? (
+              <button
+                onClick={handleStartPostulation}
+                className="px-5 py-3 rounded-xl bg-[#00135B] hover:bg-[#0d288c] text-white font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 shrink-0 border-none cursor-pointer"
+              >
+                {existingApp?.status === "started" ? "Continuar" : "Quiero postular ahora"}
+              </button>
+            ) : (
+              <span className="px-5 py-3 rounded-xl bg-white/40 border border-white/20 text-[#00135B] font-extrabold text-xs uppercase tracking-wider select-none">
+                {existingApp.status === "pending" && "Pendiente"}
+                {existingApp.status === "in_review" && "En revisión"}
+                {existingApp.status === "accepted" && "Aprobado 🎉"}
+                {existingApp.status === "rejected" && "Rechazado"}
+              </span>
+            )}
           </div>
 
           <div className="space-y-2 max-w-xs text-left">

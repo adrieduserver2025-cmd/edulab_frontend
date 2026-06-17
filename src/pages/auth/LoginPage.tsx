@@ -75,19 +75,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
-  const handleDeveloperBypass = (role: "student" | "admin") => {
-    const token = `mock-${role}-token`;
-    const mockUser = {
-      id: `mock-${role}-uid`,
-      email: `${role}@edulab.com`,
-      role: role as "student" | "admin" | "reviewer",
-      is_active: true,
-    };
-    loginStore(token, mockUser);
-    navigate("/dashboard");
-  };
-
   return (
     <div className="min-h-screen bg-[#010414] text-white tech-grid flex flex-col justify-center items-center p-6 relative overflow-hidden">
       {/* Glow Orbs */}
@@ -184,28 +171,6 @@ export default function LoginPage() {
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
-
-        {/* Developer Sandbox Bypass Mode */}
-        <div className="mt-8 pt-6 border-t border-glass-border">
-          <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-3 text-center">
-            🔧 Sandbox de Desarrollador
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => handleDeveloperBypass("student")}
-              className="py-2 px-3 rounded-xl bg-[#00135B]/20 hover:bg-[#00135B]/30 border border-[#00135B]/40 hover:border-secondary/40 text-xs font-semibold text-secondary transition-all duration-200 cursor-pointer"
-            >
-              Rol: Estudiante
-            </button>
-            <button
-              onClick={() => handleDeveloperBypass("admin")}
-              className="py-2 px-3 rounded-xl bg-accent/10 hover:bg-accent/15 border border-accent/25 hover:border-accent/40 text-xs font-semibold text-accent transition-all duration-200 cursor-pointer"
-            >
-              Rol: Administrador
-            </button>
-          </div>
-        </div>
-
         {/* Toggle Mode */}
         <div className="mt-6 text-center text-xs">
           <Link

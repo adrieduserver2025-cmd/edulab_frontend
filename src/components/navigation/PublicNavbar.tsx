@@ -63,6 +63,7 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
   const menuData: Record<string, SubmenuItem[]> = {
     Oportunidades: [
       { title: "Becas de Excelencia", desc: "Financiamiento completo para postgrados y pregrados.", icon: GraduationCap, slug: "daad-beca" },
+      { title: "Beca Fulbright 🇺🇸", desc: "Estudia una maestría en EE.UU. con financiamiento 100%.", icon: DollarSign, slug: "fulbright-beca", highlight: false },
       { title: "Intercambios Académicos", desc: "Semestres en las mejores universidades del mundo.", icon: Globe, slug: "u-tokyo-exchange" },
       { title: "Summer Schools", desc: "Cursos cortos e intensivos de verano en el extranjero.", icon: BookOpen, slug: "oxford-summer-school" },
     ],
@@ -132,7 +133,12 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
                           key={idx}
                           onClick={() => {
                             if (item.slug) {
-                              navigate(`/opportunities/${item.slug}`);
+                              // Fulbright and scholarships use /becas/ route (PremiumScholarshipPage)
+                              if (item.slug === "fulbright-beca") {
+                                navigate(`/becas/${item.slug}`);
+                              } else {
+                                navigate(`/opportunities/${item.slug}`);
+                              }
                             } else {
                               if (isAuthenticated) {
                                 if (menu === "IA") navigate("/ai-tools");
