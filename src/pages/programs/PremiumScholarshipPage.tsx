@@ -10,6 +10,9 @@ import {
 import PublicNavbar from "../../components/navigation/PublicNavbar";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
+import fulbrightBg from "../../assets/fulbright/662bb8d0a1a92_.png";
+import fulbrightLogo from "../../assets/fulbright/images (1).png";
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -211,6 +214,7 @@ export default function PremiumScholarshipPage() {
   const [applySuccess, setApplySuccess] = useState(false);
   const [applyError, setApplyError] = useState<string | null>(null);
   const [heroImgIdx] = useState(() => Math.floor(Math.random() * SCHOLARSHIP_IMAGES.length));
+  const [playHeroVideo, setPlayHeroVideo] = useState(false);
 
   // Load program from backend
   useEffect(() => {
@@ -352,18 +356,25 @@ export default function PremiumScholarshipPage() {
         className="hero-dots pt-24 pb-0 relative overflow-hidden"
         style={{
           background:
-            "linear-gradient(135deg, #00135B 0%, #001a7a 50%, #0a2490 100%)",
+            "linear-gradient(135deg, #1a0d00 0%, #2d1600 30%, #3d2000 60%, #5a3000 100%)",
         }}
       >
-        {/* Glow circles */}
+        {/* Glow circles — amber/golden for Fulbright */}
         <div
-          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-10 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, #5D8CE2, transparent)" }}
-        />
-        <div
-          className="absolute bottom-20 left-0 w-[300px] h-[300px] rounded-full opacity-8 blur-3xl pointer-events-none"
+          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
           style={{ background: "radial-gradient(circle, #F5C542, transparent)" }}
         />
+        <div
+          className="absolute bottom-20 left-0 w-[300px] h-[300px] rounded-full opacity-10 blur-3xl pointer-events-none"
+          style={{ background: "radial-gradient(circle, #F59E0B, transparent)" }}
+        />
+        {/* Fulbright background image overlay */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
+          style={{ backgroundImage: `url(${fulbrightBg})`, opacity: 0.12 }}
+        />
+        {/* Golden shimmer accents */}
+        <div className="absolute top-0 left-1/2 w-96 h-32 rounded-full pointer-events-none blur-3xl opacity-10" style={{background: "radial-gradient(circle, #F5C542 0%, transparent 70%)", transform: "translate(-50%, -50%)"}} />
 
         <div className="max-w-7xl mx-auto px-6 py-14">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -493,53 +504,79 @@ export default function PremiumScholarshipPage() {
               </div>
             </div>
 
-            {/* Right — Hero image */}
+            {/* Right — Fulbright Video Card */}
             <div className="relative">
               <div
-                className="relative rounded-2xl overflow-hidden"
+                className="relative rounded-2xl overflow-hidden shadow-2xl group"
                 style={{ aspectRatio: "4/3" }}
               >
-                <img
-                  src={heroImage}
-                  alt={`${program.title} — ${program.country}`}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = SCHOLARSHIP_IMAGES[0];
-                  }}
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgba(0,19,91,0.65) 0%, transparent 60%)",
-                  }}
-                />
-                {/* Open badge */}
-                <div
-                  className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
-                  style={{ background: "#22c55e" }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                  Convocatoria Abierta
-                </div>
-                {/* Program name overlay */}
-                <div className="absolute bottom-4 left-4">
-                  <p className="text-white font-black text-lg leading-tight">
-                    {program.organization_name || program.organization}
-                  </p>
-                  <p className="text-white/60 text-xs">
-                    {program.institution}
-                  </p>
-                </div>
+                {playHeroVideo ? (
+                  <iframe
+                    className="absolute inset-0 w-full h-full rounded-2xl border-none"
+                    src="https://www.youtube.com/embed/iS3qREybbeI?autoplay=1"
+                    title="Becas Fulbright"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <>
+                    {/* Fulbright main image as thumbnail */}
+                    <img
+                      src={fulbrightBg}
+                      alt="Becas Fulbright — La oportunidad de tu vida"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {/* Gradient overlay */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(90,45,0,0.90) 0%, rgba(45,24,0,0.35) 50%, transparent 100%)",
+                      }}
+                    />
+                    {/* Fulbright logo circular */}
+                    <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden border-2 border-amber-400/60">
+                      <img src={fulbrightLogo} alt="Fulbright" className="w-9 h-9 object-contain" />
+                    </div>
+                    {/* Open badge */}
+                    <div
+                      className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
+                      style={{ background: "#22c55e" }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      Convocatoria Abierta
+                    </div>
+                    {/* Play button */}
+                    <button
+                      onClick={() => setPlayHeroVideo(true)}
+                      className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20"
+                      style={{ background: "#F5C542", width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
+                      aria-label="Ver video Fulbright"
+                    >
+                      <svg viewBox="0 0 24 24" fill="#1a0d00" width="26" height="26"><polygon points="6,4 20,12 6,20" /></svg>
+                    </button>
+                    {/* Bottom text */}
+                    <div className="absolute bottom-4 left-4 right-4 z-10 space-y-1">
+                      <span
+                        className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider"
+                        style={{ background: "rgba(245,197,66,0.25)", border: "1px solid rgba(245,197,66,0.5)", color: "#F5C542" }}
+                      >
+                        🎓 Video Oficial Fulbright
+                      </span>
+                      <p className="text-white font-bold text-sm leading-tight">Becas Fulbright: La oportunidad de tu vida</p>
+                      <p className="text-white/60 text-[10px]">Mira cómo Fulbright transforma vidas alrededor del mundo.</p>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Floating glassmorphism card */}
               <div
-                className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl grid grid-cols-2 gap-3 mt-[-60px]"
+                className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl grid grid-cols-2 gap-3"
                 style={{
-                  background: "rgba(255,255,255,0.08)",
+                  background: "rgba(245,197,66,0.1)",
                   backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(255,255,255,0.15)",
+                  border: "1px solid rgba(245,197,66,0.25)",
                   position: "absolute",
                   bottom: "1rem",
                   left: "1rem",
@@ -559,7 +596,7 @@ export default function PremiumScholarshipPage() {
                   { icon: "🌐", label: "Modalidad", val: "Presencial" },
                 ].map((item) => (
                   <div key={item.label}>
-                    <div className="text-white/50 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                    <div className="text-amber-300/70 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                       <span>{item.icon}</span> {item.label}
                     </div>
                     <div className="text-white font-bold text-sm mt-0.5">

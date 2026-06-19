@@ -3,6 +3,8 @@ import { getMyProfile, createProfile, updateProfile } from "../../services/profi
 import type { StudentProfileData, StudentProfileResponse } from "../../services/profileService";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
+import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
+
 import { Building2, Globe, MapPin, User as UserIcon, Phone, Mail, FileText, CheckCircle2, ShieldAlert } from "lucide-react";
 
 export default function ProfilePage() {
@@ -309,18 +311,8 @@ export default function ProfilePage() {
     "Investigación Científica"
   ];
 
-  const COUNTRY_OPTIONS = [
-    "Estados Unidos",
-    "Canadá",
-    "Reino Unido",
-    "Alemania",
-    "España",
-    "Francia",
-    "Australia",
-    "Japón",
-    "Corea del Sur",
-    "Latinoamérica"
-  ];
+  const COUNTRY_OPTIONS = SPANISH_SPEAKING_COUNTRIES.map((c) => `${c.flag} ${c.name}`);
+
 
   const PROGRAM_TYPE_OPTIONS = [
     { key: "scholarship", label: "Beca (Scholarship)" },
@@ -448,15 +440,25 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500">País de Residencia <span className="text-red-400">*</span></label>
-                    <input
-                      type="text"
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      placeholder="Ej. Costa Rica"
-                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
-                      required
-                    />
+                    <div className="relative">
+                      <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all appearance-none cursor-pointer"
+                        required
+                      >
+                        <option value="">-- Selecciona tu país --</option>
+                        {SPANISH_SPEAKING_COUNTRIES.map((c) => (
+                          <option key={c.name} value={c.name}>
+                            {c.flag} {c.name}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -1172,14 +1174,21 @@ function OrganizationProfileEditor() {
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500">País *</label>
               <div className="relative">
-                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
+                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10" />
+                <select
                   required
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="w-full pl-11 pr-4 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
-                />
+                  className="w-full pl-11 pr-8 bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">-- Selecciona el país --</option>
+                  {SPANISH_SPEAKING_COUNTRIES.map((c) => (
+                    <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
+                  ))}
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                </div>
               </div>
             </div>
 

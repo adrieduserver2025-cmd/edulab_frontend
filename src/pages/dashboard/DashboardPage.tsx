@@ -28,6 +28,7 @@ import axiosClient from "../../services/api/axiosClient";
 import { useAuthStore } from "../../store/useAuthStore";
 import { getMyProfile } from "../../services/profileService";
 import type { StudentProfileResponse } from "../../services/profileService";
+import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
 
 interface ProgramItem {
   id: number;
@@ -793,6 +794,20 @@ function OrganizationDashboard() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [statusError, setStatusError] = useState<string | null>(null);
 
+  // View / Edit Program Modal states (Org)
+  const [viewingProg, setViewingProg] = useState<any | null>(null);
+  const [editingOrgProg, setEditingOrgProg] = useState<any | null>(null);
+  const [orgProgEditForm, setOrgProgEditForm] = useState<any>({});
+  const [orgProgEditLoading, setOrgProgEditLoading] = useState(false);
+  const [orgProgEditError, setOrgProgEditError] = useState<string | null>(null);
+  const [editReqProfileFields, setEditReqProfileFields] = useState<string[]>([]);
+  const [editReqDocuments, setEditReqDocuments] = useState<string[]>([]);
+  const [editCustomQuestions, setEditCustomQuestions] = useState<any[]>([]);
+  const [editTempQText, setEditTempQText] = useState("");
+  const [editTempQType, setEditTempQType] = useState<"short_text" | "long_text" | "single_choice">("short_text");
+  const [editTempQOptions, setEditTempQOptions] = useState("");
+  const [editTempQRequired, setEditTempQRequired] = useState(true);
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -912,6 +927,55 @@ function OrganizationDashboard() {
     }
   };
 
+  const handleEditOrgProg = (prog: any) => {
+    setOrgProgEditForm({
+      title: prog.title || "",
+      type: prog.type || "scholarship",
+      description: prog.description || "",
+      country: prog.country || "",
+      deadline: prog.deadline ? prog.deadline.split("T")[0] : "",
+      benefits: prog.benefits || "",
+      eligibility: prog.eligibility || "",
+      slots: prog.slots != null ? String(prog.slots) : "",
+    });
+    setEditReqProfileFields(prog.required_profile_fields || []);
+    setEditReqDocuments(prog.required_documents || []);
+    setEditCustomQuestions(prog.custom_questions || []);
+    setEditTempQText("");
+    setEditTempQOptions("");
+    setEditTempQRequired(true);
+    setOrgProgEditError(null);
+    setEditingOrgProg(prog);
+  };
+
+  const handleSaveOrgProg = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingOrgProg) return;
+    setOrgProgEditLoading(true);
+    setOrgProgEditError(null);
+    try {
+      await axiosClient.put(`/organizations/me/programs/${editingOrgProg.id}`, {
+        title: orgProgEditForm.title,
+        type: orgProgEditForm.type,
+        description: orgProgEditForm.description,
+        country: orgProgEditForm.country,
+        deadline: orgProgEditForm.deadline || null,
+        benefits: orgProgEditForm.benefits,
+        eligibility: orgProgEditForm.eligibility,
+        slots: orgProgEditForm.slots ? parseInt(orgProgEditForm.slots) : null,
+        required_profile_fields: editReqProfileFields,
+        required_documents: editReqDocuments,
+        custom_questions: editCustomQuestions,
+      });
+      setEditingOrgProg(null);
+      await loadData();
+    } catch (err: any) {
+      setOrgProgEditError(err.response?.data?.detail || "Error al actualizar la convocatoria.");
+    } finally {
+      setOrgProgEditLoading(false);
+    }
+  };
+
   const handleLogout = async () => {
     await logoutStore();
     window.location.href = "/";
@@ -1026,7 +1090,7 @@ function OrganizationDashboard() {
                     <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Límite</th>
                     <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Cupos</th>
                     <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Estado</th>
-                    <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Slug</th>
+                    <th className="p-4.5 text-xs font-bold text-slate-400 uppercase">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -1068,7 +1132,24 @@ function OrganizationDashboard() {
                           </span>
                         )}
                       </td>
-                      <td className="p-4.5 text-xs font-mono text-slate-400 select-all">{p.slug}</td>
+                      <td className="p-4.5">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setViewingProg(p)}
+                            title="Ver detalles"
+                            className="p-1.5 rounded-lg hover:bg-indigo-50 text-slate-400 hover:text-[#00135B] transition-all border border-transparent hover:border-indigo-100"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                          </button>
+                          <button
+                            onClick={() => handleEditOrgProg(p)}
+                            title="Editar convocatoria"
+                            className="p-1.5 rounded-lg hover:bg-amber-50 text-slate-400 hover:text-amber-600 transition-all border border-transparent hover:border-amber-100"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -1169,6 +1250,260 @@ function OrganizationDashboard() {
         </div>
       )}
 
+      {/* VIEW PROGRAM MODAL (Org) */}
+      {viewingProg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] animate-scaleUp">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-display font-extrabold text-xl text-[#00135B]">Detalles de la Convocatoria</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Información completa de la convocatoria guardada</p>
+              </div>
+              <button onClick={() => setViewingProg(null)} className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all cursor-pointer">
+                <X className="w-5 h-5"/>
+              </button>
+            </div>
+            <div className="overflow-y-auto p-6 space-y-4 text-sm">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Título</p>
+                  <p className="font-semibold text-slate-700">{viewingProg.title || "—"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Tipo</p>
+                  <p className="font-semibold text-slate-700 uppercase">{viewingProg.type || "—"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">País</p>
+                  <p className="font-semibold text-slate-700">{viewingProg.country || "—"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Fecha Límite</p>
+                  <p className="font-semibold text-slate-700">{viewingProg.deadline || "Abierto"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Cupos</p>
+                  <p className="font-semibold text-slate-700">{viewingProg.slots ?? "N/A"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Estado</p>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${viewingProg.status === "approved" ? "bg-emerald-50 text-emerald-700" : viewingProg.status === "rejected" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700"}`}>
+                    {viewingProg.status === "approved" ? "Aprobada" : viewingProg.status === "rejected" ? "Rechazada" : "En Revisión"}
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Descripción</p>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{viewingProg.description || "—"}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Elegibilidad / Requisitos</p>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{viewingProg.eligibility || "—"}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Beneficios</p>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{viewingProg.benefits || "—"}</p>
+              </div>
+              {viewingProg.required_profile_fields?.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Campos de Perfil Requeridos</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {viewingProg.required_profile_fields.map((f: string) => (
+                      <span key={f} className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-indigo-50 border border-indigo-100 text-[#00135B] uppercase">{f}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {viewingProg.required_documents?.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Documentos Requeridos</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {viewingProg.required_documents.map((d: string) => (
+                      <span key={d} className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 uppercase">{d}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {viewingProg.custom_questions?.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Preguntas Personalizadas</p>
+                  {viewingProg.custom_questions.map((q: any, i: number) => (
+                    <div key={i} className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                      <p className="text-xs font-bold text-slate-700">{i+1}. {q.text}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Tipo: {q.type} · {q.required ? "Requerida" : "Opcional"}</p>
+                      {q.options?.length > 0 && (
+                        <p className="text-[10px] text-slate-500 mt-0.5">Opciones: {q.options.join(", ")}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-100 flex justify-end gap-3">
+              <button onClick={() => { setViewingProg(null); handleEditOrgProg(viewingProg); }} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-amber-200 text-amber-700 text-xs font-bold hover:bg-amber-50 transition-all cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                Editar
+              </button>
+              <button onClick={() => setViewingProg(null)} className="px-4 py-2 rounded-xl bg-[#00135B] text-white text-xs font-bold hover:bg-[#001a7a] transition-all cursor-pointer">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT PROGRAM MODAL (Org) */}
+      {editingOrgProg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] animate-scaleUp">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-display font-extrabold text-xl text-[#00135B]">Editar Convocatoria</h3>
+                <p className="text-xs text-amber-500 font-semibold mt-0.5">⚠ Al guardar, la convocatoria volverá a estado "En Revisión" hasta aprobación del admin.</p>
+              </div>
+              <button onClick={() => setEditingOrgProg(null)} className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all cursor-pointer">
+                <X className="w-5 h-5"/>
+              </button>
+            </div>
+            <form onSubmit={handleSaveOrgProg} className="overflow-y-auto p-6 space-y-4 text-sm">
+              {orgProgEditError && (
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-semibold">{orgProgEditError}</div>
+              )}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-slate-400">Título *</label>
+                  <input value={orgProgEditForm.title || ""} onChange={e => setOrgProgEditForm((f:any) => ({...f, title: e.target.value}))} required className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2] focus:ring-1 focus:ring-[#5D8CE2]/20 transition-all" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-slate-400">Tipo</label>
+                  <select value={orgProgEditForm.type || "scholarship"} onChange={e => setOrgProgEditForm((f:any) => ({...f, type: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2]">
+                    <option value="scholarship">Beca</option>
+                    <option value="volunteering">Voluntariado</option>
+                    <option value="internship">Pasantía</option>
+                    <option value="exchange">Intercambio</option>
+                    <option value="research">Investigación</option>
+                    <option value="other">Otro</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-slate-400">País</label>
+                  <div className="relative">
+                    <select
+                      value={orgProgEditForm.country || ""}
+                      onChange={e => setOrgProgEditForm((f:any) => ({...f, country: e.target.value}))}
+                      className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2] appearance-none cursor-pointer"
+                    >
+                      <option value="">-- Selecciona --</option>
+                      {SPANISH_SPEAKING_COUNTRIES.map((c) => (
+                        <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-slate-400">Fecha Límite</label>
+                  <input type="date" value={orgProgEditForm.deadline || ""} onChange={e => setOrgProgEditForm((f:any) => ({...f, deadline: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2]" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold text-slate-400">Cupos</label>
+                  <input type="number" min="1" value={orgProgEditForm.slots || ""} onChange={e => setOrgProgEditForm((f:any) => ({...f, slots: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2]" placeholder="Sin límite" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-slate-400">Descripción *</label>
+                <textarea rows={4} value={orgProgEditForm.description || ""} onChange={e => setOrgProgEditForm((f:any) => ({...f, description: e.target.value}))} required className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2] resize-none" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-slate-400">Elegibilidad / Requisitos</label>
+                <textarea rows={3} value={orgProgEditForm.eligibility || ""} onChange={e => setOrgProgEditForm((f:any) => ({...f, eligibility: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2] resize-none" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-slate-400">Beneficios</label>
+                <textarea rows={3} value={orgProgEditForm.benefits || ""} onChange={e => setOrgProgEditForm((f:any) => ({...f, benefits: e.target.value}))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#5D8CE2] resize-none" />
+              </div>
+
+              {/* Required Profile Fields */}
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase font-bold text-slate-400">Campos de Perfil Requeridos</label>
+                <div className="flex flex-wrap gap-2">
+                  {["phone","cv","linkedin","portfolio","bio","university","career","semester","gpa","english_level"].map(field => (
+                    <label key={field} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                      <input type="checkbox" checked={editReqProfileFields.includes(field)} onChange={e => {
+                        if (e.target.checked) setEditReqProfileFields(p => [...p, field]);
+                        else setEditReqProfileFields(p => p.filter(x => x !== field));
+                      }} className="rounded" />
+                      <span className="font-medium text-slate-600 capitalize">{field}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Required Documents */}
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase font-bold text-slate-400">Documentos Requeridos</label>
+                <div className="flex flex-wrap gap-2">
+                  {["transcript","passport","recommendation_letter","motivation_letter","language_certificate","birth_certificate"].map(doc => (
+                    <label key={doc} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                      <input type="checkbox" checked={editReqDocuments.includes(doc)} onChange={e => {
+                        if (e.target.checked) setEditReqDocuments(p => [...p, doc]);
+                        else setEditReqDocuments(p => p.filter(x => x !== doc));
+                      }} className="rounded" />
+                      <span className="font-medium text-slate-600 capitalize">{doc.replace(/_/g, " ")}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom Questions */}
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase font-bold text-slate-400">Preguntas Personalizadas</label>
+                {editCustomQuestions.map((q: any, i: number) => (
+                  <div key={i} className="flex items-start justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 gap-2">
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-slate-700">{q.text}</p>
+                      <p className="text-[10px] text-slate-400">{q.type} · {q.required ? "Requerida" : "Opcional"}</p>
+                    </div>
+                    <button type="button" onClick={() => setEditCustomQuestions(p => p.filter((_: any, j: number) => j !== i))} className="text-rose-400 hover:text-rose-600 p-1 cursor-pointer">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+                <div className="p-3 border border-dashed border-slate-200 rounded-xl space-y-2">
+                  <input value={editTempQText} onChange={e => setEditTempQText(e.target.value)} placeholder="Texto de la pregunta" className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#5D8CE2]" />
+                  <div className="flex gap-2">
+                    <select value={editTempQType} onChange={e => setEditTempQType(e.target.value as any)} className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none">
+                      <option value="short_text">Texto corto</option>
+                      <option value="long_text">Texto largo</option>
+                      <option value="single_choice">Opción única</option>
+                    </select>
+                    <label className="flex items-center gap-1 text-xs"><input type="checkbox" checked={editTempQRequired} onChange={e => setEditTempQRequired(e.target.checked)} /> Requerida</label>
+                    <button type="button" onClick={() => {
+                      if (!editTempQText.trim()) return;
+                      const newQ: any = { text: editTempQText, type: editTempQType, required: editTempQRequired };
+                      if (editTempQType === "single_choice" && editTempQOptions) newQ.options = editTempQOptions.split(",").map((s: string) => s.trim());
+                      setEditCustomQuestions(p => [...p, newQ]);
+                      setEditTempQText(""); setEditTempQOptions("");
+                    }} className="px-3 py-1.5 bg-[#00135B] text-white text-xs font-bold rounded-lg hover:bg-[#001a7a] transition-all cursor-pointer">+ Añadir</button>
+                  </div>
+                  {editTempQType === "single_choice" && (
+                    <input value={editTempQOptions} onChange={e => setEditTempQOptions(e.target.value)} placeholder="Opciones separadas por coma: Opción A, Opción B" className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none" />
+                  )}
+                </div>
+              </div>
+
+              <div className="sticky bottom-0 pt-4 border-t border-gray-100 bg-white flex justify-end gap-3 mt-2">
+                <button type="button" onClick={() => setEditingOrgProg(null)} className="px-4 py-2 rounded-xl border border-gray-200 text-slate-500 text-xs font-bold hover:bg-slate-50 transition-all cursor-pointer">Cancelar</button>
+                <button type="submit" disabled={orgProgEditLoading} className="px-5 py-2 rounded-xl bg-[#00135B] text-white text-xs font-bold hover:bg-[#001a7a] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60">
+                  {orgProgEditLoading ? <div className="w-4 h-4 border-t-2 border-white rounded-full animate-spin"/> : null}
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* CREATE PROGRAM MODAL */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
@@ -1230,13 +1565,21 @@ function OrganizationDashboard() {
                   <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
                     País Destino
                   </label>
-                  <input
-                    type="text"
-                    value={newCountry}
-                    onChange={(e) => setNewCountry(e.target.value)}
-                    placeholder="Ej. Alemania o Global"
-                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
-                  />
+                  <div className="relative">
+                    <select
+                      value={newCountry}
+                      onChange={(e) => setNewCountry(e.target.value)}
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="">-- Selecciona el país --</option>
+                      {SPANISH_SPEAKING_COUNTRIES.map((c) => (
+                        <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -1810,6 +2153,8 @@ function AdminDashboard() {
   const [adminSelectedApp, setAdminSelectedApp] = useState<any | null>(null);
   const [updatingAppStatus, setUpdatingAppStatus] = useState(false);
   const [appStatusError, setAppStatusError] = useState<string | null>(null);
+  const [viewingAdminProg, setViewingAdminProg] = useState<any | null>(null);
+
 
   const loadData = async () => {
     setLoading(true);
@@ -2335,6 +2680,13 @@ function AdminDashboard() {
                         </td>
                         <td className="p-4.5">
                           <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setViewingAdminProg(p)}
+                              className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-600 hover:text-indigo-700 transition-all cursor-pointer"
+                              title="Ver Detalles de Convocatoria"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
                             {p.status === "pending_review" && (
                               <>
                                 <button
@@ -2369,6 +2721,7 @@ function AdminDashboard() {
                             </button>
                           </div>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>
@@ -2538,13 +2891,22 @@ function AdminDashboard() {
                   <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
                     País *
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={orgEditForm.country || ""}
-                    onChange={(e) => setOrgEditForm({ ...orgEditForm, country: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
-                  />
+                  <div className="relative">
+                    <select
+                      required
+                      value={orgEditForm.country || ""}
+                      onChange={(e) => setOrgEditForm({ ...orgEditForm, country: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="">-- Selecciona el país --</option>
+                      {SPANISH_SPEAKING_COUNTRIES.map((c) => (
+                        <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -2683,6 +3045,114 @@ function AdminDashboard() {
         </div>
       )}
 
+      {/* VIEW CONVOCATORIA MODAL (Admin) */}
+      {viewingAdminProg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex flex-col max-h-[90vh] animate-scaleUp">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-display font-extrabold text-xl text-[#00135B]">Detalles de la Convocatoria</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Enviada por: <span className="font-semibold text-[#00135B]">{viewingAdminProg.organization_name || viewingAdminProg.organization || "—"}</span>
+                </p>
+              </div>
+              <button onClick={() => setViewingAdminProg(null)} className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all cursor-pointer">
+                <X className="w-5 h-5"/>
+              </button>
+            </div>
+            <div className="overflow-y-auto p-6 space-y-4 text-sm">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Título</p>
+                  <p className="font-semibold text-slate-700">{viewingAdminProg.title || "—"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Tipo</p>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-indigo-50 border border-indigo-100 text-[#00135B] uppercase">{viewingAdminProg.type || "—"}</span>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">País</p>
+                  <p className="font-semibold text-slate-700">{viewingAdminProg.country || "—"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Fecha Límite</p>
+                  <p className="font-semibold text-amber-600">{viewingAdminProg.deadline || "Abierto"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Cupos</p>
+                  <p className="font-semibold text-slate-700">{viewingAdminProg.slots ?? "N/A"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Estado</p>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${viewingAdminProg.status === "approved" ? "bg-emerald-50 text-emerald-700" : viewingAdminProg.status === "rejected" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700"}`}>
+                    {viewingAdminProg.status === "approved" ? "Aprobada" : viewingAdminProg.status === "rejected" ? "Rechazada" : "En Revisión"}
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Descripción</p>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-wrap bg-slate-50 p-3 rounded-xl border border-slate-100">{viewingAdminProg.description || "—"}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Elegibilidad / Requisitos</p>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{viewingAdminProg.eligibility || "—"}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Beneficios</p>
+                <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">{viewingAdminProg.benefits || "—"}</p>
+              </div>
+              {viewingAdminProg.required_profile_fields?.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Campos de Perfil Requeridos</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {viewingAdminProg.required_profile_fields.map((f: string) => (
+                      <span key={f} className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-indigo-50 border border-indigo-100 text-[#00135B] uppercase">{f}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {viewingAdminProg.required_documents?.length > 0 && (
+                <div className="space-y-1">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Documentos Requeridos</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {viewingAdminProg.required_documents.map((d: string) => (
+                      <span key={d} className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-600 uppercase">{d}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {viewingAdminProg.custom_questions?.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-[10px] uppercase font-bold text-slate-400">Preguntas Personalizadas ({viewingAdminProg.custom_questions.length})</p>
+                  {viewingAdminProg.custom_questions.map((q: any, i: number) => (
+                    <div key={i} className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                      <p className="text-xs font-bold text-slate-700">{i+1}. {q.text}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Tipo: {q.type} · {q.required ? "Requerida" : "Opcional"}</p>
+                      {q.options?.length > 0 && (
+                        <p className="text-[10px] text-slate-500 mt-0.5">Opciones: {q.options.join(", ")}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-100 flex justify-end gap-3">
+              {viewingAdminProg.status === "pending_review" && (
+                <>
+                  <button onClick={() => { handleApproveProgram(viewingAdminProg.id); setViewingAdminProg(null); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-all cursor-pointer">
+                    <Check className="w-3.5 h-3.5" /> Aprobar
+                  </button>
+                  <button onClick={() => { handleRejectProgram(viewingAdminProg.id); setViewingAdminProg(null); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold hover:bg-rose-100 transition-all cursor-pointer">
+                    <X className="w-3.5 h-3.5" /> Rechazar
+                  </button>
+                </>
+              )}
+              <button onClick={() => setViewingAdminProg(null)} className="px-4 py-2 rounded-xl bg-[#00135B] text-white text-xs font-bold hover:bg-[#001a7a] transition-all cursor-pointer">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* EDIT PROGRAM/CONVOCATORIA MODAL */}
       {editingProg && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
@@ -2737,12 +3207,21 @@ function AdminDashboard() {
                   <label className="text-[10px] text-gray-400 font-bold uppercase tracking-wide mb-1 block">
                     País Destino
                   </label>
-                  <input
-                    type="text"
-                    value={progEditForm.country || ""}
-                    onChange={(e) => setProgEditForm({ ...progEditForm, country: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all"
-                  />
+                  <div className="relative">
+                    <select
+                      value={progEditForm.country || ""}
+                      onChange={(e) => setProgEditForm({ ...progEditForm, country: e.target.value })}
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:border-[#5D8CE2] focus:outline-none text-sm text-gray-700 transition-all appearance-none cursor-pointer"
+                    >
+                      <option value="">-- Selecciona --</option>
+                      {SPANISH_SPEAKING_COUNTRIES.map((c) => (
+                        <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                  </div>
                 </div>
 
                 <div>

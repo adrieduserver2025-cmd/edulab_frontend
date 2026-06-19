@@ -24,8 +24,15 @@ import {
   Network
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import useEmblaCarousel from "embla-carousel-react";
-import aiesecBg from "../../assets/iaesec/fondo.jpeg";
+import aiesecBg from "../../assets/iaesec/fondo2.jpeg";
+import aiesecLogo from "../../assets/iaesec/images.png";
+import fulbrightBg from "../../assets/fulbright/662bb8d0a1a92_.png";
+import fulbrightLogo from "../../assets/fulbright/images (1).png";
+import fulbrightPhoto from "../../assets/fulbright/images (2).jpeg";
+import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
+
+
+
 
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -166,7 +173,9 @@ const BENEFIT_ITEMS = [
     gradient: "from-[#3B82F6] to-[#1D4ED8]",
     openBg: "bg-blue-50/70 border-blue-200/60 shadow-blue-100/50",
     textColor: "text-blue-600",
-    icon: Globe
+    icon: Globe,
+    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Voluntarios en el mundo"
   },
   {
     emoji: "💖",
@@ -180,7 +189,9 @@ const BENEFIT_ITEMS = [
     gradient: "from-[#F43F5E] to-[#BE123C]",
     openBg: "bg-rose-50/70 border-rose-200/60 shadow-rose-100/50",
     textColor: "text-rose-600",
-    icon: Users
+    icon: Users,
+    image: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Liderazgo en acción"
   },
   {
     emoji: "🤝",
@@ -194,12 +205,14 @@ const BENEFIT_ITEMS = [
     gradient: "from-[#F59E0B] to-[#B45309]",
     openBg: "bg-amber-50/70 border-amber-200/60 shadow-amber-100/50",
     textColor: "text-amber-600",
-    icon: Network
+    icon: Network,
+    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Red global activa"
   },
   {
     emoji: "📜",
     title: "Certificado internacional",
-    desc: "Recibe una certificación oficial emitida por EDULAB y la organización anfitriona al culminar tu programa, que validará tu experiencia y competencias adquiridas.",
+    desc: "Recibe una certificación oficial emitida por EDULAB y la organización anfitrióna al culminar tu programa, que validará tu experiencia y competencias adquiridas.",
     highlights: [
       "Acreditación formal",
       "Mejora para tu CV",
@@ -208,7 +221,9 @@ const BENEFIT_ITEMS = [
     gradient: "from-[#10B981] to-[#047857]",
     openBg: "bg-emerald-50/70 border-emerald-200/60 shadow-emerald-100/50",
     textColor: "text-emerald-600",
-    icon: Award
+    icon: Award,
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Certificado reconocido"
   }
 ];
 
@@ -225,7 +240,9 @@ const ACTIVITY_ITEMS = [
     gradient: "from-[#8B5CF6] to-[#6D28D9]",
     openBg: "bg-violet-50/70 border-violet-200/60 shadow-violet-100/50",
     textColor: "text-violet-600",
-    icon: BookOpen
+    icon: BookOpen,
+    image: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Educación comunitaria"
   },
   {
     emoji: "🤝",
@@ -239,7 +256,9 @@ const ACTIVITY_ITEMS = [
     gradient: "from-[#F97316] to-[#C2410C]",
     openBg: "bg-orange-50/70 border-orange-200/60 shadow-orange-100/50",
     textColor: "text-orange-600",
-    icon: Users
+    icon: Users,
+    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Proyectos con impacto"
   },
   {
     emoji: "🌱",
@@ -253,12 +272,14 @@ const ACTIVITY_ITEMS = [
     gradient: "from-[#34D399] to-[#059669]",
     openBg: "bg-teal-50/70 border-teal-200/60 shadow-teal-100/50",
     textColor: "text-teal-600",
-    icon: Leaf
+    icon: Leaf,
+    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Cuidado del planeta"
   },
   {
     emoji: "🌍",
     title: "Actividades interculturales",
-    desc: "Comparte tus costumbres, gastronomía y cultura con voluntarios de otros países y familias anfitrionas, creando lazos de amistad e intercambio duraderos.",
+    desc: "Comparte tus costumbres, gastronomía y cultura con voluntarios de otros países y familias anfitriónas, creando lazos de amistad e intercambio duraderos.",
     highlights: [
       "Intercambio cultural",
       "Presentaciones culinarias",
@@ -267,36 +288,12 @@ const ACTIVITY_ITEMS = [
     gradient: "from-[#06B6D4] to-[#0E7490]",
     openBg: "bg-cyan-50/70 border-cyan-200/60 shadow-cyan-100/50",
     textColor: "text-cyan-600",
-    icon: Compass
+    icon: Compass,
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800",
+    imageCaption: "Diversidad cultural"
   }
 ];
 
-const CAROUSEL_IMAGES = [
-  {
-    url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800",
-    caption: "Voluntarios en acción"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&q=80&w=800",
-    caption: "Liderazgo global"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800",
-    caption: "Trabajo en equipo"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800",
-    caption: "Comunidades locales"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800",
-    caption: "Diversidad cultural"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800",
-    caption: "Experiencia internacional"
-  }
-];
 
 interface InteractiveAccordionCardProps {
   item: typeof BENEFIT_ITEMS[0];
@@ -415,92 +412,9 @@ function InteractiveAccordionCard({ item, index, isOpen, onToggle }: Interactive
   );
 }
 
-interface PremiumImageCarouselProps {
-  images: { url: string; caption: string }[];
-}
-
-function PremiumImageCarousel({ images }: PremiumImageCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    
-    const intervalId = setInterval(() => {
-      if (emblaApi.canScrollNext()) {
-        emblaApi.scrollNext();
-      } else {
-        emblaApi.scrollTo(0);
-      }
-    }, 3500);
-
-    return () => clearInterval(intervalId);
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
-
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-
-    return () => {
-      emblaApi.off("select", onSelect);
-      emblaApi.off("reInit", onSelect);
-    };
-  }, [emblaApi]);
-
-  const scrollTo = (index: number) => {
-    if (emblaApi) emblaApi.scrollTo(index);
-  };
-
-  return (
-    <div className="w-full self-start lg:sticky lg:top-28 z-20 space-y-4">
-      <div className="relative rounded-3xl overflow-hidden border border-gray-200/80 shadow-md group aspect-[4/3] sm:aspect-video md:aspect-[4/3] lg:aspect-[4/3] bg-slate-900">
-        <div className="overflow-hidden w-full h-full" ref={emblaRef}>
-          <div className="flex w-full h-full">
-            {images.map((image, idx) => (
-              <div key={idx} className="relative flex-[0_0_100%] min-w-0 h-full">
-                <img
-                  src={image.url}
-                  alt={image.caption}
-                  className="w-full h-full object-cover select-none transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <span className="inline-block px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-extrabold tracking-wide shadow-lg uppercase">
-                    {image.caption}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="absolute bottom-6 right-6 flex items-center gap-1.5 z-30">
-          {images.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => scrollTo(idx)}
-              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                selectedIndex === idx 
-                  ? "w-6 bg-white shadow-md" 
-                  : "w-2 bg-white/40 hover:bg-white/70"
-              }`}
-              aria-label={`Ir al slide ${idx + 1}`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function OpportunityDetailPage() {
+
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
@@ -628,6 +542,56 @@ export default function OpportunityDetailPage() {
             is_demo: false
           });
           setShowVideoPopup(true);
+        } else if (slug === "fulbright-beca") {
+          setOpportunity({
+            id: 5,
+            title: "Beca Fulbright",
+            description: "Fulbright es uno de los programas de becas más prestigiosos del mundo, financiado por el gobierno de los Estados Unidos. Ofrece becas completas para estudios de posgrado, investigación académica y actividades educativas en universidades de EE.UU., formando líderes con visión global e impacto social.\n\nLa Beca Fulbright cubre matrícula, gastos de subsistencia, seguro médico, viaje de ida y vuelta, y apoyo para el aprendizaje del idioma. Es la oportunidad perfecta para construir una red profesional internacional y acceder a las mejores universidades del mundo.\n\nCada año, más de 8,000 personas de 160 países participan en el programa, que tiene más de 70 años de historia transformando vidas académicas y profesionales.",
+            type: "scholarship",
+            organization: "U.S. Department of State",
+            country: "Estados Unidos",
+            deadline: "2026-10-15",
+            eligibility: "Graduados universitarios, profesionales y académicos con excelente trayectoria.",
+            benefits: "Beca 100% completa: matrícula, alojamiento, manutención, seguro médico y pasajes.",
+            slots: 120,
+            slug: "fulbright-beca",
+            organization_name: "Comisión Fulbright",
+            status: "open",
+            short_description: "Fulbright ofrece becas completas para estudios de posgrado, investigación o actividades académicas en universidades de Estados Unidos, formando líderes con visión global e impacto social.",
+            activities: [
+              "Maestría y doctorado en EE.UU. 🎓",
+              "Investigación académica 🔬",
+              "Intercambio profesional 💼",
+              "Conferencias y networking 🌐"
+            ],
+            requirements: [
+              "Título universitario o equivalente",
+              "Nivel avanzado de inglés (TOEFL/IELTS)",
+              "Carta de motivación sólida",
+              "Cartas de recomendación académica",
+              "Propuesta de investigación detallada",
+              "Ciudadanía o residencia permanente en el país participante"
+            ],
+            benefits_json: [
+              "Beca 100% completa 💰",
+              "Red global Fulbright Alumni 🤝",
+              "Acceso a top universidades EE.UU. 🏛️",
+              "Certificado Fulbright Scholar 📜",
+              "Desarrollo académico y profesional 🚀"
+            ],
+            dates_info: "Convocatoria: Julio - Octubre | Inicio del programa: Agosto del año siguiente",
+            support_ai: [
+              "Redactar la propuesta de investigación",
+              "Preparar la carta de motivación",
+              "Optimizar el perfil de aplicación con IA"
+            ],
+            facebook_url: "https://www.facebook.com/FulbrightExchanges",
+            instagram_url: "https://www.instagram.com/fulbrightexchange/",
+            youtube_url: "https://www.youtube.com/@FulbrightExchanges",
+            video_url: "https://www.youtube.com/watch?v=iS3qREybbeI",
+            image_url: "/assets/fulbright/662bb8d0a1a92_.png",
+            is_demo: false
+          });
         } else {
           setError("Oportunidad no encontrada. Por favor, regresa al listado.");
         }
@@ -853,6 +817,16 @@ export default function OpportunityDetailPage() {
 
   const existingApp = opportunity ? applications.find((a) => a.program_id === opportunity.id) : null;
 
+  // --- Theme system: scholarship vs volunteering ---
+  const isScholarship = opportunity?.type === "scholarship";
+  const isBeca = isScholarship; // alias
+  // Background assets based on type
+  const heroBg = isScholarship ? fulbrightBg : aiesecBg;
+  const orgLogo = isScholarship ? fulbrightLogo : aiesecLogo;
+  const orgPhoto = isScholarship ? fulbrightPhoto : null;
+  // Scholarship video
+  const scholarshipVideoUrl = "https://www.youtube.com/watch?v=iS3qREybbeI";
+
   return (
     <div className="w-full min-h-screen bg-[#f8fafc] text-slate-700 flex flex-col justify-between overflow-x-hidden pt-20">
       <PublicNavbar onOpenAuth={openAuthModal} />
@@ -865,17 +839,69 @@ export default function OpportunityDetailPage() {
         </div>
       )}
 
-      {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-b from-[#00135B] via-[#001a7a] to-[#0d288c] text-white overflow-hidden py-16 px-6 md:px-12 z-10 flex flex-col items-center">
-        
-        {/* Transparent AIESEC Background Image Overlay */}
-        <div 
-          className="absolute inset-0 z-0 bg-cover bg-center mix-blend-overlay opacity-30 pointer-events-none"
-          style={{ backgroundImage: `url(${aiesecBg})` }}
+      {/* Hero Section — Dinamic theme: blue for volunteering, golden for scholarship */}
+      <section
+        className="relative w-full overflow-hidden py-16 px-6 md:px-12 z-10 flex flex-col items-center"
+        style={isBeca
+          ? { background: "linear-gradient(135deg, #1a0d00 0%, #2d1800 30%, #3d2200 60%, #5c3400 100%)" }
+          : { background: "linear-gradient(135deg, #00052a 0%, #000e45 40%, #001566 70%, #0d288c 100%)" }
+        }
+      >
+        {/* Background photo with low opacity */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
+          style={{ backgroundImage: `url(${heroBg})`, opacity: isBeca ? 0.45 : 0.22 }}
         />
+        {/* Overlay gradient tint */}
+        <div
+          className="absolute inset-0 z-0 pointer-events-none"
+          style={isBeca
+            ? { background: "linear-gradient(135deg, rgba(90,45,0,0.85) 0%, rgba(120,60,0,0.70) 50%, rgba(60,30,0,0.80) 100%)" }
+            : { background: "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(93,140,226,0.18) 0%, transparent 70%)" }
+          }
+        />
+        {/* Tech grid */}
+        <div className="absolute inset-0 tech-grid opacity-15 pointer-events-none z-0"></div>
 
-        {/* Tech Grid Background lines */}
-        <div className="absolute inset-0 tech-grid opacity-35 pointer-events-none z-0"></div>
+        {/* Scholarship golden shimmer accents */}
+        {isBeca && (
+          <>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none blur-3xl opacity-20" style={{background: "radial-gradient(circle, #F5C542 0%, transparent 70%)", transform: "translate(30%, -30%)"}} />
+            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full pointer-events-none blur-3xl opacity-15" style={{background: "radial-gradient(circle, #F59E0B 0%, transparent 70%)", transform: "translate(-30%, 30%)"}} />
+          </>
+        )}
+
+        {/* ORG LOGO — Circular badge, top right, very notorio */}
+        <div className="absolute top-5 right-6 z-20 flex items-center gap-3">
+          <div
+            className="w-16 h-16 rounded-full shadow-2xl border-2 flex items-center justify-center overflow-hidden"
+            style={isBeca
+              ? { background: "#fff", borderColor: "rgba(245,197,66,0.6)" }
+              : { background: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.35)" }
+            }
+          >
+            <img
+              src={orgLogo}
+              alt={isBeca ? "Fulbright logo" : "AIESEC logo"}
+              className="object-contain p-1.5"
+              style={{ width: "100%", height: "100%", filter: isBeca ? "none" : "brightness(0) invert(1)" }}
+            />
+          </div>
+          <div className="flex flex-col">
+            <span
+              className="text-[10px] font-extrabold uppercase tracking-widest"
+              style={{ color: isBeca ? "#F5C542" : "rgba(255,255,255,0.55)" }}
+            >
+              {isBeca ? "Beca Oficial" : "Voluntariado"}
+            </span>
+            <span
+              className="text-xs font-bold"
+              style={{ color: isBeca ? "#fff" : "rgba(255,255,255,0.85)" }}
+            >
+              {isBeca ? "Fulbright" : "AIESEC"}
+            </span>
+          </div>
+        </div>
 
         <div className="max-w-7xl w-full flex flex-col lg:flex-row justify-between items-center gap-12 relative z-10 text-left">
           
@@ -885,10 +911,11 @@ export default function OpportunityDetailPage() {
             <div className="flex items-center justify-between">
               <button 
                 onClick={() => navigate("/programs")}
-                className="flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+                className="flex items-center gap-1.5 text-xs font-bold transition-colors bg-transparent border-none cursor-pointer"
+                style={{ color: isBeca ? "rgba(245,197,66,0.85)" : "rgba(203,213,225,0.85)" }}
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Volver a voluntariados</span>
+                <span>{isBeca ? "Volver a becas" : "Volver a voluntariados"}</span>
               </button>
 
               <div className="flex items-center gap-2">
@@ -916,38 +943,49 @@ export default function OpportunityDetailPage() {
 
             {/* Badge & Title */}
             <div className="space-y-3">
-              <span className="inline-block px-3 py-1 rounded-full bg-[#F5C542] text-[#00135B] text-[10px] font-extrabold uppercase tracking-wider">
-                {opportunity.status === "open" ? "Convocatoria Abierta" : "Cerrado"}
+              <span
+                className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider"
+                style={isBeca
+                  ? { background: "rgba(255,255,255,0.15)", color: "#F5C542", border: "1px solid rgba(245,197,66,0.4)" }
+                  : { background: "#F5C542", color: "#00135B" }
+                }
+              >
+                {isBeca ? "🎓 Beca Internacional" : (opportunity.status === "open" ? "Convocatoria Abierta" : "Cerrado")}
               </span>
-              <h1 className="font-display font-extrabold text-4xl md:text-5xl leading-tight">
-                {opportunity.title}
+              <h1 className="font-display font-extrabold text-4xl md:text-5xl leading-tight text-white">
+                {isBeca
+                  ? <>{opportunity.title.split(" ")[0]} <span style={{color: "#F5C542"}}>{opportunity.title.split(" ").slice(1).join(" ")}</span></>
+                  : opportunity.title
+                }
               </h1>
-              <p className="text-slate-300 text-sm md:text-base font-medium max-w-2xl">
+              <p className="text-sm md:text-base font-medium max-w-2xl" style={{ color: isBeca ? "rgba(253,230,138,0.9)" : "rgba(203,213,225,0.9)" }}>
                 {opportunity.short_description}
               </p>
             </div>
 
             {/* Horizontal Specs Bar */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2 text-[11px] text-slate-300 border-t border-white/10">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2 text-[11px] border-t"
+              style={{ color: isBeca ? "rgba(253,230,138,0.85)" : "rgba(203,213,225,0.85)", borderColor: isBeca ? "rgba(245,197,66,0.2)" : "rgba(255,255,255,0.1)" }}
+            >
               <div className="flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-[#F5C542]" />
+                <Globe className="w-3.5 h-3.5" style={{ color: isBeca ? "#F5C542" : "#F5C542" }} />
                 <span className="font-bold">Internacional ({opportunity.country})</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Building className="w-3.5 h-3.5 text-[#F5C542]" />
-                <span className="font-bold">Presencial</span>
+                <Building className="w-3.5 h-3.5" style={{ color: isBeca ? "#F5C542" : "#F5C542" }} />
+                <span className="font-bold">{isBeca ? "Presencial / Remoto" : "Presencial"}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-[#F5C542]" />
-                <span className="font-bold">Corta duración</span>
+                <Calendar className="w-3.5 h-3.5" style={{ color: isBeca ? "#F5C542" : "#F5C542" }} />
+                <span className="font-bold">{isBeca ? "1-2 años" : "Corta duración"}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Award className="w-3.5 h-3.5 text-[#F5C542]" />
-                <span className="font-bold">Español / Inglés</span>
+                <Award className="w-3.5 h-3.5" style={{ color: isBeca ? "#F5C542" : "#F5C542" }} />
+                <span className="font-bold">{isBeca ? "Inglés requerido" : "Español / Inglés"}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <UserCheck className="w-3.5 h-3.5 text-[#F5C542]" />
-                <span className="font-bold">18 - 30 años</span>
+                <UserCheck className="w-3.5 h-3.5" style={{ color: isBeca ? "#F5C542" : "#F5C542" }} />
+                <span className="font-bold">{isBeca ? "Graduados / Profesionales" : "18 - 30 años"}</span>
               </div>
             </div>
 
@@ -957,7 +995,11 @@ export default function OpportunityDetailPage() {
                 <button
                   onClick={handleStartPostulation}
                   disabled={postulating}
-                  className="px-8 py-3.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                  className="px-8 py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                  style={isBeca
+                    ? { background: "#F5C542", color: "#1a0d00" }
+                    : { background: "#F5C542", color: "#00135B" }
+                  }
                 >
                   {postulating ? "Procesando..." : (existingApp?.status === "started" ? "Continuar postulación" : "Iniciar mi postulación")}
                 </button>
@@ -983,7 +1025,11 @@ export default function OpportunityDetailPage() {
               
               <button
                 onClick={() => scrollToSection("requisitos")}
-                className="px-6 py-3.5 rounded-xl border border-white/30 hover:border-white text-white font-bold text-xs uppercase tracking-wider transition-all bg-transparent cursor-pointer"
+                className="px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all bg-transparent cursor-pointer"
+                style={isBeca
+                  ? { border: "1px solid rgba(245,197,66,0.45)", color: "rgba(253,230,138,0.9)" }
+                  : { border: "1px solid rgba(255,255,255,0.3)", color: "white" }
+                }
               >
                 Ver requisitos
               </button>
@@ -992,39 +1038,67 @@ export default function OpportunityDetailPage() {
 
           {/* Right Column: Interactive Video Card */}
           <div className="w-full lg:w-[400px] shrink-0 z-10">
-            <div className="bg-white/10 backdrop-blur-md rounded-3xl border border-white/15 overflow-hidden p-3 shadow-2xl relative aspect-video flex flex-col justify-end min-h-[250px] group text-left">
-              {playVideo && opportunity.video_url ? (
+            <div
+              className="backdrop-blur-md rounded-3xl overflow-hidden p-3 shadow-2xl relative aspect-video flex flex-col justify-end min-h-[250px] group text-left"
+              style={isBeca
+                ? { background: "rgba(245,197,66,0.1)", border: "1px solid rgba(245,197,66,0.25)" }
+                : { background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }
+              }
+            >
+              {playVideo && (isBeca ? scholarshipVideoUrl : opportunity.video_url) ? (
                 <iframe
                   className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                  src={getEmbedUrl(opportunity.video_url)}
+                  src={getEmbedUrl(isBeca ? scholarshipVideoUrl : opportunity.video_url)}
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
               ) : (
                 <>
-                  <img 
-                    src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600" 
-                    alt="Welcome to AIESEC video cover" 
-                    className="absolute inset-0 w-full h-full object-cover opacity-75 filter brightness-75 transition-transform duration-500 group-hover:scale-103"
+                  {/* Cover image — Fulbright main photo or AIESEC stock */}
+                  <img
+                    src={isBeca
+                      ? fulbrightBg
+                      : "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600"
+                    }
+                    alt={isBeca ? "Becarios Fulbright" : "Welcome to AIESEC video cover"}
+                    className="absolute inset-0 w-full h-full object-cover opacity-80 filter brightness-75 transition-transform duration-500 group-hover:scale-103"
                   />
-                  
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#00135B]/90 via-[#00135B]/30 to-transparent"></div>
+                  {/* Gradient overlay */}
+                  <div
+                    className="absolute inset-0 bg-gradient-to-t"
+                    style={isBeca
+                      ? { background: "linear-gradient(to top, rgba(90,45,0,0.92) 0%, rgba(45,24,0,0.3) 50%, transparent 100%)" }
+                      : { background: "linear-gradient(to top, rgba(0,19,91,0.9) 0%, rgba(0,19,91,0.3) 50%, transparent 100%)" }
+                    }
+                  />
 
-                  <button 
+                  <button
                     onClick={() => setPlayVideo(true)}
-                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#F5C542] hover:bg-[#ebd035] hover:scale-110 flex items-center justify-center text-[#00135B] shadow-xl transition-all duration-300 cursor-pointer"
+                    className="absolute inset-0 m-auto w-16 h-16 rounded-full hover:scale-110 flex items-center justify-center shadow-xl transition-all duration-300 cursor-pointer"
+                    style={{ background: "#F5C542", color: isBeca ? "#1a0d00" : "#00135B" }}
                   >
                     <Play className="w-6 h-6 fill-current translate-x-0.5" />
                   </button>
 
                   <div className="relative z-10 p-4 space-y-1 text-white">
-                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 border border-white/25 text-[8px] font-extrabold uppercase tracking-wider mb-1">
-                      Video de Bienvenida
+                    <span
+                      className="inline-block px-2.5 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider mb-1"
+                      style={isBeca
+                        ? { background: "rgba(245,197,66,0.25)", border: "1px solid rgba(245,197,66,0.4)", color: "#F5C542" }
+                        : { background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.25)", color: "white" }
+                      }
+                    >
+                      {isBeca ? "🎓 Video Oficial Fulbright" : "Video de Bienvenida"}
                     </span>
-                    <h3 className="font-bold text-sm font-display text-[#F5C542]">Conoce la experiencia AIESEC</h3>
+                    <h3 className="font-bold text-sm font-display" style={{ color: "#F5C542" }}>
+                      {isBeca ? "Becas Fulbright: La oportunidad de tu vida" : "Conoce la experiencia AIESEC"}
+                    </h3>
                     <p className="text-[10px] text-slate-300 leading-snug">
-                      Mira cómo funciona el voluntariado internacional antes de postular.
+                      {isBeca
+                        ? "Mira cómo Fulbright transforma vidas académicas y profesionales alrededor del mundo."
+                        : "Mira cómo funciona el voluntariado internacional antes de postular."
+                      }
                     </p>
                   </div>
                 </>
@@ -1106,8 +1180,45 @@ export default function OpportunityDetailPage() {
                   ))}
                 </div>
 
-                {/* Right: Carousel */}
-                <PremiumImageCarousel images={CAROUSEL_IMAGES} />
+                {/* Right: Contextual image that changes with open accordion */}
+                <div className="w-full self-start lg:sticky lg:top-28">
+                  <AnimatePresence mode="wait">
+                    {openBenefitIndex !== null && BENEFIT_ITEMS[openBenefitIndex] ? (
+                      <motion.div
+                        key={openBenefitIndex}
+                        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.96, y: -8 }}
+                        transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                        className="relative rounded-3xl overflow-hidden border border-gray-200/80 shadow-lg aspect-[4/3] bg-slate-900"
+                      >
+                        <img
+                          src={BENEFIT_ITEMS[openBenefitIndex].image}
+                          alt={BENEFIT_ITEMS[openBenefitIndex].imageCaption}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                        <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${BENEFIT_ITEMS[openBenefitIndex].gradient} flex items-center justify-center shadow-md shrink-0`}>
+                            <span className="text-base">{BENEFIT_ITEMS[openBenefitIndex].emoji}</span>
+                          </div>
+                          <span className="text-white font-bold text-sm drop-shadow">{BENEFIT_ITEMS[openBenefitIndex].imageCaption}</span>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="placeholder"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="relative rounded-3xl overflow-hidden border border-dashed border-gray-200 aspect-[4/3] bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-400"
+                      >
+                        <Globe className="w-10 h-10 opacity-30" />
+                        <p className="text-xs font-semibold">Selecciona un beneficio para ver su imagen</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
 
@@ -1121,9 +1232,44 @@ export default function OpportunityDetailPage() {
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                {/* Left: Carousel (on left because alternating!) */}
-                <div className="order-2 lg:order-1">
-                  <PremiumImageCarousel images={[...CAROUSEL_IMAGES].reverse()} />
+                {/* Left: Contextual image (alternating position) */}
+                <div className="w-full self-start lg:sticky lg:top-28 order-2 lg:order-1">
+                  <AnimatePresence mode="wait">
+                    {openActivityIndex !== null && ACTIVITY_ITEMS[openActivityIndex] ? (
+                      <motion.div
+                        key={openActivityIndex}
+                        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.96, y: -8 }}
+                        transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                        className="relative rounded-3xl overflow-hidden border border-gray-200/80 shadow-lg aspect-[4/3] bg-slate-900"
+                      >
+                        <img
+                          src={ACTIVITY_ITEMS[openActivityIndex].image}
+                          alt={ACTIVITY_ITEMS[openActivityIndex].imageCaption}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                        <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${ACTIVITY_ITEMS[openActivityIndex].gradient} flex items-center justify-center shadow-md shrink-0`}>
+                            <span className="text-base">{ACTIVITY_ITEMS[openActivityIndex].emoji}</span>
+                          </div>
+                          <span className="text-white font-bold text-sm drop-shadow">{ACTIVITY_ITEMS[openActivityIndex].imageCaption}</span>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="placeholder-act"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="relative rounded-3xl overflow-hidden border border-dashed border-gray-200 aspect-[4/3] bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-400"
+                      >
+                        <Compass className="w-10 h-10 opacity-30" />
+                        <p className="text-xs font-semibold">Selecciona una actividad para ver su imagen</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Right: Accordion list */}
@@ -1248,23 +1394,72 @@ export default function OpportunityDetailPage() {
           {/* Right Column (Sidebar details) */}
           <div className="space-y-6">
             
-            {/* Lo que necesitas */}
-            <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left">
-              <h3 className="font-bold text-sm text-[#F5C542] uppercase tracking-wider">Lo que necesitas</h3>
-              
-              <ul className="space-y-3.5 text-xs text-slate-200 font-medium">
-                {(opportunity.requirements || [
-                  "Tener entre 18 y 30 años",
-                  "Interés en voluntariado internacional",
-                  "Nivel básico/intermedio de inglés",
-                  "Disponibilidad para viajar"
-                ]).map((req, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5">
-                    <Check className="w-4 h-4 text-[#F5C542] shrink-0 mt-0.5 stroke-[3]" />
-                    <span>{req}</span>
-                  </li>
-                ))}
-              </ul>
+            {/* EduLab IA — Publicidad */}
+            <div className="relative rounded-3xl overflow-hidden shadow-xl text-left border border-[#5D8CE2]/30" style={{background: "linear-gradient(145deg, #00052a 0%, #00135B 50%, #0d288c 100%)"}}>
+              {/* Glowing orb decoration */}
+              <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{background: "radial-gradient(circle, rgba(93,140,226,0.35) 0%, transparent 70%)"}} />
+              <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full pointer-events-none" style={{background: "radial-gradient(circle, rgba(245,197,66,0.2) 0%, transparent 70%)"}} />
+
+              <div className="relative z-10 p-6 space-y-4">
+                {/* Header badge */}
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F5C542]/20 border border-[#F5C542]/40 text-[#F5C542] text-[9px] font-extrabold uppercase tracking-widest">
+                    ✨ NUEVO
+                  </span>
+                  <span className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider">Inteligencia Artificial</span>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-extrabold text-lg text-white leading-tight">EduLab <span className="text-[#F5C542]">IA</span></h3>
+                  <p className="text-[11px] text-slate-300 mt-1 leading-relaxed font-medium">
+                    Tu asistente personal de becas. Preparación 10× más rápida con inteligencia artificial.
+                  </p>
+                </div>
+
+                {/* Feature list */}
+                <ul className="space-y-2 text-xs text-slate-200">
+                  {[
+                    { icon: "🎯", text: "Matching inteligente con becas" },
+                    { icon: "✍️", text: "Generador de cartas de motivación" },
+                    { icon: "📄", text: "Optimizador de CV con IA" },
+                    { icon: "🎤", text: "Simulador de entrevistas" },
+                    { icon: "📊", text: "Score de competitividad" }
+                  ].map((f, i) => (
+                    <li key={i} className="flex items-center gap-2.5 font-medium">
+                      <span className="text-sm">{f.icon}</span>
+                      <span>{f.text}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Pricing pills */}
+                <div className="pt-2 space-y-2">
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Planes disponibles</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-center">
+                      <p className="text-[10px] text-slate-400 font-semibold">Básico</p>
+                      <p className="text-white font-extrabold text-sm">Gratis</p>
+                      <p className="text-[9px] text-slate-500">5 búsquedas/mes</p>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-[#F5C542]/15 border border-[#F5C542]/40 text-center relative">
+                      <span className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full bg-[#F5C542] text-[7px] font-extrabold text-[#00135B] uppercase">Popular</span>
+                      <p className="text-[10px] text-[#F5C542] font-semibold">Pro</p>
+                      <p className="text-white font-extrabold text-sm">$9.99<span className="text-[9px] font-medium text-slate-400">/mes</span></p>
+                      <p className="text-[9px] text-slate-400">Ilimitado + IA</p>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => navigate("/ia")}
+                  className="w-full py-2.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer border-none shadow-md active:scale-95"
+                >
+                  <span>Probar EduLab IA Gratis</span>
+                  <ArrowRight className="w-3 h-3 text-[#00135B] stroke-[3]" />
+                </button>
+
+                <p className="text-center text-[9px] text-slate-500 font-medium">Sin tarjeta de crédito · Cancela cuando quieras</p>
+              </div>
             </div>
 
             {/* Acompañamiento EDULAB */}
@@ -1640,13 +1835,21 @@ export default function OpportunityDetailPage() {
                             <label className="font-bold uppercase text-[9px] text-slate-400 block">
                               País <span className="text-rose-500">*</span>
                             </label>
-                            <input
-                              type="text"
-                              value={localProfileForm.country}
-                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, country: e.target.value })}
-                              placeholder="Ej. Costa Rica"
-                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
-                            />
+                            <div className="relative">
+                              <select
+                                value={localProfileForm.country}
+                                onChange={(e) => setLocalProfileForm({ ...localProfileForm, country: e.target.value })}
+                                className="w-full bg-white border border-gray-200 text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all appearance-none cursor-pointer"
+                              >
+                                <option value="">-- Selecciona --</option>
+                                {SPANISH_SPEAKING_COUNTRIES.map((c) => (
+                                  <option key={c.name} value={c.name}>{c.flag} {c.name}</option>
+                                ))}
+                              </select>
+                              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                              </div>
+                            </div>
                           </div>
 
                           {/* City */}
