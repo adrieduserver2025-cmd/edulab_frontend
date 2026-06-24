@@ -820,7 +820,7 @@ export default function OpportunityDetailPage() {
   // Background assets based on type
   const heroBg = isScholarship ? fulbrightBg : aiesecBg;
   const orgLogo = isScholarship ? fulbrightLogo : aiesecLogo;
-  const orgPhoto = isScholarship ? fulbrightPhoto : null;
+  // const orgPhoto = isScholarship ? fulbrightPhoto : null;
   // Scholarship video
   const scholarshipVideoUrl = "https://www.youtube.com/watch?v=iS3qREybbeI";
 

@@ -306,10 +306,10 @@ export default function PremiumScholarshipPage() {
   }
 
   // ── DERIVED DATA ────────────────────────────────────────────────────────────
-  const heroImage =
-    program.image_url && program.image_url.startsWith("http")
-      ? program.image_url
-      : SCHOLARSHIP_IMAGES[heroImgIdx];
+  // const heroImage =
+  //   program.image_url && program.image_url.startsWith("http")
+  //     ? program.image_url
+  //     : SCHOLARSHIP_IMAGES[heroImgIdx];
 
   const benefits = program.benefits_json || [];
   const requirements = program.requirements || [];
