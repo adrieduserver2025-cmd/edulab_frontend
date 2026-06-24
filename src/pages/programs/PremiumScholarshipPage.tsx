@@ -513,8 +513,12 @@ export default function PremiumScholarshipPage() {
                 {playHeroVideo ? (
                   <iframe
                     className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                    src="https://www.youtube.com/embed/iS3qREybbeI?autoplay=1"
-                    title="Becas Fulbright"
+                    src={
+                      program.slug === "fulbright-beca"
+                        ? "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0&autoplay=1"
+                        : "https://www.youtube.com/embed/iS3qREybbeI?autoplay=1"
+                    }
+                    title={program.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
@@ -1152,26 +1156,43 @@ export default function PremiumScholarshipPage() {
               </h2>
             </div>
 
-            {/* Testimonial images row */}
-            <div className="grid grid-cols-3 gap-4 mb-10">
-              {[
-                "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80",
-                "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=500&q=80",
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80",
-              ].map((src, i) => (
+            {/* Testimonial images/video row */}
+            {program.slug === "fulbright-beca" ? (
+              <div className="flex justify-center mb-10">
                 <div
-                  key={i}
-                  className="rounded-2xl overflow-hidden"
-                  style={{ aspectRatio: "16/9" }}
+                  className="w-full max-w-sm rounded-3xl overflow-hidden shadow-lg border border-gray-100 bg-black relative"
+                  style={{ aspectRatio: "9/16" }}
                 >
-                  <img
-                    src={src}
-                    alt={`Becario ${i + 1}`}
-                    className="w-full h-full object-cover"
+                  <iframe
+                    className="w-full h-full border-none"
+                    src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F991543300065303&show_text=0"
+                    title="Experiencias Fulbright"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allowFullScreen
                   />
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-4 mb-10">
+                {[
+                  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80",
+                  "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=500&q=80",
+                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80",
+                ].map((src, i) => (
+                  <div
+                    key={i}
+                    className="rounded-2xl overflow-hidden"
+                    style={{ aspectRatio: "16/9" }}
+                  >
+                    <img
+                      src={src}
+                      alt={`Becario ${i + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (

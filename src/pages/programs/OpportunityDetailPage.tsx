@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  ChevronLeft, 
-  Heart, 
-  Share2, 
-  Play, 
-  Check, 
-  HelpCircle, 
-  Globe, 
-  Award, 
-  Calendar, 
-  AlertTriangle, 
-  X, 
-  UserCheck, 
-  ShieldCheck, 
+import {
+  ChevronLeft,
+  Heart,
+  Share2,
+  Play,
+  Check,
+  HelpCircle,
+  Globe,
+  Award,
+  Calendar,
+  AlertTriangle,
+  X,
+  UserCheck,
+  ShieldCheck,
   Building,
   ArrowRight,
   ChevronDown,
@@ -24,7 +24,7 @@ import {
   Network
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import aiesecBg from "../../assets/iaesec/fondo2.jpeg";
+import aiesecBg from "../../assets/iaesec/fondo3.png";
 import aiesecLogo from "../../assets/iaesec/images.png";
 import fulbrightBg from "../../assets/fulbright/662bb8d0a1a92_.png";
 import fulbrightLogo from "../../assets/fulbright/images (1).png";
@@ -309,7 +309,7 @@ function InteractiveAccordionCard({ item, index, isOpen, onToggle }: Interactive
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ 
+      transition={{
         type: "spring",
         stiffness: 100,
         damping: 15,
@@ -341,11 +341,10 @@ function InteractiveAccordionCard({ item, index, isOpen, onToggle }: Interactive
           boxShadow: "0 20px 48px -8px rgba(0,0,0,0.18)",
           transition: { duration: 0.3, ease: "easeOut" }
         }}
-        className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 cursor-pointer select-none bg-white ${
-          isOpen 
-            ? `${item.openBg} shadow-md border-opacity-100` 
+        className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 cursor-pointer select-none bg-white ${isOpen
+            ? `${item.openBg} shadow-md border-opacity-100`
             : "border-gray-200/70 shadow-sm hover:border-gray-300"
-        }`}
+          }`}
         onClick={onToggle}
       >
         <div className="flex items-center justify-between">
@@ -353,7 +352,7 @@ function InteractiveAccordionCard({ item, index, isOpen, onToggle }: Interactive
             <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shadow-md shadow-black/10 shrink-0`}>
               <Icon className="w-5.5 h-5.5 stroke-[2]" />
             </div>
-            
+
             <div>
               <h3 className="font-display font-bold text-sm text-[#00135B] flex items-center gap-1.5 leading-snug">
                 {item.title} <span className="text-base">{item.emoji}</span>
@@ -361,9 +360,8 @@ function InteractiveAccordionCard({ item, index, isOpen, onToggle }: Interactive
             </div>
           </div>
 
-          <div className={`w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 ${
-            isOpen ? "rotate-180 bg-[#00135B] text-white" : "hover:bg-slate-200"
-          }`}>
+          <div className={`w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 transition-all duration-300 ${isOpen ? "rotate-180 bg-[#00135B] text-white" : "hover:bg-slate-200"
+            }`}>
             <ChevronDown className="w-4 h-4 stroke-[2.5]" />
           </div>
         </div>
@@ -372,16 +370,16 @@ function InteractiveAccordionCard({ item, index, isOpen, onToggle }: Interactive
           {isOpen && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ 
-                height: "auto", 
+              animate={{
+                height: "auto",
                 opacity: 1,
                 transition: {
                   height: { duration: 0.35, ease: [0.4, 0, 0.2, 1] },
                   opacity: { duration: 0.25, delay: 0.05 }
                 }
               }}
-              exit={{ 
-                height: 0, 
+              exit={{
+                height: 0,
                 opacity: 0,
                 transition: {
                   height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
@@ -436,7 +434,7 @@ export default function OpportunityDetailPage() {
     const saved = localStorage.getItem("edulab_saved_programs");
     return saved ? JSON.parse(saved) : [];
   });
-  
+
   // Video embed inline toggle
   const [playVideo, setPlayVideo] = useState(false);
   const [playTestimonial1, setPlayTestimonial1] = useState(false);
@@ -706,7 +704,7 @@ export default function OpportunityDetailPage() {
 
   const handleFinalSubmit = async () => {
     if (!opportunity) return;
-    
+
     // Client-side validations
     if (opportunity.custom_questions) {
       const missingQs = opportunity.custom_questions
@@ -804,7 +802,7 @@ export default function OpportunityDetailPage() {
         <div className="flex-1 flex flex-col items-center justify-center space-y-4 text-center p-6">
           <AlertTriangle className="w-12 h-12 text-rose-500 animate-bounce" />
           <h2 className="text-xl font-bold text-[#00135B]">{error || "Oportunidad no encontrada"}</h2>
-          <button 
+          <button
             onClick={() => navigate("/programs")}
             className="px-6 py-2 bg-[#00135B] text-white rounded-xl text-xs font-bold hover:bg-[#0d288c] transition-colors"
           >
@@ -817,7 +815,6 @@ export default function OpportunityDetailPage() {
 
   const existingApp = opportunity ? applications.find((a) => a.program_id === opportunity.id) : null;
 
-  // --- Theme system: scholarship vs volunteering ---
   const isScholarship = opportunity?.type === "scholarship";
   const isBeca = isScholarship; // alias
   // Background assets based on type
@@ -847,69 +844,40 @@ export default function OpportunityDetailPage() {
           : { background: "linear-gradient(135deg, #00052a 0%, #000e45 40%, #001566 70%, #0d288c 100%)" }
         }
       >
-        {/* Background photo with low opacity */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
-          style={{ backgroundImage: `url(${heroBg})`, opacity: isBeca ? 0.45 : 0.22 }}
-        />
-        {/* Overlay gradient tint */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={isBeca
-            ? { background: "linear-gradient(135deg, rgba(90,45,0,0.85) 0%, rgba(120,60,0,0.70) 50%, rgba(60,30,0,0.80) 100%)" }
-            : { background: "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(93,140,226,0.18) 0%, transparent 70%)" }
-          }
-        />
-        {/* Tech grid */}
-        <div className="absolute inset-0 tech-grid opacity-15 pointer-events-none z-0"></div>
-
-        {/* Scholarship golden shimmer accents */}
-        {isBeca && (
-          <>
-            <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none blur-3xl opacity-20" style={{background: "radial-gradient(circle, #F5C542 0%, transparent 70%)", transform: "translate(30%, -30%)"}} />
-            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full pointer-events-none blur-3xl opacity-15" style={{background: "radial-gradient(circle, #F59E0B 0%, transparent 70%)", transform: "translate(-30%, 30%)"}} />
-          </>
-        )}
-
-        {/* ORG LOGO — Circular badge, top right, very notorio */}
-        <div className="absolute top-5 right-6 z-20 flex items-center gap-3">
+        {/* Background photo wrapper to contain blurs and prevent page overflow */}
+        <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+          {/* Background photo with low opacity */}
           <div
-            className="w-16 h-16 rounded-full shadow-2xl border-2 flex items-center justify-center overflow-hidden"
+            className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
+            style={{ backgroundImage: `url(${heroBg})`, opacity: isBeca ? 0.45 : 0.22 }}
+          />
+          {/* Overlay gradient tint */}
+          <div
+            className="absolute inset-0 z-0 pointer-events-none"
             style={isBeca
-              ? { background: "#fff", borderColor: "rgba(245,197,66,0.6)" }
-              : { background: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.35)" }
+              ? { background: "linear-gradient(135deg, rgba(90,45,0,0.85) 0%, rgba(120,60,0,0.70) 50%, rgba(60,30,0,0.80) 100%)" }
+              : { background: "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(93,140,226,0.18) 0%, transparent 70%)" }
             }
-          >
-            <img
-              src={orgLogo}
-              alt={isBeca ? "Fulbright logo" : "AIESEC logo"}
-              className="object-contain p-1.5"
-              style={{ width: "100%", height: "100%", filter: isBeca ? "none" : "brightness(0) invert(1)" }}
-            />
-          </div>
-          <div className="flex flex-col">
-            <span
-              className="text-[10px] font-extrabold uppercase tracking-widest"
-              style={{ color: isBeca ? "#F5C542" : "rgba(255,255,255,0.55)" }}
-            >
-              {isBeca ? "Beca Oficial" : "Voluntariado"}
-            </span>
-            <span
-              className="text-xs font-bold"
-              style={{ color: isBeca ? "#fff" : "rgba(255,255,255,0.85)" }}
-            >
-              {isBeca ? "Fulbright" : "AIESEC"}
-            </span>
-          </div>
+          />
+          {/* Tech grid */}
+          <div className="absolute inset-0 tech-grid opacity-15 pointer-events-none z-0"></div>
+
+          {/* Scholarship golden shimmer accents */}
+          {isBeca && (
+            <>
+              <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none blur-3xl opacity-20" style={{ background: "radial-gradient(circle, #F5C542 0%, transparent 70%)", transform: "translate(30%, -30%)" }} />
+              <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full pointer-events-none blur-3xl opacity-15" style={{ background: "radial-gradient(circle, #F59E0B 0%, transparent 70%)", transform: "translate(-30%, 30%)" }} />
+            </>
+          )}
         </div>
 
         <div className="max-w-7xl w-full flex flex-col lg:flex-row justify-between items-center gap-12 relative z-10 text-left">
-          
+
           {/* Left Block Details */}
           <div className="space-y-6 flex-1">
             {/* Top Navigation Row */}
             <div className="flex items-center justify-between">
-              <button 
+              <button
                 onClick={() => navigate("/programs")}
                 className="flex items-center gap-1.5 text-xs font-bold transition-colors bg-transparent border-none cursor-pointer"
                 style={{ color: isBeca ? "rgba(245,197,66,0.85)" : "rgba(203,213,225,0.85)" }}
@@ -921,11 +889,10 @@ export default function OpportunityDetailPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={toggleSave}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all bg-white/5 cursor-pointer ${
-                    savedPrograms.includes(opportunity.id)
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all bg-white/5 cursor-pointer ${savedPrograms.includes(opportunity.id)
                       ? "border-rose-400/50 text-rose-400 bg-rose-500/10"
                       : "border-white/20 text-slate-300 hover:text-white hover:bg-white/10"
-                  }`}
+                    }`}
                 >
                   <Heart className={`w-3.5 h-3.5 ${savedPrograms.includes(opportunity.id) ? "fill-current" : ""}`} />
                   <span>{savedPrograms.includes(opportunity.id) ? "Guardado" : "Guardar para después"}</span>
@@ -954,7 +921,7 @@ export default function OpportunityDetailPage() {
               </span>
               <h1 className="font-display font-extrabold text-4xl md:text-5xl leading-tight text-white">
                 {isBeca
-                  ? <>{opportunity.title.split(" ")[0]} <span style={{color: "#F5C542"}}>{opportunity.title.split(" ").slice(1).join(" ")}</span></>
+                  ? <>{opportunity.title.split(" ")[0]} <span style={{ color: "#F5C542" }}>{opportunity.title.split(" ").slice(1).join(" ")}</span></>
                   : opportunity.title
                 }
               </h1>
@@ -1006,23 +973,19 @@ export default function OpportunityDetailPage() {
               ) : (
                 <button
                   disabled
-                  className={`px-8 py-3.5 rounded-xl text-xs font-extrabold uppercase tracking-wider border cursor-not-allowed select-none transition-all shadow-sm ${
-                    existingApp.status === "pending"
+                  className={`px-8 py-3.5 rounded-xl text-xs font-extrabold uppercase tracking-wider border cursor-not-allowed select-none transition-all shadow-sm ${existingApp.status === "pending"
                       ? "bg-amber-50 border-amber-250 text-amber-700"
                       : existingApp.status === "in_review"
-                      ? "bg-blue-50 border-blue-250 text-blue-700"
-                      : existingApp.status === "accepted"
-                      ? "bg-emerald-50 border-emerald-250 text-emerald-700"
-                      : "bg-rose-50 border-rose-250 text-rose-700"
-                  }`}
+                        ? "bg-blue-50 border-blue-250 text-blue-700"
+                        : "bg-emerald-50 border-emerald-250 text-emerald-700"
+                    }`}
                 >
                   {existingApp.status === "pending" && "Postulado - Esperando revisión"}
                   {existingApp.status === "in_review" && "Postulación en revisión"}
                   {existingApp.status === "accepted" && "Postulación Aceptada 🎉"}
-                  {existingApp.status === "rejected" && "Postulación Rechazada"}
                 </button>
               )}
-              
+
               <button
                 onClick={() => scrollToSection("requisitos")}
                 className="px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all bg-transparent cursor-pointer"
@@ -1036,73 +999,16 @@ export default function OpportunityDetailPage() {
             </div>
           </div>
 
-          {/* Right Column: Interactive Video Card */}
-          <div className="w-full lg:w-[400px] shrink-0 z-10">
+          {/* Right Column: Large Circular Logo */}
+          <div className="w-full lg:w-[400px] shrink-0 z-10 flex justify-center items-center">
             <div
-              className="backdrop-blur-md rounded-3xl overflow-hidden p-3 shadow-2xl relative aspect-video flex flex-col justify-end min-h-[250px] group text-left"
-              style={isBeca
-                ? { background: "rgba(245,197,66,0.1)", border: "1px solid rgba(245,197,66,0.25)" }
-                : { background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }
-              }
+              className="w-64 h-64 md:w-72 md:h-72 rounded-full shadow-2xl border-4 flex items-center justify-center overflow-hidden bg-white border-white transition-transform duration-300 hover:scale-103"
             >
-              {playVideo && (isBeca ? scholarshipVideoUrl : opportunity.video_url) ? (
-                <iframe
-                  className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                  src={getEmbedUrl(isBeca ? scholarshipVideoUrl : opportunity.video_url)}
-                  title="YouTube video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              ) : (
-                <>
-                  {/* Cover image — Fulbright main photo or AIESEC stock */}
-                  <img
-                    src={isBeca
-                      ? fulbrightBg
-                      : "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600"
-                    }
-                    alt={isBeca ? "Becarios Fulbright" : "Welcome to AIESEC video cover"}
-                    className="absolute inset-0 w-full h-full object-cover opacity-80 filter brightness-75 transition-transform duration-500 group-hover:scale-103"
-                  />
-                  {/* Gradient overlay */}
-                  <div
-                    className="absolute inset-0 bg-gradient-to-t"
-                    style={isBeca
-                      ? { background: "linear-gradient(to top, rgba(90,45,0,0.92) 0%, rgba(45,24,0,0.3) 50%, transparent 100%)" }
-                      : { background: "linear-gradient(to top, rgba(0,19,91,0.9) 0%, rgba(0,19,91,0.3) 50%, transparent 100%)" }
-                    }
-                  />
-
-                  <button
-                    onClick={() => setPlayVideo(true)}
-                    className="absolute inset-0 m-auto w-16 h-16 rounded-full hover:scale-110 flex items-center justify-center shadow-xl transition-all duration-300 cursor-pointer"
-                    style={{ background: "#F5C542", color: isBeca ? "#1a0d00" : "#00135B" }}
-                  >
-                    <Play className="w-6 h-6 fill-current translate-x-0.5" />
-                  </button>
-
-                  <div className="relative z-10 p-4 space-y-1 text-white">
-                    <span
-                      className="inline-block px-2.5 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider mb-1"
-                      style={isBeca
-                        ? { background: "rgba(245,197,66,0.25)", border: "1px solid rgba(245,197,66,0.4)", color: "#F5C542" }
-                        : { background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.25)", color: "white" }
-                      }
-                    >
-                      {isBeca ? "🎓 Video Oficial Fulbright" : "Video de Bienvenida"}
-                    </span>
-                    <h3 className="font-bold text-sm font-display" style={{ color: "#F5C542" }}>
-                      {isBeca ? "Becas Fulbright: La oportunidad de tu vida" : "Conoce la experiencia AIESEC"}
-                    </h3>
-                    <p className="text-[10px] text-slate-300 leading-snug">
-                      {isBeca
-                        ? "Mira cómo Fulbright transforma vidas académicas y profesionales alrededor del mundo."
-                        : "Mira cómo funciona el voluntariado internacional antes de postular."
-                      }
-                    </p>
-                  </div>
-                </>
-              )}
+              <img
+                src={orgLogo}
+                alt={isBeca ? "Fulbright logo" : "AIESEC logo"}
+                className="object-contain p-6 w-full h-full"
+              />
             </div>
           </div>
 
@@ -1122,11 +1028,10 @@ export default function OpportunityDetailPage() {
             <button
               key={tab.id}
               onClick={() => scrollToSection(tab.id)}
-              className={`py-4 font-bold text-xs uppercase tracking-wider border-b-2 cursor-pointer transition-colors ${
-                activeTab === tab.id
+              className={`py-4 font-bold text-xs uppercase tracking-wider border-b-2 cursor-pointer transition-colors ${activeTab === tab.id
                   ? "border-[#00135B] text-[#00135B]"
                   : "border-transparent text-slate-400 hover:text-slate-700"
-              }`}
+                }`}
             >
               {tab.label}
             </button>
@@ -1137,15 +1042,15 @@ export default function OpportunityDetailPage() {
       {/* Main Content Body */}
       <section className="max-w-7xl w-full mx-auto px-6 md:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Left Column (Main details) */}
           <div className="lg:col-span-2 space-y-12">
-            
+
             {/* Descripción */}
             <div id="descripcion" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
               <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Descripción</span>
               <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">¿De qué se trata este voluntariado?</h2>
-              
+
               <div className="text-slate-600 text-sm leading-relaxed space-y-4 font-medium">
                 {opportunity.description.split("\n\n").map((para, idx) => (
                   <p key={idx}>{para}</p>
@@ -1153,7 +1058,7 @@ export default function OpportunityDetailPage() {
               </div>
 
               <div className="bg-amber-50 border-l-4 border-[#F5C542] p-4 text-xs font-semibold text-[#00135B] rounded-r-xl">
-                Vivo una experiencia internacional con acompañamiento antes, durante y después del programa.
+                Vive una experiencia internacional con acompañamiento antes, durante y después del programa.
               </div>
             </div>
 
@@ -1165,7 +1070,7 @@ export default function OpportunityDetailPage() {
                 </span>
                 <h2 className="font-display font-bold text-2xl md:text-3xl text-[#00135B] mt-1">Lo que ganarás con esta experiencia</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 {/* Left: Accordion list */}
                 <div className="space-y-4">
@@ -1230,7 +1135,7 @@ export default function OpportunityDetailPage() {
                 </span>
                 <h2 className="font-display font-bold text-2xl md:text-3xl text-[#00135B] mt-1">¿Qué harás?</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 {/* Left: Contextual image (alternating position) */}
                 <div className="w-full self-start lg:sticky lg:top-28 order-2 lg:order-1">
@@ -1291,7 +1196,7 @@ export default function OpportunityDetailPage() {
             <div id="requisitos" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
               <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Requisitos</span>
               <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">Lo que necesitas para participar</h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {(opportunity.requirements || [
                   "Tener entre 18 y 30 años",
@@ -1313,9 +1218,9 @@ export default function OpportunityDetailPage() {
             <div id="testimonios" className="bg-white p-8 rounded-3xl border border-gray-200/80 shadow-sm space-y-6 text-left">
               <span className="text-[10px] text-[#5D8CE2] uppercase font-extrabold tracking-wider">Testimonios</span>
               <h2 className="font-display font-bold text-2xl text-[#00135B] mt-1">Historias de voluntarios</h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                
+
                 {/* Video Card 1 */}
                 <div className="border border-gray-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="relative aspect-video bg-slate-900 flex items-center justify-center">
@@ -1329,12 +1234,12 @@ export default function OpportunityDetailPage() {
                       ></iframe>
                     ) : (
                       <>
-                        <img 
-                          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" 
-                          alt="AIESEC volunteer story 1" 
+                        <img
+                          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400"
+                          alt="AIESEC volunteer story 1"
                           className="absolute inset-0 w-full h-full object-cover opacity-60"
                         />
-                        <button 
+                        <button
                           onClick={() => setPlayTestimonial1(true)}
                           className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer z-10"
                         >
@@ -1364,12 +1269,12 @@ export default function OpportunityDetailPage() {
                       ></iframe>
                     ) : (
                       <>
-                        <img 
-                          src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400" 
-                          alt="AIESEC volunteer story 2" 
+                        <img
+                          src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400"
+                          alt="AIESEC volunteer story 2"
                           className="absolute inset-0 w-full h-full object-cover opacity-60"
                         />
-                        <button 
+                        <button
                           onClick={() => setPlayTestimonial2(true)}
                           className="w-10 h-10 rounded-full bg-[#F5C542] hover:scale-105 transition-all text-[#00135B] flex items-center justify-center shadow-lg cursor-pointer z-10"
                         >
@@ -1393,12 +1298,170 @@ export default function OpportunityDetailPage() {
 
           {/* Right Column (Sidebar details) */}
           <div className="space-y-6">
-            
+
+            {/* Interactive Video Card */}
+            <div
+              className="backdrop-blur-md rounded-3xl overflow-hidden p-3 shadow-md relative aspect-video flex flex-col justify-end min-h-[250px] group text-left bg-slate-900 border border-slate-200"
+            >
+              {playVideo && (isBeca ? scholarshipVideoUrl : opportunity.video_url) ? (
+                <iframe
+                  className="absolute inset-0 w-full h-full rounded-2xl border-none"
+                  src={getEmbedUrl(isBeca ? scholarshipVideoUrl : opportunity.video_url)}
+                  title="YouTube video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <>
+                  {/* Cover image — Fulbright main photo or AIESEC stock */}
+                  <img
+                    src={isBeca
+                      ? fulbrightBg
+                      : "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600"
+                    }
+                    alt={isBeca ? "Becarios Fulbright" : "Welcome to AIESEC video cover"}
+                    className="absolute inset-0 w-full h-full object-cover opacity-80 filter brightness-75 transition-transform duration-500 group-hover:scale-103"
+                  />
+                  {/* Gradient overlay */}
+                  <div
+                    className="absolute inset-0 bg-gradient-to-t"
+                    style={isBeca
+                      ? { background: "linear-gradient(to top, rgba(90,45,0,0.92) 0%, rgba(45,24,0,0.3) 50%, transparent 100%)" }
+                      : { background: "linear-gradient(to top, rgba(0,19,91,0.9) 0%, rgba(0,19,91,0.3) 50%, transparent 100%)" }
+                    }
+                  />
+
+                  <button
+                    onClick={() => setPlayVideo(true)}
+                    className="absolute inset-0 m-auto w-16 h-16 rounded-full hover:scale-110 flex items-center justify-center shadow-xl transition-all duration-300 cursor-pointer"
+                    style={{ background: "#F5C542", color: isBeca ? "#1a0d00" : "#00135B" }}
+                  >
+                    <Play className="w-6 h-6 fill-current translate-x-0.5" />
+                  </button>
+
+                  <div className="relative z-10 p-4 space-y-1 text-white">
+                    <span
+                      className="inline-block px-2.5 py-0.5 rounded-full text-[8px] font-extrabold uppercase tracking-wider mb-1"
+                      style={isBeca
+                        ? { background: "rgba(245,197,66,0.25)", border: "1px solid rgba(245,197,66,0.4)", color: "#F5C542" }
+                        : { background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.25)", color: "white" }
+                      }
+                    >
+                      {isBeca ? "🎓 Video Oficial Fulbright" : "Video de Bienvenida"}
+                    </span>
+                    <h3 className="font-bold text-sm font-display" style={{ color: "#F5C542" }}>
+                      {isBeca ? "Becas Fulbright: La oportunidad de tu vida" : "Conoce la experiencia AIESEC"}
+                    </h3>
+                    <p className="text-[10px] text-slate-300 leading-snug">
+                      {isBeca
+                        ? "Mira cómo Fulbright transforma vidas académicas y profesionales alrededor del mundo."
+                        : "Mira cómo funciona el voluntariado internacional antes de postular."
+                      }
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Acompañamiento EDULAB */}
+            <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-[#5D8CE2]/10 rounded-full blur-xl pointer-events-none"></div>
+
+              <h3 className="font-bold text-sm text-[#F5C542] uppercase tracking-wider">Acompañamiento EDULAB</h3>
+              <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                Te ayudamos a prepararte mejor antes de aplicar, ordenando tu perfil, tu motivación y los pasos básicos de la postulación.
+              </p>
+
+              <ul className="space-y-2.5 text-xs text-slate-200 font-medium pt-2">
+                <li className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#F5C542] shrink-0 stroke-[3]" />
+                  <span>Construir tu perfil como voluntario</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#F5C542] shrink-0 stroke-[3]" />
+                  <span>Organizar tus motivaciones</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#F5C542] shrink-0 stroke-[3]" />
+                  <span>Preparar cartas o respuestas</span>
+                </li>
+              </ul>
+
+              <button
+                onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
+                className="w-full mt-4 py-2.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer border-none shadow-md"
+              >
+                <span>Preparar postulación</span>
+                <ArrowRight className="w-3 h-3 text-[#00135B] stroke-[3]" />
+              </button>
+            </div>
+
+            {/* Organización */}
+            <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-4 text-left">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Organización</h3>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-gray-100 flex items-center justify-center font-extrabold text-[#00135B]">
+                  {opportunity.organization_name?.substring(0, 3).toUpperCase() || "ORG"}
+                </div>
+                <div>
+                  <h4 className="font-bold text-xs text-[#00135B]">{opportunity.organization}</h4>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Socio Oficial</span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                Organización global liderada por jóvenes enfocada en liderazgo, intercambio cultural y experiencias internacionales con impacto social.
+              </p>
+
+              <div className="pt-2 flex gap-4 items-center border-t border-gray-100">
+                {opportunity.facebook_url && (
+                  <a href={opportunity.facebook_url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#00135B] transition-colors">
+                    <FacebookIcon className="w-4 h-4" />
+                  </a>
+                )}
+                {opportunity.instagram_url && (
+                  <a href={opportunity.instagram_url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#00135B] transition-colors">
+                    <InstagramIcon className="w-4 h-4" />
+                  </a>
+                )}
+                {opportunity.youtube_url && (
+                  <a href={opportunity.youtube_url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#00135B] transition-colors">
+                    <YoutubeIcon className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* ¿Por qué ser voluntario? */}
+            <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-4 text-left">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">¿Por qué ser voluntario?</h3>
+
+              <ul className="space-y-3 text-xs font-semibold text-[#00135B]">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#5D8CE2]" />
+                  <span>Contribuyes a causas reales</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#5D8CE2]" />
+                  <span>Desarrollas habilidades blandas</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#5D8CE2]" />
+                  <span>Fortaleces tu CV y perfil</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-[#5D8CE2]" />
+                  <span>Conoces nuevas realidades</span>
+                </li>
+              </ul>
+            </div>
+
             {/* EduLab IA — Publicidad */}
-            <div className="relative rounded-3xl overflow-hidden shadow-xl text-left border border-[#5D8CE2]/30" style={{background: "linear-gradient(145deg, #00052a 0%, #00135B 50%, #0d288c 100%)"}}>
+            <div className="relative rounded-3xl overflow-hidden shadow-xl text-left border border-[#5D8CE2]/30" style={{ background: "linear-gradient(145deg, #00052a 0%, #00135B 50%, #0d288c 100%)" }}>
               {/* Glowing orb decoration */}
-              <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{background: "radial-gradient(circle, rgba(93,140,226,0.35) 0%, transparent 70%)"}} />
-              <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full pointer-events-none" style={{background: "radial-gradient(circle, rgba(245,197,66,0.2) 0%, transparent 70%)"}} />
+              <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(93,140,226,0.35) 0%, transparent 70%)" }} />
+              <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(245,197,66,0.2) 0%, transparent 70%)" }} />
 
               <div className="relative z-10 p-6 space-y-4">
                 {/* Header badge */}
@@ -1462,102 +1525,7 @@ export default function OpportunityDetailPage() {
               </div>
             </div>
 
-            {/* Acompañamiento EDULAB */}
-            <div className="bg-[#00135B] text-white p-6 rounded-3xl space-y-4 shadow-sm text-left relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-[#5D8CE2]/10 rounded-full blur-xl pointer-events-none"></div>
-              
-              <h3 className="font-bold text-sm text-[#F5C542] uppercase tracking-wider">Acompañamiento EDULAB</h3>
-              <p className="text-xs text-slate-300 leading-relaxed font-medium">
-                Te ayudamos a prepararte mejor antes de aplicar, ordenando tu perfil, tu motivación y los pasos básicos de la postulación.
-              </p>
-
-              <ul className="space-y-2.5 text-xs text-slate-200 font-medium pt-2">
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#F5C542] shrink-0 stroke-[3]" />
-                  <span>Construir tu perfil como voluntario</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#F5C542] shrink-0 stroke-[3]" />
-                  <span>Organizar tus motivaciones</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-[#F5C542] shrink-0 stroke-[3]" />
-                  <span>Preparar cartas o respuestas</span>
-                </li>
-              </ul>
-
-              <button
-                onClick={() => navigate(isAuthenticated ? "/profile" : "/login")}
-                className="w-full mt-4 py-2.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-extrabold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer border-none shadow-md"
-              >
-                <span>Preparar postulación</span>
-                <ArrowRight className="w-3 h-3 text-[#00135B] stroke-[3]" />
-              </button>
-            </div>
-
-            {/* Organización */}
-            <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-4 text-left">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Organización</h3>
-              
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-gray-100 flex items-center justify-center font-extrabold text-[#00135B]">
-                  {opportunity.organization_name?.substring(0, 3).toUpperCase() || "ORG"}
-                </div>
-                <div>
-                  <h4 className="font-bold text-xs text-[#00135B]">{opportunity.organization}</h4>
-                  <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Socio Oficial</span>
-                </div>
-              </div>
-
-              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                Organización global liderada por jóvenes enfocada en liderazgo, intercambio cultural y experiencias internacionales con impacto social.
-              </p>
-
-              <div className="pt-2 flex gap-4 items-center border-t border-gray-100">
-                {opportunity.facebook_url && (
-                  <a href={opportunity.facebook_url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#00135B] transition-colors">
-                    <FacebookIcon className="w-4 h-4" />
-                  </a>
-                )}
-                {opportunity.instagram_url && (
-                  <a href={opportunity.instagram_url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#00135B] transition-colors">
-                    <InstagramIcon className="w-4 h-4" />
-                  </a>
-                )}
-                {opportunity.youtube_url && (
-                  <a href={opportunity.youtube_url} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-[#00135B] transition-colors">
-                    <YoutubeIcon className="w-4 h-4" />
-                  </a>
-                )}
-              </div>
-            </div>
-
-            {/* ¿Por qué ser voluntario? */}
-            <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-4 text-left">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">¿Por qué ser voluntario?</h3>
-              
-              <ul className="space-y-3 text-xs font-semibold text-[#00135B]">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Contribuyes a causas reales</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Desarrollas habilidades blandas</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Fortaleces tu CV y perfil</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-[#5D8CE2]" />
-                  <span>Conoces nuevas realidades</span>
-                </li>
-              </ul>
-            </div>
-
           </div>
-
         </div>
       </section>
 
@@ -1565,7 +1533,7 @@ export default function OpportunityDetailPage() {
       <section className="bg-[#00135B] py-16 px-6 md:px-8 text-white text-center relative overflow-hidden">
         <div className="absolute inset-0 tech-grid opacity-25 pointer-events-none"></div>
         <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-left">
-          
+
           <div className="space-y-2 max-w-lg">
             <span className="text-[9px] text-[#F5C542] uppercase font-bold tracking-widest">Próximo Paso</span>
             <h2 className="font-display font-extrabold text-2xl md:text-3xl leading-snug">¿Listo para generar impacto?</h2>
@@ -1581,7 +1549,7 @@ export default function OpportunityDetailPage() {
                 {!existingApp || existingApp.status === "started" ? "Comenzar postulación" : "Estado de tu postulación"}
               </h4>
               <p className="text-[10px] text-[#00135B]/80 font-semibold font-medium">
-                {!existingApp || existingApp.status === "started" 
+                {!existingApp || existingApp.status === "started"
                   ? "Da el primer paso para vivir una experiencia que te transformará."
                   : "Tu postulación ha sido enviada con éxito y está bajo revisión."}
               </p>
@@ -1622,10 +1590,10 @@ export default function OpportunityDetailPage() {
       </section>
 
       {/* Auth Modal Trigger */}
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
-        initialMode={authModalMode} 
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode={authModalMode}
       />
 
 
@@ -1634,7 +1602,7 @@ export default function OpportunityDetailPage() {
       {showApplyModal && opportunity && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
           <div className="w-full max-w-2xl bg-white p-8 rounded-3xl border border-gray-200 shadow-2xl relative space-y-6 text-left animate-scaleUp max-h-[90vh] overflow-y-auto">
-            <button 
+            <button
               onClick={() => setShowApplyModal(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none"
             >
@@ -1655,7 +1623,7 @@ export default function OpportunityDetailPage() {
               const steps: string[] = ["Perfil EDULAB"];
               if (opportunity.custom_questions && opportunity.custom_questions.length > 0) steps.push("Preguntas");
               if (opportunity.required_documents && opportunity.required_documents.length > 0) steps.push("Documentos");
-              
+
               const currentStepName = steps[applyStep - 1];
 
               const validateAndNext = async () => {
@@ -1734,7 +1702,7 @@ export default function OpportunityDetailPage() {
                         bio: null
                       });
                     }
-                    
+
                     // Update user's name if changed
                     if (localProfileForm.full_name && localProfileForm.full_name !== user?.displayName) {
                       const updatedUser = await updateUser({ full_name: localProfileForm.full_name });
@@ -1744,7 +1712,7 @@ export default function OpportunityDetailPage() {
                     }
 
                     setProfile(updatedProfile);
-                    
+
                     if (steps.length > 1) {
                       setApplyStep(prev => prev + 1);
                     } else {
@@ -1789,18 +1757,16 @@ export default function OpportunityDetailPage() {
                   <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
                     {steps.map((st, idx) => (
                       <div key={st} className="flex items-center gap-2">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          applyStep === idx + 1 
-                            ? "bg-[#00135B] text-white" 
-                            : applyStep > idx + 1 
-                              ? "bg-emerald-500 text-white" 
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${applyStep === idx + 1
+                            ? "bg-[#00135B] text-white"
+                            : applyStep > idx + 1
+                              ? "bg-emerald-500 text-white"
                               : "bg-slate-100 text-slate-400"
-                        }`}>
+                          }`}>
                           {idx + 1}
                         </div>
-                        <span className={`text-xs font-bold ${
-                          applyStep === idx + 1 ? "text-[#00135B]" : "text-slate-400"
-                        }`}>
+                        <span className={`text-xs font-bold ${applyStep === idx + 1 ? "text-[#00135B]" : "text-slate-400"
+                          }`}>
                           {st}
                         </span>
                         {idx < steps.length - 1 && <span className="text-slate-300 text-xs">/</span>}
@@ -1813,9 +1779,9 @@ export default function OpportunityDetailPage() {
                     <div className="space-y-4 animate-fadeIn">
                       <div className="bg-slate-50 p-5 rounded-2xl border border-gray-150 space-y-4">
                         <h4 className="font-bold text-xs text-[#00135B] uppercase tracking-wider">Completa / Edita tus Datos de Perfil</h4>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-left">
-                          
+
                           {/* Full Name */}
                           <div className="md:col-span-2 space-y-1">
                             <label className="font-bold uppercase text-[9px] text-slate-400 block">
@@ -2012,7 +1978,7 @@ export default function OpportunityDetailPage() {
                             <span>{q.text}</span>
                             {q.required && <span className="text-rose-500">*</span>}
                           </label>
-                          
+
                           {q.type === "long_text" ? (
                             <textarea
                               rows={3}
@@ -2117,9 +2083,9 @@ export default function OpportunityDetailPage() {
       {showPostulationModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
           <div className="w-full max-w-md bg-white p-8 rounded-3xl border border-gray-200 shadow-2xl relative space-y-6 text-left animate-scaleUp">
-            
+
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowPostulationModal(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer bg-transparent border-none"
             >
@@ -2131,11 +2097,11 @@ export default function OpportunityDetailPage() {
               <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mx-auto shadow-sm">
                 <ShieldCheck className="w-8 h-8 fill-emerald-100" />
               </div>
-              
+
               <h3 className="font-display font-extrabold text-xl text-[#00135B]">
                 ¡Postulación Recibida!
               </h3>
-              
+
               <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
                 Tu postulación al **{opportunity.title}** ha sido registrada con éxito en EDULAB con estado <span className="font-extrabold text-emerald-600">PENDING</span>.
               </p>
@@ -2169,9 +2135,9 @@ export default function OpportunityDetailPage() {
       {showVideoPopup && opportunity?.video_url && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
           <div className="w-full max-w-4xl bg-slate-900 rounded-3xl border border-white/10 overflow-hidden shadow-2xl relative animate-scaleUp">
-            
+
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setShowVideoPopup(false)}
               className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors border border-white/10 cursor-pointer"
             >

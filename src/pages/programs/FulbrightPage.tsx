@@ -128,6 +128,7 @@ export default function FulbrightPage() {
   const [applySuccess, setApplySuccess] = useState(false);
   const [applyError, setApplyError] = useState<string | null>(null);
   const [programId, setProgramId] = useState<number | null>(null);
+  const [playHeroVideo, setPlayHeroVideo] = useState(false);
 
   // Load the Fulbright program from backend to get the real ID
   useEffect(() => {
@@ -331,20 +332,43 @@ export default function FulbrightPage() {
 
             {/* Right - Image card */}
             <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: "4/3" }}>
-                <img
-                  src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
-                  alt="Estudiantes internacionales en universidad de Estados Unidos"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(0,19,91,0.6) 0%, transparent 60%)" }} />
-                {/* Badge convocatoria */}
-                <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
-                  style={{ background: "#22c55e" }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                  Convocatoria Abierta
-                </div>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl group" style={{ aspectRatio: "4/3" }}>
+                {playHeroVideo ? (
+                  <iframe
+                    className="absolute inset-0 w-full h-full rounded-2xl border-none"
+                    src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0&autoplay=1"
+                    title="Beca Fulbright Video"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : (
+                  <>
+                    <img
+                      src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
+                      alt="Estudiantes internacionales en universidad de Estados Unidos"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0"
+                      style={{ background: "linear-gradient(to top, rgba(0,19,91,0.6) 0%, transparent 60%)" }} />
+                    
+                    {/* Play button */}
+                    <button
+                      onClick={() => setPlayHeroVideo(true)}
+                      className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20"
+                      style={{ background: "#F5C542", width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
+                      aria-label="Ver video Fulbright"
+                    >
+                      <svg viewBox="0 0 24 24" fill="#00135B" width="26" height="26"><polygon points="6,4 20,12 6,20" /></svg>
+                    </button>
+
+                    {/* Badge convocatoria */}
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
+                      style={{ background: "#22c55e" }}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      Convocatoria Abierta
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Floating glassmorphism card */}
@@ -725,6 +749,20 @@ export default function FulbrightPage() {
             </div>
             <h2 className="text-3xl font-black text-[#00135B]">Historias de becarios reales</h2>
           </div>
+
+          {/* Experience video */}
+          <div className="flex justify-center mb-12">
+            <div className="w-full max-w-sm rounded-3xl overflow-hidden shadow-lg border border-gray-100 bg-black relative animate-fadeIn" style={{ aspectRatio: "9/16" }}>
+              <iframe
+                className="w-full h-full border-none"
+                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F991543300065303&show_text=0"
+                title="Experiencias Fulbright"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <div key={i} className="bg-white p-6 rounded-2xl border card-hover space-y-4"
