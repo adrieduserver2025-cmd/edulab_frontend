@@ -94,12 +94,21 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
       {/* Brand Identity */}
       <div className="flex items-center gap-12">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-full bg-[#00135B] flex items-center justify-center shadow-md shadow-[#00135B]/15 group-hover:scale-105 transition-all duration-200">
-            <GraduationCap className="w-5.5 h-5.5 text-[#F5C542]" />
+          <div className="w-12 h-12 flex items-center justify-center">
+            <img 
+              src="/src/assets/isotipo.png" 
+              alt="EDULAB"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <span className="font-display font-extrabold text-2xl tracking-wider text-[#00135B]">
-            EDU<span className="text-[#5D8CE2] font-semibold">LAB</span>
-          </span>
+          <div className="flex items-center leading-none">
+            <span className="font-display text-4xl font-medium tracking-tight text-[#0036A3]">
+              edu
+            </span>
+            <span className="font-display text-4xl font-medium tracking-tight text-[#F5A400]">
+              lab
+            </span>
+          </div>
         </Link>
 
         {/* Navigation Menu */}
