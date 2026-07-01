@@ -1,8 +1,8 @@
-﻿import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Award, CheckCircle2, ChevronDown, Globe, BookOpen,
-  AlertCircle, Star, ArrowRight, Sparkles, ExternalLink,
+  AlertCircle, Star, ArrowRight, ArrowLeft, Sparkles, ExternalLink,
   HelpCircle, Users, Trophy, Lightbulb,
   GraduationCap, DollarSign, Clock, Calendar, Languages,
   MapPin, Building2, Zap, Loader2, AlertTriangle
@@ -216,6 +216,18 @@ export default function PremiumScholarshipPage() {
   const [heroImgIdx] = useState(() => Math.floor(Math.random() * SCHOLARSHIP_IMAGES.length));
   const [playHeroVideo, setPlayHeroVideo] = useState(false);
 
+  const heroVideos = [
+    {
+      title: "Conoce la experiencia Fulbright",
+      url: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0"
+    },
+    {
+      title: "Testimonio de ex-becarios",
+      url: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F991543300065303&show_text=0"
+    }
+  ];
+  const [currentVideoIdx, setCurrentVideoIdx] = useState(0);
+
   // Load program from backend
   useEffect(() => {
     if (!slug) return;
@@ -333,7 +345,32 @@ export default function PremiumScholarshipPage() {
     4: { color: "#ef4444", tag: "Clave", emoji: "📬" },
   };
 
-  // ── MAIN RENDER �        <div className="max-w-7xl mx-auto px-6 py-14">
+  // ── MAIN RENDER ────────────────────────────────────────────────────────────
+  return (
+    <div
+      className="min-h-screen bg-white"
+      style={{ fontFamily: "'Inter', sans-serif" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,19,91,0.12); }
+        .benefit-card:hover .benefit-accent { opacity: 1; }
+        .benefit-accent { opacity: 0; transition: opacity 0.3s ease; }
+        .hero-dots { background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='2' cy='2' r='1.5'/%3E%3C/g%3E%3C/svg%3E"); }
+      `}</style>
+
+      <PublicNavbar onOpenAuth={handleOpenAuth} />
+
+      {/* ── HERO SECTION ── */}
+      <section
+        className="relative overflow-hidden pt-28 pb-10 hero-dots"
+        style={{
+          background:
+            "linear-gradient(165deg, #00135B 0%, #001e87 40%, #0b34a6 100%)",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-14">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left */}
             <div className="space-y-7">
@@ -579,6 +616,7 @@ export default function PremiumScholarshipPage() {
               </div>
             )}
           </div>
+        </div>
 
         {/* Wave SVG */}
         <svg
