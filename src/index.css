@@ -120,3 +120,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(245, 197, 66, 0.5);
 }
+
+/* Hide native webkit calendar picker icon to use custom Lucide icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+}

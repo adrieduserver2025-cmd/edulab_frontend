@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -415,6 +415,25 @@ export default function OpportunityDetailPage() {
 
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+
+  const birthDateRef = useRef<HTMLInputElement>(null);
+  const gradDateRef = useRef<HTMLInputElement>(null);
+
+  const formatDateForInput = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return "";
+    const trimmed = dateStr.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    
+    // Try DD/MM/YYYY
+    const parts = trimmed.split("/");
+    if (parts.length === 3) {
+      const [day, month, year] = parts;
+      if (day.length <= 2 && month.length <= 2 && year.length === 4) {
+        return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      }
+    }
+    return trimmed;
+  };
 
   // Auth & Profile states
   const { isAuthenticated, user, setUser } = useAuthStore();
@@ -1851,12 +1870,28 @@ export default function OpportunityDetailPage() {
                             <label className="font-bold uppercase text-[9px] text-slate-400 block">
                               Fecha de Nacimiento <span className="text-rose-500">*</span>
                             </label>
-                            <input
-                              type="date"
-                              value={localProfileForm.birth_date}
-                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, birth_date: e.target.value })}
-                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
-                            />
+                            <div className="relative">
+                              <input
+                                ref={birthDateRef}
+                                type="date"
+                                value={formatDateForInput(localProfileForm.birth_date)}
+                                onChange={(e) => setLocalProfileForm({ ...localProfileForm, birth_date: e.target.value })}
+                                className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl pl-3 pr-10 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  try {
+                                    birthDateRef.current?.showPicker();
+                                  } catch (err) {
+                                    birthDateRef.current?.focus();
+                                  }
+                                }}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 bg-transparent border-none cursor-pointer flex items-center justify-center"
+                              >
+                                <Calendar className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
 
                           {/* Education Level */}
@@ -1940,12 +1975,28 @@ export default function OpportunityDetailPage() {
                             <label className="font-bold uppercase text-[9px] text-slate-400 block">
                               Fecha Estimada de Graduación {opportunity.required_profile_fields?.includes("expected_graduation_date") || opportunity.required_profile_fields?.includes("graduation_date") ? <span className="text-rose-500">*</span> : ""}
                             </label>
-                            <input
-                              type="date"
-                              value={localProfileForm.expected_graduation_date}
-                              onChange={(e) => setLocalProfileForm({ ...localProfileForm, expected_graduation_date: e.target.value })}
-                              className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
-                            />
+                            <div className="relative">
+                              <input
+                                ref={gradDateRef}
+                                type="date"
+                                value={formatDateForInput(localProfileForm.expected_graduation_date)}
+                                onChange={(e) => setLocalProfileForm({ ...localProfileForm, expected_graduation_date: e.target.value })}
+                                className="w-full bg-white border border-gray-200 focus:bg-white text-slate-800 rounded-xl pl-3 pr-10 py-2 text-xs focus:outline-none focus:border-[#5D8CE2] transition-all"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  try {
+                                    gradDateRef.current?.showPicker();
+                                  } catch (err) {
+                                    gradDateRef.current?.focus();
+                                  }
+                                }}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 bg-transparent border-none cursor-pointer flex items-center justify-center"
+                              >
+                                <Calendar className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
 
                           {/* General Motivation Letter */}

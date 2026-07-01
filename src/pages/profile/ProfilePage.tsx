@@ -1,14 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getMyProfile, createProfile, updateProfile } from "../../services/profileService";
 import type { StudentProfileData, StudentProfileResponse } from "../../services/profileService";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
 import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
 
-import { Building2, Globe, MapPin, User as UserIcon, Phone, Mail, FileText, CheckCircle2, ShieldAlert } from "lucide-react";
+import { Building2, Globe, MapPin, User as UserIcon, Phone, Mail, FileText, CheckCircle2, ShieldAlert, Calendar } from "lucide-react";
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
+
+  const birthDateRef = useRef<HTMLInputElement>(null);
+  const gradDateRef = useRef<HTMLInputElement>(null);
+
+  const formatDateForInput = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return "";
+    const trimmed = dateStr.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    
+    // Try DD/MM/YYYY
+    const parts = trimmed.split("/");
+    if (parts.length === 3) {
+      const [day, month, year] = parts;
+      if (day.length <= 2 && month.length <= 2 && year.length === 4) {
+        return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      }
+    }
+    return trimmed;
+  };
 
   if (user?.role === "organization") {
     return <OrganizationProfileEditor />;
@@ -476,14 +495,30 @@ export default function ProfilePage() {
 
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Fecha de Nacimiento <span className="text-red-400">*</span></label>
-                    <input
-                      type="date"
-                      name="birth_date"
-                      value={formData.birth_date}
-                      onChange={handleInputChange}
-                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        ref={birthDateRef}
+                        type="date"
+                        name="birth_date"
+                        value={formatDateForInput(formData.birth_date)}
+                        onChange={handleInputChange}
+                        className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl pl-4 pr-11 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          try {
+                            birthDateRef.current?.showPicker();
+                          } catch (err) {
+                            birthDateRef.current?.focus();
+                          }
+                        }}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 bg-transparent border-none cursor-pointer flex items-center justify-center"
+                      >
+                        <Calendar className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -555,13 +590,29 @@ export default function ProfilePage() {
 
                   <div className="space-y-2 md:col-span-2">
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Fecha Estimada de Graduación</label>
-                    <input
-                      type="date"
-                      name="expected_graduation_date"
-                      value={formData.expected_graduation_date || ""}
-                      onChange={handleInputChange}
-                      className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
-                    />
+                    <div className="relative">
+                      <input
+                        ref={gradDateRef}
+                        type="date"
+                        name="expected_graduation_date"
+                        value={formatDateForInput(formData.expected_graduation_date)}
+                        onChange={handleInputChange}
+                        className="w-full bg-slate-50 border border-gray-200 focus:bg-white text-slate-800 rounded-xl pl-4 pr-11 py-3 text-sm focus:outline-none focus:border-[#5D8CE2] transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          try {
+                            gradDateRef.current?.showPicker();
+                          } catch (err) {
+                            gradDateRef.current?.focus();
+                          }
+                        }}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 bg-transparent border-none cursor-pointer flex items-center justify-center"
+                      >
+                        <Calendar className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
