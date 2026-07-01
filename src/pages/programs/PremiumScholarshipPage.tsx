@@ -579,56 +579,6 @@ export default function PremiumScholarshipPage() {
               </div>
             )}
           </div>
-        </div>                className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider"
-                        style={{ background: "rgba(245,197,66,0.25)", border: "1px solid rgba(245,197,66,0.5)", color: "#F5C542" }}
-                      >
-                        🎓 Video Oficial Fulbright
-                      </span>
-                      <p className="text-white font-bold text-sm leading-tight">Becas Fulbright: La oportunidad de tu vida</p>
-                      <p className="text-white/60 text-[10px]">Mira cómo Fulbright transforma vidas alrededor del mundo.</p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Floating glassmorphism card */}
-              <div
-                className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl grid grid-cols-2 gap-3"
-                style={{
-                  background: "rgba(245,197,66,0.1)",
-                  backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(245,197,66,0.25)",
-                  position: "absolute",
-                  bottom: "1rem",
-                  left: "1rem",
-                  right: "1rem",
-                }}
-              >
-                {[
-                  { icon: "💲", label: "Financiamiento", val: program.funding_type || "Completo" },
-                  { icon: "⏱", label: "Duración", val: program.duration || "Variable" },
-                  {
-                    icon: "📅",
-                    label: "Fecha límite",
-                    val: program.deadline
-                      ? new Date(program.deadline).toLocaleDateString("es", { month: "short", year: "numeric" })
-                      : program.dates_info?.substring(0, 20) || "Variable",
-                  },
-                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <div className="text-amber-300/70 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <span>{item.icon}</span> {item.label}
-                    </div>
-                    <div className="text-white font-bold text-sm mt-0.5">
-                      {item.val}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Wave SVG */}
         <svg
