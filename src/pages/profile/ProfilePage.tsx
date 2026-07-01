@@ -5,7 +5,195 @@ import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
 import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
 
-import { Building2, Globe, MapPin, User as UserIcon, Phone, Mail, FileText, CheckCircle2, ShieldAlert, Calendar } from "lucide-react";
+import { Building2, Globe, MapPin, User as UserIcon, Phone, Mail, FileText, CheckCircle2, ShieldAlert, Calendar, Award, Heart, ChevronDown, Search, X } from "lucide-react";
+
+/* ── CountryMultiSelect ─────────────────────────────────────────── */
+interface CountryMultiSelectProps {
+  options: string[];
+  selected: string[];
+  onChange: (vals: string[]) => void;
+}
+
+function CountryMultiSelect({ options, selected, onChange }: CountryMultiSelectProps) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const toggle = (country: string) => {
+    if (selected.includes(country)) {
+      onChange(selected.filter((c) => c !== country));
+    } else {
+      onChange([...selected, country]);
+    }
+  };
+
+  const filtered = options.filter((c) =>
+    c.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-2" ref={containerRef}>
+      <label className="text-xs font-bold uppercase tracking-wider text-[#5D8CE2] block">
+        Países de Destino Preferidos <span className="text-red-400">*</span>
+      </label>
+      <p className="text-[10px] text-slate-400 font-medium">
+        ¿Dónde te gustaría postular y estudiar? Puedes elegir varios.
+      </p>
+
+      {/* Selected chips */}
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {selected.map((c) => (
+            <span
+              key={c}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold text-white"
+              style={{ background: "linear-gradient(135deg, #5D8CE2 0%, #3a6fd1 100%)" }}
+            >
+              {c}
+              <button
+                type="button"
+                onClick={() => toggle(c)}
+                className="ml-0.5 rounded-full hover:bg-white/20 p-0.5 cursor-pointer transition-colors"
+                aria-label={`Quitar ${c}`}
+              >
+                <X className="w-2.5 h-2.5" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Dropdown trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm font-medium transition-all cursor-pointer"
+        style={{
+          background: open ? "rgba(93,140,226,0.06)" : "#fff",
+          borderColor: open ? "#5D8CE2" : "#e5e7eb",
+          color: selected.length > 0 ? "#00135B" : "#9ca3af",
+          boxShadow: open ? "0 0 0 3px rgba(93,140,226,0.15)" : "none",
+        }}
+      >
+        <span>
+          {selected.length === 0
+            ? "Selecciona países..."
+            : `${selected.length} país${selected.length === 1 ? "" : "es"} seleccionado${selected.length === 1 ? "" : "s"}`}
+        </span>
+        <ChevronDown
+          className="w-4 h-4 text-slate-400 transition-transform duration-200"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
+      </button>
+
+      {/* Dropdown panel */}
+      {open && (
+        <div
+          className="rounded-2xl border shadow-2xl overflow-hidden"
+          style={{
+            background: "#fff",
+            borderColor: "#e5e7eb",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(93,140,226,0.1)",
+          }}
+        >
+          {/* Search */}
+          <div
+            className="flex items-center gap-2 px-4 py-2.5 border-b"
+            style={{ borderColor: "#f1f5f9" }}
+          >
+            <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              placeholder="Buscar país..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="flex-1 text-xs outline-none bg-transparent text-slate-700 placeholder-slate-400"
+              autoFocus
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Options list */}
+          <div className="max-h-56 overflow-y-auto py-1.5">
+            {filtered.length === 0 ? (
+              <p className="text-center text-xs text-slate-400 py-4">Sin resultados</p>
+            ) : (
+              filtered.map((country) => {
+                const isSelected = selected.includes(country);
+                return (
+                  <button
+                    key={country}
+                    type="button"
+                    onClick={() => toggle(country)}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-xs font-medium transition-all cursor-pointer hover:bg-slate-50"
+                    style={{ color: isSelected ? "#5D8CE2" : "#374151" }}
+                  >
+                    {/* Checkbox */}
+                    <span
+                      className="w-4 h-4 rounded border-2 shrink-0 flex items-center justify-center transition-all"
+                      style={{
+                        background: isSelected ? "#5D8CE2" : "transparent",
+                        borderColor: isSelected ? "#5D8CE2" : "#d1d5db",
+                      }}
+                    >
+                      {isSelected && (
+                        <svg viewBox="0 0 12 12" fill="none" className="w-2.5 h-2.5">
+                          <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </span>
+                    {country}
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          {/* Footer */}
+          {selected.length > 0 && (
+            <div
+              className="flex items-center justify-between px-4 py-2 border-t"
+              style={{ borderColor: "#f1f5f9", background: "#f8fafc" }}
+            >
+              <span className="text-[10px] text-slate-500 font-medium">
+                {selected.length} seleccionado{selected.length === 1 ? "" : "s"}
+              </span>
+              <button
+                type="button"
+                onClick={() => onChange([])}
+                className="text-[10px] font-bold text-red-400 hover:text-red-600 cursor-pointer transition-colors"
+              >
+                Limpiar todo
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+/* ──────────────────────────────────────────────────────────────── */
+
+
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
@@ -321,25 +509,44 @@ export default function ProfilePage() {
   ];
 
   const INTEREST_OPTIONS = [
-    "Becas Completas",
     "Prácticas Profesionales",
-    "Voluntariados",
     "Programas de Liderazgo",
     "Intercambios Académicos",
     "Cursos Cortos",
     "Investigación Científica"
   ];
 
-  const COUNTRY_OPTIONS = SPANISH_SPEAKING_COUNTRIES.map((c) => `${c.flag} ${c.name}`);
+  const COUNTRY_OPTIONS = [
+    "🇺🇸 Estados Unidos",
+    "🇨🇦 Canadá",
+    "🇪🇸 España",
+    "🇬🇧 Reino Unido",
+    "🇩🇪 Alemania",
+    "🇫🇷 Francia",
+    "🇮🇹 Italia",
+    "🇦🇺 Australia",
+    "🇯🇵 Japón",
+    "🇨🇭 Suiza",
+    "🇳🇱 Países Bajos",
+    "🇸🇪 Suecia",
+    "🇧🇪 Bélgica",
+    "🇳🇿 Nueva Zelanda",
+    "🇰🇷 Corea del Sur",
+    "🇸🇬 Singapur",
+    "🇮🇪 Irlanda",
+    "🇲🇽 México",
+    "🇨🇴 Colombia",
+    "🇦🇷 Argentina",
+    "🇨🇱 Chile",
+    "🇧🇷 Brasil",
+    "🇵🇪 Perú",
+    "🇨🇷 Costa Rica"
+  ];
 
 
   const PROGRAM_TYPE_OPTIONS = [
-    { key: "scholarship", label: "Beca (Scholarship)" },
-    { key: "internship", label: "Pasantía (Internship)" },
-    { key: "volunteering", label: "Voluntariado (Volunteering)" },
-    { key: "leadership", label: "Liderazgo (Leadership)" },
-    { key: "exchange", label: "Intercambio (Exchange)" },
-    { key: "summer_school", label: "Escuela de Verano (Summer School)" }
+    { key: "scholarship", label: "Beca" },
+    { key: "volunteering", label: "Voluntariado" }
   ];
 
   if (isLoading) {
@@ -721,52 +928,222 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* Target countries selectors */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#5D8CE2] block">Países de Destino Preferidos <span className="text-red-400">*</span></label>
-                    <p className="text-[10px] text-slate-400 font-medium">¿Dónde te gustaría postular y estudiar?</p>
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {COUNTRY_OPTIONS.map((country) => {
-                        const isSelected = formData.target_countries?.includes(country);
-                        return (
-                          <button
-                            key={country}
-                            type="button"
-                            onClick={() => toggleArrayItem("target_countries", country)}
-                            className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${isSelected
-                                ? "bg-[#5D8CE2] border-[#5D8CE2] text-white shadow-sm"
-                                : "bg-slate-50 border-gray-200 text-slate-500 hover:bg-slate-100"
-                              }`}
-                          >
-                            {country}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  {/* Target countries selectors - Multi-select dropdown */}
+                  <CountryMultiSelect
+                    options={COUNTRY_OPTIONS}
+                    selected={formData.target_countries || []}
+                    onChange={(vals) => setFormData((prev) => ({ ...prev, target_countries: vals }))}
+                  />
 
                   {/* Target program types selectors */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[#5D8CE2] block">Tipos de Programa <span className="text-red-400">*</span></label>
-                    <p className="text-[10px] text-slate-400 font-medium">¿Qué formatos de convocatorias te interesan?</p>
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {PROGRAM_TYPE_OPTIONS.map((prog) => {
-                        const isSelected = formData.target_program_types?.includes(prog.key);
-                        return (
-                          <button
-                            key={prog.key}
-                            type="button"
-                            onClick={() => toggleArrayItem("target_program_types", prog.key)}
-                            className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${isSelected
-                                ? "bg-[#F5C542] border-[#F5C542] text-[#00135B]"
-                                : "bg-slate-50 border-gray-200 text-slate-500 hover:bg-slate-100"
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-[#5D8CE2] block">Tipo de Programa <span className="text-red-400">*</span></label>
+                      <p className="text-[10px] text-slate-400 font-medium">¿Qué modalidad te interesa?</p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        {/* Beca Card */}
+                        {(() => {
+                          const isSelected = formData.target_program_types?.includes("scholarship");
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => toggleArrayItem("target_program_types", "scholarship")}
+                              className={`flex items-start gap-4 p-5 rounded-2xl border text-left transition-all duration-300 cursor-pointer ${
+                                isSelected
+                                  ? "bg-blue-50/50 border-[#5D8CE2] shadow-sm ring-1 ring-[#5D8CE2]"
+                                  : "bg-slate-50 border-gray-200 hover:bg-slate-100"
                               }`}
-                          >
-                            {prog.label}
-                          </button>
-                        );
-                      })}
+                            >
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                                isSelected ? "bg-[#5D8CE2] text-white" : "bg-white text-slate-400 border border-gray-100"
+                              }`}>
+                                <Award className="w-5 h-5" />
+                              </div>
+                              <div className="space-y-1">
+                                <h4 className="font-bold text-sm text-[#00135B]">Beca</h4>
+                                <p className="text-[10px] text-slate-400 leading-snug font-medium">Financiamiento total o parcial para estudios</p>
+                              </div>
+                            </button>
+                          );
+                        })()}
+
+                        {/* Voluntariado Card */}
+                        {(() => {
+                          const isSelected = formData.target_program_types?.includes("volunteering");
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => toggleArrayItem("target_program_types", "volunteering")}
+                              className={`flex items-start gap-4 p-5 rounded-2xl border text-left transition-all duration-300 cursor-pointer ${
+                                isSelected
+                                  ? "bg-emerald-50/20 border-[#10b981] shadow-sm ring-1 ring-[#10b981]"
+                                  : "bg-slate-50 border-gray-200 hover:bg-slate-100"
+                              }`}
+                            >
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                                isSelected ? "bg-[#10b981] text-white" : "bg-white text-slate-400 border border-gray-100"
+                              }`}>
+                                <Heart className="w-5 h-5" />
+                              </div>
+                              <div className="space-y-1">
+                                <h4 className="font-bold text-sm text-[#00135B]">Voluntariado</h4>
+                                <p className="text-[10px] text-slate-400 leading-snug font-medium">Servicio comunitario con impacto global</p>
+                              </div>
+                            </button>
+                          );
+                        })()}
+                      </div>
                     </div>
+
+                    {/* Beca details collapsible */}
+                    {formData.target_program_types?.includes("scholarship") && (
+                      <div className="p-6 rounded-2xl bg-blue-55/10 border border-blue-100 space-y-4 text-left animate-fadeIn">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">🎓</span>
+                          <h4 className="font-bold text-sm text-[#00135B]">Detalla tu Beca Ideal</h4>
+                        </div>
+
+                        {/* Area of study tags */}
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">Área de Estudio</label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              "Ciencias e Investigación",
+                              "Tecnología e Ingeniería",
+                              "Artes y Humanidades",
+                              "Negocios y Economía",
+                              "Medicina y Salud",
+                              "Derecho y Políticas",
+                              "Relaciones Internacionales",
+                              "Medio Ambiente",
+                              "Educación y Pedagogía",
+                              "Comunicación y Medios"
+                            ].map((area) => {
+                              const isSelected = formData.interests?.includes(area);
+                              return (
+                                <button
+                                  key={area}
+                                  type="button"
+                                  onClick={() => toggleArrayItem("interests", area)}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                                    isSelected
+                                      ? "bg-blue-100 border-[#5D8CE2] text-[#00135B]"
+                                      : "bg-white border-gray-200 text-slate-500 hover:bg-slate-50"
+                                  }`}
+                                >
+                                  {area}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Academic level tags */}
+                        <div className="space-y-2 pt-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">Nivel Académico</label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              "Pregrado",
+                              "Maestría",
+                              "Doctorado",
+                              "Investigación Posdoctoral",
+                              "Curso Corto"
+                            ].map((lvl) => {
+                              const isSelected = formData.interests?.includes(lvl);
+                              return (
+                                <button
+                                  key={lvl}
+                                  type="button"
+                                  onClick={() => toggleArrayItem("interests", lvl)}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                                    isSelected
+                                      ? "bg-blue-100 border-[#5D8CE2] text-[#00135B]"
+                                      : "bg-white border-gray-200 text-slate-500 hover:bg-slate-50"
+                                  }`}
+                                >
+                                  {lvl}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Voluntariado details collapsible */}
+                    {formData.target_program_types?.includes("volunteering") && (
+                      <div className="p-6 rounded-2xl bg-emerald-55/10 border border-emerald-100 space-y-4 text-left animate-fadeIn">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">🌏</span>
+                          <h4 className="font-bold text-sm text-[#00135B]">Detalla tu Voluntariado Ideal</h4>
+                        </div>
+
+                        {/* Area of impact tags */}
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">Área de Impacto</label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              "Medio Ambiente",
+                              "Educación y Alfabetización",
+                              "Salud Comunitaria",
+                              "Desarrollo Social",
+                              "Derechos Humanos",
+                              "Seguridad Alimentaria",
+                              "Infraestructura",
+                              "Tecnología para el Bien",
+                              "Arte y Cultura",
+                              "Bienestar Animal"
+                            ].map((impact) => {
+                              const isSelected = formData.interests?.includes(impact);
+                              return (
+                                <button
+                                  key={impact}
+                                  type="button"
+                                  onClick={() => toggleArrayItem("interests", impact)}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                                    isSelected
+                                      ? "bg-emerald-100 border-[#10b981] text-[#047857]"
+                                      : "bg-white border-gray-200 text-slate-500 hover:bg-slate-50"
+                                  }`}
+                                >
+                                  {impact}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Preferred duration tags */}
+                        <div className="space-y-2 pt-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">Duración Preferida</label>
+                          <div className="flex flex-wrap gap-2">
+                            {[
+                              "1-3 meses",
+                              "3-6 meses",
+                              "6-12 meses",
+                              "Más de 1 año"
+                            ].map((dur) => {
+                              const isSelected = formData.interests?.includes(dur);
+                              return (
+                                <button
+                                  key={dur}
+                                  type="button"
+                                  onClick={() => toggleArrayItem("interests", dur)}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+                                    isSelected
+                                      ? "bg-emerald-100 border-[#10b981] text-[#047857]"
+                                      : "bg-white border-gray-200 text-slate-500 hover:bg-slate-50"
+                                  }`}
+                                >
+                                  {dur}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

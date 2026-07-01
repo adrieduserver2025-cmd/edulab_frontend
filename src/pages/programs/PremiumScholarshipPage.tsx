@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Award, CheckCircle2, ChevronDown, Globe, BookOpen,
@@ -333,50 +333,7 @@ export default function PremiumScholarshipPage() {
     4: { color: "#ef4444", tag: "Clave", emoji: "📬" },
   };
 
-  // ── MAIN RENDER ────────────────────────────────────────────────────────────
-  return (
-    <div
-      className="min-h-screen bg-white"
-      style={{ fontFamily: "'Inter', sans-serif" }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,19,91,0.12); }
-        .benefit-card:hover .benefit-accent { opacity: 1; }
-        .benefit-accent { opacity: 0; transition: opacity 0.3s ease; }
-        .hero-dots { background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='2' cy='2' r='1.5'/%3E%3C/g%3E%3C/svg%3E"); }
-      `}</style>
-
-      {/* ── NAVBAR ── */}
-      <PublicNavbar onOpenAuth={handleOpenAuth} />
-
-      {/* ── HERO ── */}
-      <section
-        className="hero-dots pt-24 pb-0 relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(135deg, #1a0d00 0%, #2d1600 30%, #3d2000 60%, #5a3000 100%)",
-        }}
-      >
-        {/* Glow circles — amber/golden for Fulbright */}
-        <div
-          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, #F5C542, transparent)" }}
-        />
-        <div
-          className="absolute bottom-20 left-0 w-[300px] h-[300px] rounded-full opacity-10 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, #F59E0B, transparent)" }}
-        />
-        {/* Fulbright background image overlay */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none"
-          style={{ backgroundImage: `url(${fulbrightBg})`, opacity: 0.12 }}
-        />
-        {/* Golden shimmer accents */}
-        <div className="absolute top-0 left-1/2 w-96 h-32 rounded-full pointer-events-none blur-3xl opacity-10" style={{background: "radial-gradient(circle, #F5C542 0%, transparent 70%)", transform: "translate(-50%, -50%)"}} />
-
-        <div className="max-w-7xl mx-auto px-6 py-14">
+  // ── MAIN RENDER �        <div className="max-w-7xl mx-auto px-6 py-14">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left */}
             <div className="space-y-7">
@@ -479,9 +436,33 @@ export default function PremiumScholarshipPage() {
                 <p className="text-red-300 text-sm">{applyError}</p>
               )}
 
+              {/* Glassmorphic program attributes banner */}
+              <div className="p-4 rounded-3xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full text-left"
+                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                {[
+                  { icon: "💲", label: "Financiamiento", val: program.funding_type || "Completo" },
+                  { icon: "⏱", label: "Duración", val: program.duration || "Variable" },
+                  {
+                    icon: "📅",
+                    label: "Fecha límite",
+                    val: program.deadline
+                      ? new Date(program.deadline).toLocaleDateString("es", { month: "short", year: "numeric" })
+                      : program.dates_info?.substring(0, 20) || "Variable",
+                  },
+                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
+                ].map(item => (
+                  <div key={item.label} className="space-y-0.5">
+                    <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+                      <span>{item.icon}</span> {item.label}
+                    </div>
+                    <div className="text-white font-extrabold text-xs">{item.val}</div>
+                  </div>
+                ))}
+              </div>
+
               {/* Stats row */}
               <div
-                className="flex flex-wrap gap-8 pt-4"
+                className="flex flex-wrap gap-8 pt-4 w-full"
                 style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
               >
                 {[
@@ -504,65 +485,101 @@ export default function PremiumScholarshipPage() {
               </div>
             </div>
 
-            {/* Right — Fulbright Video Card */}
-            <div className="relative">
-              <div
-                className="relative rounded-2xl overflow-hidden shadow-2xl group"
-                style={{ aspectRatio: "4/3" }}
-              >
-                {playHeroVideo ? (
+            {/* Right - Image card or Carousel */}
+            {program.slug === "fulbright-beca" ? (
+              <div className="relative flex flex-col items-center justify-center">
+                <div className="w-full max-w-[280px] rounded-3xl overflow-hidden shadow-2xl bg-black relative border border-white/10" style={{ aspectRatio: "9/16" }}>
                   <iframe
-                    className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                    src={
-                      program.slug === "fulbright-beca"
-                        ? "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0&autoplay=1"
-                        : "https://www.youtube.com/embed/iS3qREybbeI?autoplay=1"
-                    }
-                    title={program.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    key={currentVideoIdx}
+                    className="w-full h-full border-none"
+                    src={heroVideos[currentVideoIdx].url}
+                    title={heroVideos[currentVideoIdx].title}
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                     allowFullScreen
                   />
-                ) : (
-                  <>
-                    {/* Fulbright main image as thumbnail */}
-                    <img
-                      src={fulbrightBg}
-                      alt="Becas Fulbright — La oportunidad de tu vida"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                </div>
+
+                {/* Carousel controls */}
+                <div className="flex items-center gap-4 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentVideoIdx((prev) => (prev === 0 ? heroVideos.length - 1 : prev - 1))}
+                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
+                    aria-label="Video anterior"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+                  <div className="flex gap-1.5">
+                    {heroVideos.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setCurrentVideoIdx(idx)}
+                        className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
+                          currentVideoIdx === idx ? "bg-[#F5C542] w-4" : "bg-white/30"
+                        }`}
+                        aria-label={`Ir al video ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentVideoIdx((prev) => (prev === heroVideos.length - 1 ? 0 : prev + 1))}
+                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
+                    aria-label="Siguiente video"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Title indicator */}
+                <p className="text-white/65 text-[10px] uppercase font-bold tracking-wider mt-2.5 bg-white/5 px-3.5 py-1.5 rounded-full border border-white/5 shadow-sm">
+                  🎬 {heroVideos[currentVideoIdx].title}
+                </p>
+              </div>
+            ) : (
+              <div className="relative">
+                <div
+                  className="relative rounded-2xl overflow-hidden shadow-2xl group"
+                  style={{ aspectRatio: "4/3" }}
+                >
+                  {playHeroVideo ? (
+                    <iframe
+                      className="absolute inset-0 w-full h-full rounded-2xl border-none"
+                      src={`https://www.youtube.com/embed/iS3qREybbeI?autoplay=1`}
+                      title={program.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
                     />
-                    {/* Gradient overlay */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, rgba(90,45,0,0.90) 0%, rgba(45,24,0,0.35) 50%, transparent 100%)",
-                      }}
-                    />
-                    {/* Fulbright logo circular */}
-                    <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden border-2 border-amber-400/60">
-                      <img src={fulbrightLogo} alt="Fulbright" className="w-9 h-9 object-contain" />
-                    </div>
-                    {/* Open badge */}
-                    <div
-                      className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
-                      style={{ background: "#22c55e" }}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      Convocatoria Abierta
-                    </div>
-                    {/* Play button */}
-                    <button
-                      onClick={() => setPlayHeroVideo(true)}
-                      className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20"
-                      style={{ background: "#F5C542", width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
-                      aria-label="Ver video Fulbright"
-                    >
-                      <svg viewBox="0 0 24 24" fill="#1a0d00" width="26" height="26"><polygon points="6,4 20,12 6,20" /></svg>
-                    </button>
-                    {/* Bottom text */}
-                    <div className="absolute bottom-4 left-4 right-4 z-10 space-y-1">
-                      <span
-                        className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider"
+                  ) : (
+                    <>
+                      <img
+                        src={program.image_url || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"}
+                        alt={program.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background:
+                            "linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)",
+                        }}
+                      />
+                      <button
+                        onClick={() => setPlayHeroVideo(true)}
+                        className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20 bg-[#F5C542]"
+                        style={{ width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
+                        aria-label="Ver video"
+                      >
+                        <svg viewBox="0 0 24 24" fill="#000" width="26" height="26"><polygon points="6,4 20,12 6,20" /></svg>
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>                className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider"
                         style={{ background: "rgba(245,197,66,0.25)", border: "1px solid rgba(245,197,66,0.5)", color: "#F5C542" }}
                       >
                         🎓 Video Oficial Fulbright
@@ -1023,7 +1040,7 @@ export default function PremiumScholarshipPage() {
                     className="w-full py-3 rounded-xl font-bold text-[#00135B] text-sm transition-all hover:scale-[1.02]"
                     style={{ background: "#F5C542" }}
                   >
-                    Preparar mi aplicación
+                    Preparar mi postulaci\u00f3n
                   </button>
                 </div>
               </div>
@@ -1063,7 +1080,7 @@ export default function PremiumScholarshipPage() {
                 Powered by EDULAB AI
               </div>
               <h2 className="text-4xl font-black text-white mb-3">
-                Prepara tu aplicación con{" "}
+                Prepara tu postulaci\u00f3n con{" "}
                 <span style={{ color: "#F5C542" }}>Inteligencia Artificial</span>
               </h2>
               <p className="text-white/65 max-w-xl mx-auto">
@@ -1338,7 +1355,7 @@ export default function PremiumScholarshipPage() {
 
           <p className="text-white/70 text-lg max-w-2xl mx-auto leading-relaxed">
             No dejes que la complejidad del proceso te detenga. Con EDULAB e IA,
-            preparas la mejor aplicación posible para{" "}
+            preparas la mejor postulaci\u00f3n posible para{" "}
             {program.title}.
           </p>
 
