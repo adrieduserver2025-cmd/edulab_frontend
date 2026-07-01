@@ -7,6 +7,9 @@ import {
   GraduationCap, DollarSign, Clock, Calendar, Languages,
   MapPin, Building2, Zap, Loader2, AlertTriangle
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import fulbrightAboutImg from "../../assets/fulbright/becafulbright.jpg";
+import fulbrightPhoto from "../../assets/fulbright/images (2).jpeg";
 import PublicNavbar from "../../components/navigation/PublicNavbar";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
@@ -227,6 +230,64 @@ export default function PremiumScholarshipPage() {
     }
   ];
   const [currentVideoIdx, setCurrentVideoIdx] = useState(0);
+  const [activeBenefitIdx, setActiveBenefitIdx] = useState(0);
+
+  const getBenefitDetails = (title: string, index: number) => {
+    const cleanTitle = title.replace(/[^\w\saféíóúÁÉÍÓÚñÑ]/gu, "").trim().toLowerCase();
+    
+    const mapper: Record<string, { desc: string; image: string; color: string; bg: string }> = {
+      "matricula completa": {
+        desc: "Financiamiento integral del 100% de la matrícula académica y tasas obligatorias de la universidad seleccionada para todo tu periodo de estudios.",
+        image: fulbrightAboutImg,
+        color: "#3b82f6",
+        bg: "rgba(59,130,246,0.05)"
+      },
+      "pasajes internacionales": {
+        desc: "Vuelos de ida hacia la universidad de destino y de retorno al país de origen al finalizar de forma exitosa el programa académico.",
+        image: fulbrightPhoto,
+        color: "#10b981",
+        bg: "rgba(16,185,129,0.05)"
+      },
+      "estipendio mensual": {
+        desc: "Subsidio mensual para cubrir alojamiento, alimentación, transporte local y libros, ajustado al costo de vida de la ciudad de destino.",
+        image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80",
+        color: "#f59e0b",
+        bg: "rgba(245,158,11,0.05)"
+      },
+      "seguro medico": {
+        desc: "Seguro de salud y accidentes con cobertura médica internacional integral durante la validez de tu estancia y programa de becas.",
+        image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80",
+        color: "#ec4899",
+        bg: "rgba(236,72,153,0.05)"
+      },
+      "apoyo inicial de instalacion": {
+        desc: "Asignación única al llegar al país de destino para ayudarte con los gastos de establecimiento, depósitos de alquiler y compra de materiales básicos.",
+        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80",
+        color: "#8b5cf6",
+        bg: "rgba(139,92,246,0.05)"
+      },
+      "acceso a red internacional fulbright": {
+        desc: "Conexión directa con una de las redes de exbecarios más influyentes del mundo, facilitando mentoría, oportunidades de carrera y proyectos globales.",
+        image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80",
+        color: "#06b6d4",
+        bg: "rgba(6,182,212,0.05)"
+      }
+    };
+
+    for (const key of Object.keys(mapper)) {
+      if (cleanTitle.includes(key) || key.includes(cleanTitle)) {
+        return mapper[key];
+      }
+    }
+
+    const fallbacks = [
+      { desc: "Apoyo financiero completo para cubrir los costos esenciales del programa académico y matrícula.", image: fulbrightAboutImg, color: "#3b82f6", bg: "rgba(59,130,246,0.05)" },
+      { desc: "Transporte y traslados cubiertos para facilitar tu llegada e integración al programa.", image: fulbrightPhoto, color: "#10b981", bg: "rgba(16,185,129,0.05)" },
+      { desc: "Estipendio periódico para garantizar tu bienestar y sustento diario durante el programa.", image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80", color: "#f59e0b", bg: "rgba(245,158,11,0.05)" },
+      { desc: "Seguro de salud para brindarte asistencia y protección médica en todo momento.", image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80", color: "#ec4899", bg: "rgba(236,72,153,0.05)" },
+    ];
+    return fallbacks[index % fallbacks.length];
+  };
 
   // Load program from backend
   useEffect(() => {
@@ -473,29 +534,7 @@ export default function PremiumScholarshipPage() {
                 <p className="text-red-300 text-sm">{applyError}</p>
               )}
 
-              {/* Glassmorphic program attributes banner */}
-              <div className="p-4 rounded-3xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full text-left"
-                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                {[
-                  { icon: "💲", label: "Financiamiento", val: program.funding_type || "Completo" },
-                  { icon: "⏱", label: "Duración", val: program.duration || "Variable" },
-                  {
-                    icon: "📅",
-                    label: "Fecha límite",
-                    val: program.deadline
-                      ? new Date(program.deadline).toLocaleDateString("es", { month: "short", year: "numeric" })
-                      : program.dates_info?.substring(0, 20) || "Variable",
-                  },
-                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
-                ].map(item => (
-                  <div key={item.label} className="space-y-0.5">
-                    <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <span>{item.icon}</span> {item.label}
-                    </div>
-                    <div className="text-white font-extrabold text-xs">{item.val}</div>
-                  </div>
-                ))}
-              </div>
+
 
               {/* Stats row */}
               <div
@@ -522,99 +561,120 @@ export default function PremiumScholarshipPage() {
               </div>
             </div>
 
-            {/* Right - Image card or Carousel */}
-            {program.slug === "fulbright-beca" ? (
-              <div className="relative flex flex-col items-center justify-center">
-                <div className="w-full max-w-[280px] rounded-3xl overflow-hidden shadow-2xl bg-black relative border border-white/10" style={{ aspectRatio: "9/16" }}>
+{/* Right - Image/Video card with floating attributes */}
+            <div className="relative pl-0 lg:pl-6">
+              <div
+                className="relative rounded-3xl overflow-hidden shadow-2xl group border border-white/10"
+                style={{ aspectRatio: "4/3" }}
+              >
+                {playHeroVideo ? (
                   <iframe
-                    key={currentVideoIdx}
-                    className="w-full h-full border-none"
-                    src={heroVideos[currentVideoIdx].url}
-                    title={heroVideos[currentVideoIdx].title}
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    className="absolute inset-0 w-full h-full rounded-3xl border-none"
+                    src={
+                      program.slug === "fulbright-beca"
+                        ? "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0&autoplay=1"
+                        : "https://www.youtube.com/embed/iS3qREybbeI?autoplay=1"
+                    }
+                    title={program.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                   />
-                </div>
-
-                {/* Carousel controls */}
-                <div className="flex items-center gap-4 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentVideoIdx((prev) => (prev === 0 ? heroVideos.length - 1 : prev - 1))}
-                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
-                    aria-label="Video anterior"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                  </button>
-                  <div className="flex gap-1.5">
-                    {heroVideos.map((_, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setCurrentVideoIdx(idx)}
-                        className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
-                          currentVideoIdx === idx ? "bg-[#F5C542] w-4" : "bg-white/30"
-                        }`}
-                        aria-label={`Ir al video ${idx + 1}`}
-                      />
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentVideoIdx((prev) => (prev === heroVideos.length - 1 ? 0 : prev + 1))}
-                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
-                    aria-label="Siguiente video"
-                  >
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Title indicator */}
-                <p className="text-white/65 text-[10px] uppercase font-bold tracking-wider mt-2.5 bg-white/5 px-3.5 py-1.5 rounded-full border border-white/5 shadow-sm">
-                  🎬 {heroVideos[currentVideoIdx].title}
-                </p>
-              </div>
-            ) : (
-              <div className="relative">
-                <div
-                  className="relative rounded-2xl overflow-hidden shadow-2xl group"
-                  style={{ aspectRatio: "4/3" }}
-                >
-                  {playHeroVideo ? (
-                    <iframe
-                      className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                      src={`https://www.youtube.com/embed/iS3qREybbeI?autoplay=1`}
-                      title={program.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
+                ) : (
+                  <>
+                    <img
+                      src={
+                        program.slug === "fulbright-beca"
+                          ? fulbrightBg
+                          : program.image_url || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"
+                      }
+                      alt={program.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                  ) : (
-                    <>
-                      <img
-                        src={program.image_url || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"}
-                        alt={program.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div
-                        className="absolute inset-0"
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)",
+                      }}
+                    />
+                    
+                    {/* Fulbright circular logo */}
+                    {program.slug === "fulbright-beca" && (
+                      <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden border border-amber-400/40">
+                        <img src={fulbrightLogo} alt="Fulbright" className="w-8 h-8 object-contain" />
+                      </div>
+                    )}
+
+                    {/* Convocatoria abierta badge */}
+                    <div
+                      className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold text-white"
+                      style={{ background: "#22c55e" }}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      Convocatoria Abierta
+                    </div>
+
+                    {/* Play button */}
+                    <button
+                      onClick={() => setPlayHeroVideo(true)}
+                      className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20 bg-[#F5C542]"
+                      style={{ width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
+                      aria-label="Ver video"
+                    >
+                      <svg viewBox="0 0 24 24" fill="#000" width="24" height="24">
+                        <polygon points="6,4 20,12 6,20" />
+                      </svg>
+                    </button>
+
+                    {/* Info text */}
+                    <div className="absolute bottom-6 left-6 right-6 z-10 space-y-1 text-left">
+                      <span
+                        className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider"
                         style={{
-                          background:
-                            "linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)",
+                          background: "rgba(245,197,66,0.2)",
+                          border: "1px solid rgba(245,197,66,0.4)",
+                          color: "#F5C542",
                         }}
-                      />
-                      <button
-                        onClick={() => setPlayHeroVideo(true)}
-                        className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20 bg-[#F5C542]"
-                        style={{ width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
-                        aria-label="Ver video"
                       >
-                        <svg viewBox="0 0 24 24" fill="#000" width="26" height="26"><polygon points="6,4 20,12 6,20" /></svg>
-                      </button>
-                    </>
-                  )}
-                </div>
+                        {program.slug === "fulbright-beca" ? "🎓 Video Oficial Fulbright" : "🎬 Video Oficial"}
+                      </span>
+                      <p className="text-white font-extrabold text-sm leading-tight">
+                        {program.slug === "fulbright-beca" ? "Becas Fulbright: La oportunidad de tu vida" : `${program.title}: Conoce más`}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
-            )}
+
+              {/* Floating glassmorphism card */}
+              <div
+                className="absolute -bottom-6 left-6 right-6 p-4 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-lg border border-white/10"
+                style={{
+                  background: "rgba(255, 255, 255, 0.08)",
+                  backdropFilter: "blur(20px)",
+                }}
+              >
+                {[
+                  { icon: "💲", label: "Financiamiento", val: program.funding_type || "Completo" },
+                  { icon: "⏱", label: "Duración", val: program.duration || "Variable" },
+                  {
+                    icon: "📅",
+                    label: "Fecha límite",
+                    val: program.deadline
+                      ? new Date(program.deadline).toLocaleDateString("es", { month: "short", year: "numeric" })
+                      : program.dates_info?.substring(0, 20) || "Variable",
+                  },
+                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
+                ].map((item) => (
+                  <div key={item.label} className="space-y-0.5">
+                    <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+                      <span>{item.icon}</span> {item.label}
+                    </div>
+                    <div className="text-white font-extrabold text-xs">{item.val}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -682,51 +742,93 @@ export default function PremiumScholarshipPage() {
               </div>
             </div>
 
-            {/* Right — second image */}
-            <div className="relative">
-              <img
-                src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"
-                alt="Graduación universitaria"
-                className="w-full rounded-3xl object-cover shadow-2xl"
-                style={{ aspectRatio: "4/3" }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = SCHOLARSHIP_IMAGES[1];
-                }}
-              />
-              {/* Floating stat */}
-              <div
-                className="absolute -bottom-6 -left-6 p-5 rounded-2xl shadow-xl"
-                style={{ background: "white", border: "1px solid rgba(93,140,226,0.15)" }}
-              >
-                <p
-                  className="text-3xl font-black"
-                  style={{ color: "#F5C542" }}
+{/* Right side of About Section */}
+            {program.slug === "fulbright-beca" ? (
+              <div className="relative flex flex-col items-center justify-center p-6 bg-slate-50 rounded-3xl border border-slate-100/80 w-full">
+                <div
+                  className="w-full max-w-[280px] rounded-3xl overflow-hidden shadow-2xl bg-black relative border border-white/10"
+                  style={{ aspectRatio: "9/16" }}
                 >
-                  400k+
-                </p>
-                <p className="text-xs text-slate-500 font-semibold mt-0.5">
-                  Alumni en el mundo
+                  <iframe
+                    key={currentVideoIdx}
+                    className="w-full h-full border-none"
+                    src={heroVideos[currentVideoIdx].url}
+                    title={heroVideos[currentVideoIdx].title}
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+
+                {/* Carousel controls */}
+                <div className="flex items-center gap-4 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentVideoIdx((prev) => (prev === 0 ? heroVideos.length - 1 : prev - 1))}
+                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 transition-all cursor-pointer active:scale-95 shadow-sm"
+                    aria-label="Video anterior"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+                  <div className="flex gap-1.5">
+                    {heroVideos.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setCurrentVideoIdx(idx)}
+                        className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
+                          currentVideoIdx === idx ? "bg-[#5D8CE2] w-4" : "bg-slate-300"
+                        }`}
+                        aria-label={`Ir al video ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentVideoIdx((prev) => (prev === heroVideos.length - 1 ? 0 : prev + 1))}
+                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 transition-all cursor-pointer active:scale-95 shadow-sm"
+                    aria-label="Siguiente video"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Title indicator */}
+                <p className="text-slate-600 text-[10px] uppercase font-bold tracking-wider mt-2.5 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm">
+                  🎬 {heroVideos[currentVideoIdx].title}
                 </p>
               </div>
-              <div
-                className="absolute -top-6 -right-6 p-4 rounded-2xl shadow-xl"
-                style={{ background: "white", border: "1px solid rgba(93,140,226,0.15)" }}
-              >
-                <p
-                  className="text-2xl font-black"
-                  style={{ color: "#00135B" }}
+            ) : (
+              <div className="relative">
+                <img
+                  src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"
+                  alt="Graduación universitaria"
+                  className="w-full rounded-3xl object-cover shadow-2xl"
+                  style={{ aspectRatio: "4/3" }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = SCHOLARSHIP_IMAGES[1];
+                  }}
+                />
+                {/* Floating stat */}
+                <div
+                  className="absolute -bottom-6 -left-6 p-5 rounded-2xl shadow-xl"
+                  style={{ background: "white", border: "1px solid rgba(93,140,226,0.15)" }}
                 >
-                  #1
-                </p>
-                <p className="text-xs text-slate-500 font-semibold mt-0.5">
-                  Beca más prestigiosa
-                </p>
+                  <p
+                    className="text-3xl font-black"
+                    style={{ color: "#F5C542" }}
+                  >
+                    400k+
+                  </p>
+                  <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                    Alumni en el mundo
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
-
+      
       {/* ── GENERAL INFO ── */}
       <section className="py-20" style={{ background: "#f8faff" }}>
         <div className="max-w-7xl mx-auto px-6">
@@ -820,56 +922,137 @@ export default function PremiumScholarshipPage() {
                 ¿Qué incluye la beca?
               </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {benefits.map((b, i) => {
-                const emojis = ["💸", "✈️", "🏠", "❤️", "📚", "🌍"];
-                const text = b.replace(/[💸✈️🏠❤️📚🌍🎓🌐🤝🧠📜]/gu, "").trim();
-                const emoji = emojis[i] || "⭐";
-                return (
-                  <div
-                    key={i}
-                    className="benefit-card relative p-6 rounded-2xl border overflow-hidden card-hover bg-white"
-                    style={{ borderColor: "rgba(93,140,226,0.12)" }}
-                  >
-                    <div
-                      className="benefit-accent absolute bottom-0 left-0 right-0 h-0.5"
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+              {/* Left sidebar: Benefit triggers */}
+              <div className="lg:col-span-5 space-y-3">
+                {benefits.map((b, i) => {
+                  const emojis = ["💵", "✈️", "💰", "❤️", "📦", "🌐"];
+                  const text = b.replace(/[^\w\saféíóúÁÉÍÓÚñÑ]/gu, "").trim();
+                  const emoji = emojis[i] || "🎁";
+                  const isActive = activeBenefitIdx === i;
+                  const details = getBenefitDetails(b, i);
+                  
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setActiveBenefitIdx(i)}
+                      className={`w-full flex items-center gap-4 p-4.5 rounded-2xl border text-left transition-all duration-300 cursor-pointer ${
+                        isActive
+                          ? "shadow-lg scale-[1.03]"
+                          : "opacity-75 scale-[0.97] hover:opacity-100 hover:scale-[1.00] bg-slate-50 border-gray-200 text-slate-500 hover:bg-slate-100"
+                      }`}
                       style={{
-                        background: "linear-gradient(90deg, #5D8CE2, #F5C542)",
+                        borderColor: isActive ? details.color : "rgba(229,231,235,1)",
+                        background: isActive ? details.bg : "#ffffff",
+                        boxShadow: isActive ? `0 10px 25px -5px ${details.color}18` : "none",
                       }}
-                    />
-                    <div className="text-4xl mb-4">{emoji}</div>
-                    <h3 className="font-bold text-[#00135B] mb-2 text-sm">
-                      {text || b}
-                    </h3>
-                  </div>
-                );
-              })}
-            </div>
+                    >
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0 transition-transform duration-300"
+                        style={{
+                          background: isActive ? `${details.color}20` : "rgba(241,245,249,1)",
+                          transform: isActive ? "rotate(8deg) scale(1.1)" : "none",
+                        }}
+                      >
+                        {emoji}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4
+                          className="font-bold text-sm truncate"
+                          style={{ color: isActive ? "#00135B" : "#475569" }}
+                        >
+                          {text || b}
+                        </h4>
+                        <p className="text-[10px] text-slate-400 font-medium truncate mt-0.5">
+                          {isActive ? "Mostrando detalles" : "Ver cobertura e información"}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
 
-            {/* Gallery row */}
-            <div className="grid grid-cols-3 gap-4 mt-12">
-              {[
-                "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&q=80",
-                "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=600&q=80",
-                "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
-              ].map((src, i) => (
-                <div
-                  key={i}
-                  className="rounded-2xl overflow-hidden"
-                  style={{ aspectRatio: "16/9" }}
-                >
-                  <img
-                    src={src}
-                    alt={`Beneficio ${i + 1}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              ))}
+              {/* Right content display: Active Benefit Details */}
+              <div className="lg:col-span-7 flex">
+                <AnimatePresence mode="wait">
+                  {(() => {
+                    const b = benefits[activeBenefitIdx];
+                    if (!b) return null;
+                    const emojis = ["💵", "✈️", "💰", "❤️", "📦", "🌐"];
+                    const text = b.replace(/[^\w\saféíóúÁÉÍÓÚñÑ]/gu, "").trim();
+                    const emoji = emojis[activeBenefitIdx] || "🎁";
+                    const details = getBenefitDetails(b, activeBenefitIdx);
+
+                    return (
+                      <motion.div
+                        key={activeBenefitIdx}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="w-full flex flex-col rounded-3xl border overflow-hidden shadow-xl bg-white"
+                        style={{ borderColor: "rgba(93,140,226,0.12)" }}
+                      >
+                        {/* Benefit Image */}
+                        <div className="h-60 relative overflow-hidden group">
+                          <img
+                            src={details.image}
+                            alt={text || b}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div
+                            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
+                          />
+                          {/* Absolute floating badge */}
+                          <div
+                            className="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold text-white"
+                            style={{ background: details.color }}
+                          >
+                            <span>{emoji}</span>
+                            <span>{text || b}</span>
+                          </div>
+                        </div>
+
+                        {/* Benefit Description */}
+                        <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
+                          <div className="space-y-3">
+                            <h3 className="text-xl font-extrabold text-[#00135B]">
+                              Detalle de Cobertura
+                            </h3>
+                            <p className="text-slate-600 text-sm leading-relaxed">
+                              {details.desc}
+                            </p>
+                          </div>
+
+                          <div
+                            className="p-4.5 rounded-2xl flex items-start gap-3.5 border text-left"
+                            style={{
+                              background: details.bg,
+                              borderColor: `${details.color}25`
+                            }}
+                          >
+                            <Sparkles className="w-5 h-5 shrink-0 mt-0.5" style={{ color: details.color }} />
+                            <div className="space-y-0.5">
+                              <p className="text-xs font-bold text-[#00135B]">
+                                Ventaja de Postulación con EduLab
+                              </p>
+                              <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+                                Optimizamos tus cartas de motivación para justificar tu necesidad y mérito para la obtención de este beneficio al 100%.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })()}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </section>
       )}
-
+      
       {/* ── IDEAL PROFILE ── */}
       {idealProfile.length > 0 && (
         <section className="py-20" style={{ background: "#f0f4ff" }}>
@@ -1028,7 +1211,7 @@ export default function PremiumScholarshipPage() {
                     className="w-full py-3 rounded-xl font-bold text-[#00135B] text-sm transition-all hover:scale-[1.02]"
                     style={{ background: "#F5C542" }}
                   >
-                    Preparar mi postulaci\u00f3n
+                    Preparar mi postulación
                   </button>
                 </div>
               </div>
@@ -1068,7 +1251,7 @@ export default function PremiumScholarshipPage() {
                 Powered by EDULAB AI
               </div>
               <h2 className="text-4xl font-black text-white mb-3">
-                Prepara tu postulaci\u00f3n con{" "}
+                Prepara tu postulación con{" "}
                 <span style={{ color: "#F5C542" }}>Inteligencia Artificial</span>
               </h2>
               <p className="text-white/65 max-w-xl mx-auto">
@@ -1162,22 +1345,7 @@ export default function PremiumScholarshipPage() {
             </div>
 
             {/* Testimonial images/video row */}
-            {program.slug === "fulbright-beca" ? (
-              <div className="flex justify-center mb-10">
-                <div
-                  className="w-full max-w-sm rounded-3xl overflow-hidden shadow-lg border border-gray-100 bg-black relative"
-                  style={{ aspectRatio: "9/16" }}
-                >
-                  <iframe
-                    className="w-full h-full border-none"
-                    src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F991543300065303&show_text=0"
-                    title="Experiencias Fulbright"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            ) : (
+            {program.slug !== "fulbright-beca" && (
               <div className="grid grid-cols-3 gap-4 mb-10">
                 {[
                   "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80",
@@ -1198,7 +1366,7 @@ export default function PremiumScholarshipPage() {
                 ))}
               </div>
             )}
-
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
                 <div
@@ -1343,7 +1511,7 @@ export default function PremiumScholarshipPage() {
 
           <p className="text-white/70 text-lg max-w-2xl mx-auto leading-relaxed">
             No dejes que la complejidad del proceso te detenga. Con EDULAB e IA,
-            preparas la mejor postulaci\u00f3n posible para{" "}
+            preparas la mejor postulación posible para{" "}
             {program.title}.
           </p>
 
