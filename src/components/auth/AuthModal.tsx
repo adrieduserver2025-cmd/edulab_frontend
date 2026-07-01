@@ -10,7 +10,8 @@ import {
   ArrowRight, 
   ArrowLeft,
   ShieldAlert,
-  CheckCircle2
+  CheckCircle2,
+  Building2
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { loginWithGoogle, loginWithEmail, registerWithEmail } from "../../services/authService";
@@ -382,13 +383,15 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
             </button>
             
             {mode === "login" && !isOrgRegister && (
-              <div className="pt-2.5 border-t border-gray-150 flex flex-col items-center">
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">¿Eres una organización?</span>
+              <div className="pt-4 mt-1 border-t border-gray-100 flex flex-col items-center space-y-2">
+                <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">¿Eres una organización o universidad?</span>
                 <button
+                  type="button"
                   onClick={() => setIsOrgRegister(true)}
-                  className="text-xs font-semibold text-[#00135B] hover:text-[#5D8CE2] underline cursor-pointer bg-transparent border-none mt-1"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-55 border border-gray-200 text-xs font-bold text-[#00135B] hover:text-white hover:bg-[#00135B] hover:border-[#00135B] transition-all duration-300 shadow-sm hover:shadow active:scale-98 cursor-pointer"
                 >
-                  Registra tu organización en EDULAB
+                  <Building2 className="w-4 h-4 text-[#5D8CE2] shrink-0" />
+                  <span>Registra tu organización en EDULAB</span>
                 </button>
               </div>
             )}

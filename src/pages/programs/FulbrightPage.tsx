@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Award, CheckCircle2, ChevronDown, Globe, BookOpen,
-  AlertCircle, Star, ArrowRight, Sparkles, ExternalLink,
+  AlertCircle, Star, ArrowRight, ArrowLeft, Sparkles, ExternalLink,
   HelpCircle, Users, Trophy, Lightbulb,
   GraduationCap, DollarSign, Clock, Calendar, Languages,
-  MapPin, Building2, Zap
+  MapPin, Building2, Zap, Heart
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
@@ -129,6 +129,63 @@ export default function FulbrightPage() {
   const [applyError, setApplyError] = useState<string | null>(null);
   const [programId, setProgramId] = useState<number | null>(null);
   const [playHeroVideo, setPlayHeroVideo] = useState(false);
+  const heroVideos = [
+    {
+      title: "Conoce la experiencia Fulbright",
+      url: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0"
+    },
+    {
+      title: "Testimonio de ex-becarios",
+      url: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F991543300065303&show_text=0"
+    }
+  ];
+  const [currentVideoIdx, setCurrentVideoIdx] = useState(0);
+  const [activeBenefitIdx, setActiveBenefitIdx] = useState(0);
+
+  const benefitsList = [
+    {
+      emoji: "💸",
+      title: "Matrícula completa",
+      desc: "Cubierta al 100% en cualquier universidad participante.",
+      longDesc: "Financiamiento integral del 100% de la matrícula académica y tasas obligatorias de la universidad estadounidense seleccionada, para que estudies con total tranquilidad.",
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
+    },
+    {
+      emoji: "✈️",
+      title: "Pasajes internacionales",
+      desc: "Vuelos de ida y vuelta de clase económica cubiertos.",
+      longDesc: "Pasajes aéreos internacionales de ida y vuelta para el becario entre su país de origen y los Estados Unidos, al inicio y finalización oficial del programa académico.",
+      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80"
+    },
+    {
+      emoji: "💵",
+      title: "Estipendio mensual",
+      desc: "Apoyo mensual para vivienda, libros y manutención.",
+      longDesc: "Asignación mensual de manutención adaptada al costo de vida de la ciudad de destino para cubrir alojamiento, alimentación, transporte y material académico obligatorio.",
+      image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80"
+    },
+    {
+      emoji: "❤️",
+      title: "Seguro médico",
+      desc: "Cobertura médica integral provista por EE.UU.",
+      longDesc: "Plan de cobertura médica complementaria contra accidentes y enfermedades provisto directamente por el Departamento de Estado (cobertura ASPE) durante todo tu programa.",
+      image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80"
+    },
+    {
+      emoji: "🏢",
+      title: "Apoyo inicial de instalación",
+      desc: "Subvención única al llegar a los EE.UU.",
+      longDesc: "Un desembolso económico inicial y único al llegar a territorio norteamericano para ayudarte a solventar depósitos de alquiler, ropa de invierno u otros gastos de mudanza.",
+      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80"
+    },
+    {
+      emoji: "🌍",
+      title: "Acceso a red internacional",
+      desc: "+400,000 exbecarios influyentes a nivel mundial.",
+      longDesc: "Forma parte de una comunidad de prestigio mundial con más de 400,000 exbecarios. Conéctate con líderes de diversos sectores, incluyendo premios Nobel y jefes de Estado.",
+      image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80"
+    }
+  ];
 
   // Load the Fulbright program from backend to get the real ID
   useEffect(() => {
@@ -315,8 +372,26 @@ export default function FulbrightPage() {
               </div>
               {applyError && <p className="text-red-300 text-sm">{applyError}</p>}
 
+              {/* Glassmorphic program attributes banner */}
+              <div className="p-4 rounded-3xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full"
+                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                {[
+                  { icon: "💲", label: "Financiamiento", val: "Completo" },
+                  { icon: "⏱", label: "Duración", val: "1 – 2 años" },
+                  { icon: "📅", label: "Fecha límite", val: "Oct 2025" },
+                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
+                ].map(item => (
+                  <div key={item.label} className="space-y-0.5 text-left">
+                    <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+                      <span>{item.icon}</span> {item.label}
+                    </div>
+                    <div className="text-white font-extrabold text-xs">{item.val}</div>
+                  </div>
+                ))}
+              </div>
+
               {/* Stats */}
-              <div className="flex flex-wrap gap-8 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              <div className="flex flex-wrap gap-8 pt-4 w-full" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
                 {[
                   { val: "+3,000", label: "Becados / año" },
                   { val: "170+", label: "Países participantes" },
@@ -330,64 +405,56 @@ export default function FulbrightPage() {
               </div>
             </div>
 
-            {/* Right - Image card */}
-            <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl group" style={{ aspectRatio: "4/3" }}>
-                {playHeroVideo ? (
-                  <iframe
-                    className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                    src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0&autoplay=1"
-                    title="Beca Fulbright Video"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                ) : (
-                  <>
-                    <img
-                      src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
-                      alt="Estudiantes internacionales en universidad de Estados Unidos"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0"
-                      style={{ background: "linear-gradient(to top, rgba(0,19,91,0.6) 0%, transparent 60%)" }} />
-                    
-                    {/* Play button */}
+            {/* Right - Video Experiences Carousel */}
+            <div className="relative flex flex-col items-center justify-center">
+              <div className="w-full max-w-[280px] rounded-3xl overflow-hidden shadow-2xl bg-black relative border border-white/10" style={{ aspectRatio: "9/16" }}>
+                <iframe
+                  key={currentVideoIdx}
+                  className="w-full h-full border-none"
+                  src={heroVideos[currentVideoIdx].url}
+                  title={heroVideos[currentVideoIdx].title}
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+
+              {/* Carousel controls */}
+              <div className="flex items-center gap-4 mt-4">
+                <button
+                  type="button"
+                  onClick={() => setCurrentVideoIdx((prev) => (prev === 0 ? heroVideos.length - 1 : prev - 1))}
+                  className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
+                  aria-label="Video anterior"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <div className="flex gap-1.5">
+                  {heroVideos.map((_, idx) => (
                     <button
-                      onClick={() => setPlayHeroVideo(true)}
-                      className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20"
-                      style={{ background: "#F5C542", width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
-                      aria-label="Ver video Fulbright"
-                    >
-                      <svg viewBox="0 0 24 24" fill="#00135B" width="26" height="26"><polygon points="6,4 20,12 6,20" /></svg>
-                    </button>
-
-                    {/* Badge convocatoria */}
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
-                      style={{ background: "#22c55e" }}>
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      Convocatoria Abierta
-                    </div>
-                  </>
-                )}
+                      key={idx}
+                      type="button"
+                      onClick={() => setCurrentVideoIdx(idx)}
+                      className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
+                        currentVideoIdx === idx ? "bg-[#F5C542] w-4" : "bg-white/30"
+                      }`}
+                      aria-label={`Ir al video ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCurrentVideoIdx((prev) => (prev === heroVideos.length - 1 ? 0 : prev + 1))}
+                  className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
+                  aria-label="Siguiente video"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
 
-              {/* Floating glassmorphism card */}
-              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl grid grid-cols-2 gap-3"
-                style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                {[
-                  { icon: "💲", label: "Financiamiento", val: "Completo" },
-                  { icon: "⏱", label: "Duración", val: "1 – 2 años" },
-                  { icon: "📅", label: "Fecha límite", val: "Oct 2025" },
-                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
-                ].map(item => (
-                  <div key={item.label}>
-                    <div className="text-white/50 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <span>{item.icon}</span> {item.label}
-                    </div>
-                    <div className="text-white font-bold text-sm mt-0.5">{item.val}</div>
-                  </div>
-                ))}
-              </div>
+              {/* Title indicator */}
+              <p className="text-white/65 text-[10px] uppercase font-bold tracking-wider mt-2.5 bg-white/5 px-3.5 py-1.5 rounded-full border border-white/5 shadow-sm">
+                🎬 {heroVideos[currentVideoIdx].title}
+              </p>
             </div>
           </div>
         </div>
@@ -463,6 +530,67 @@ export default function FulbrightPage() {
       </section>
 
       {/* ===================================== */}
+      {/* BENEFICIOS */}
+      {/* ===================================== */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold mb-4"
+              style={{ background: "rgba(245,197,66,0.15)", color: "#b8860b" }}>
+              ✨ Beneficios
+            </div>
+            <h2 className="text-3xl font-black text-[#00135B]">¿Qué incluye la beca?</h2>
+            <p className="text-slate-400 text-xs mt-2 font-medium">Haz clic en cualquier beneficio para explorar los detalles e imágenes de la cobertura.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {benefitsList.map((b, i) => {
+              const isActive = activeBenefitIdx === i;
+              return (
+                <div
+                  key={i}
+                  onClick={() => setActiveBenefitIdx(i)}
+                  className={`relative p-6 rounded-3xl border transition-all duration-500 cursor-pointer overflow-hidden flex flex-col justify-between select-none ${
+                    isActive
+                      ? "col-span-1 md:col-span-2 bg-[#00135B] text-white border-[#5D8CE2] shadow-2xl scale-[1.01] ring-1 ring-[#5D8CE2]/20"
+                      : "col-span-1 bg-slate-50/50 border-gray-150 text-slate-700 opacity-65 scale-[0.97] hover:opacity-90 hover:scale-[0.99] hover:bg-slate-100/50"
+                  }`}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="text-4xl">{b.emoji}</div>
+                      {isActive && (
+                        <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-[#F5C542] border border-[#F5C542]/30 text-[8px] font-extrabold uppercase tracking-widest animate-pulse">
+                          Cobertura Activa
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className={`font-extrabold text-base transition-colors ${isActive ? "text-[#F5C542]" : "text-[#00135B]"}`}>
+                        {b.title}
+                      </h3>
+                      <p className={`text-xs mt-1 leading-relaxed ${isActive ? "text-slate-200" : "text-slate-500"}`}>
+                        {isActive ? b.longDesc : b.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  {isActive && b.image && (
+                    <div className="mt-5 rounded-2xl overflow-hidden h-40 w-full relative animate-fadeIn shadow-inner border border-white/5">
+                      <img src={b.image} alt={b.title} className="w-full h-full object-cover opacity-90" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                    </div>
+                  )}
+
+                  <div className="benefit-accent absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#5D8CE2] to-[#F5C542] transition-all" />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================================== */}
       {/* INFORMACIÓN GENERAL */}
       {/* ===================================== */}
       <section className="py-20" style={{ background: "#f8faff" }}>
@@ -511,40 +639,6 @@ export default function FulbrightPage() {
               style={{ background: "#F5C542" }}>
               Evaluar mi perfil con IA
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ===================================== */}
-      {/* BENEFICIOS */}
-      {/* ===================================== */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold mb-4"
-              style={{ background: "rgba(245,197,66,0.15)", color: "#b8860b" }}>
-              ✨ Beneficios
-            </div>
-            <h2 className="text-3xl font-black text-[#00135B]">¿Qué incluye la beca?</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { emoji: "💸", title: "Matrícula completa", desc: "Cubierta al 100% en cualquier universidad participante del programa." },
-              { emoji: "✈️", title: "Pasajes internacionales", desc: "Vuelos de ida y vuelta durante todo el programa académico." },
-              { emoji: "🏠", title: "Apoyo de instalación", desc: "Apoyo mensual para vivienda, alimentación y vida cotidiana." },
-              { emoji: "❤️", title: "Seguro médico", desc: "Cobertura médica completa durante la duración del programa." },
-              { emoji: "📚", title: "Universidades de prestigio", desc: "Harvard, MIT, Yale, Stanford y más de 1,500 instituciones acreditadas." },
-              { emoji: "🌍", title: "Red Fulbright global", desc: "+400,000 exbecarios incluyendo premios Nobel y jefes de Estado." },
-            ].map((b, i) => (
-              <div key={i} className="benefit-card relative p-6 rounded-2xl border overflow-hidden card-hover bg-white"
-                style={{ borderColor: "rgba(93,140,226,0.12)" }}>
-                <div className="benefit-accent absolute bottom-0 left-0 right-0 h-0.5"
-                  style={{ background: "linear-gradient(90deg, #5D8CE2, #F5C542)" }} />
-                <div className="text-4xl mb-4">{b.emoji}</div>
-                <h3 className="font-bold text-[#00135B] mb-2">{b.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{b.desc}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -750,18 +844,7 @@ export default function FulbrightPage() {
             <h2 className="text-3xl font-black text-[#00135B]">Historias de becarios reales</h2>
           </div>
 
-          {/* Experience video */}
-          <div className="flex justify-center mb-12">
-            <div className="w-full max-w-sm rounded-3xl overflow-hidden shadow-lg border border-gray-100 bg-black relative animate-fadeIn" style={{ aspectRatio: "9/16" }}>
-              <iframe
-                className="w-full h-full border-none"
-                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F991543300065303&show_text=0"
-                title="Experiencias Fulbright"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                allowFullScreen
-              />
-            </div>
-          </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
