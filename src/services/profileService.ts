@@ -45,12 +45,41 @@ export const getMyProfile = async (): Promise<StudentProfileResponse | null> => 
   }
 };
 
+const normalizeDate = (dateStr: string | null | undefined): string | null => {
+  if (!dateStr) return null;
+  const trimmed = dateStr.trim();
+  if (!trimmed) return null;
+  // If it's already in YYYY-MM-DD format, return it
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  // If it's in DD/MM/YYYY format, convert to YYYY-MM-DD
+  const parts = trimmed.split("/");
+  if (parts.length === 3) {
+    const [day, month, year] = parts;
+    if (day.length === 2 && month.length === 2 && year.length === 4) {
+      return `${year}-${month}-${day}`;
+    }
+  }
+  return trimmed;
+};
+
+const normalizeProfileDates = <T extends Partial<StudentProfileData>>(data: T): T => {
+  const normalized = { ...data };
+  if (normalized.birth_date !== undefined) {
+    normalized.birth_date = normalizeDate(normalized.birth_date) as any;
+  }
+  if (normalized.expected_graduation_date !== undefined) {
+    normalized.expected_graduation_date = normalizeDate(normalized.expected_graduation_date) as any;
+  }
+  return normalized;
+};
+
 /**
  * Create a new student profile for the authenticated user.
  */
 export const createProfile = async (data: StudentProfileData): Promise<StudentProfileResponse> => {
   try {
-    const response = await axiosClient.post<StudentProfileResponse>("/student-profile/me", data);
+    const normalizedData = normalizeProfileDates(data);
+    const response = await axiosClient.post<StudentProfileResponse>("/student-profile/me", normalizedData);
     return response.data;
   } catch (error) {
     console.error("Error creating student profile:", error);
@@ -63,7 +92,8 @@ export const createProfile = async (data: StudentProfileData): Promise<StudentPr
  */
 export const updateProfile = async (data: Partial<StudentProfileData>): Promise<StudentProfileResponse> => {
   try {
-    const response = await axiosClient.put<StudentProfileResponse>("/student-profile/me", data);
+    const normalizedData = normalizeProfileDates(data);
+    const response = await axiosClient.put<StudentProfileResponse>("/student-profile/me", normalizedData);
     return response.data;
   } catch (error) {
     console.error("Error updating student profile:", error);
