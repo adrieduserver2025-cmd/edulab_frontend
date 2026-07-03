@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
+import isotipo from "../../assets/isotipo.png";
 
 // ==========================
 // AUTH MODAL (simplified)
@@ -59,8 +60,22 @@ function Navbar() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "shadow-lg" : ""}`}
       style={{ background: "#00135B" }}>
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <button onClick={() => navigate("/")} className="text-2xl font-black tracking-tight">
-          <span style={{ color: "#F5C542" }}>EDU</span><span className="text-white">LAB</span>
+        <button onClick={() => navigate("/")} className="flex items-center gap-2.5 group text-left">
+          <div className="w-8 h-8 flex items-center justify-center">
+            <img 
+              src={isotipo} 
+              alt="EDULAB"
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="flex items-center leading-none">
+            <span className="font-display text-2xl font-medium tracking-tight text-white">
+              edu
+            </span>
+            <span className="font-display text-2xl font-medium tracking-tight text-[#F5A400]">
+              lab
+            </span>
+          </div>
         </button>
         <div className="hidden md:flex items-center gap-8">
           {["Oportunidades", "Voluntariados", "IA", "Cómo Funcionamos", "Testimonios"].map(link => (

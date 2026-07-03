@@ -25,6 +25,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import isotipo from "../../assets/isotipo.png";
 
 interface SubmenuItem {
   title: string;
@@ -96,7 +97,7 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
         <Link to="/" className="flex items-center gap-2.5 group">
           <div className="w-12 h-12 flex items-center justify-center">
             <img 
-              src="/src/assets/isotipo.png" 
+              src={isotipo} 
               alt="EDULAB"
               className="w-full h-full object-contain"
             />

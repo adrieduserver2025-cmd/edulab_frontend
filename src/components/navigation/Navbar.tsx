@@ -1,6 +1,7 @@
-import { Menu, Bell, Search, GraduationCap } from "lucide-react";
+import { Menu, Bell, Search } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import isotipo from "../../assets/isotipo.png";
 
 interface NavbarProps {
   onToggleSidebar: () => void;
@@ -24,12 +25,21 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
         </button>
 
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#00135B] to-[#5D8CE2] flex items-center justify-center border border-white/10 shadow-sm group-hover:scale-105 transition-all duration-200">
-            <GraduationCap className="w-5 h-5 text-[#F5C542]" />
+          <div className="w-9 h-9 flex items-center justify-center">
+            <img 
+              src={isotipo} 
+              alt="EDULAB"
+              className="w-full h-full object-contain"
+            />
           </div>
-          <span className="font-display font-extrabold text-xl tracking-wider text-[#00135B]">
-            EDU<span className="text-[#5D8CE2] font-semibold">LAB</span>
-          </span>
+          <div className="flex items-center leading-none">
+            <span className="font-display text-2xl font-medium tracking-tight text-[#0036A3]">
+              edu
+            </span>
+            <span className="font-display text-2xl font-medium tracking-tight text-[#F5A400]">
+              lab
+            </span>
+          </div>
         </Link>
       </div>
 
