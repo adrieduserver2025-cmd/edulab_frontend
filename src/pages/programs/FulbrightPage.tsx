@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Award, CheckCircle2, ChevronDown, Globe, BookOpen,
   AlertCircle, Star, ArrowRight, ArrowLeft, Sparkles, ExternalLink,
   HelpCircle, Users, Trophy, Lightbulb,
   GraduationCap, DollarSign, Clock, Calendar, Languages,
-  MapPin, Building2, Zap, Heart
+  MapPin, Building2, Zap, Heart, X, Plane, Wallet, Shield, Home, Check
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
@@ -130,6 +131,21 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.07
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 200, damping: 20 } }
+};
+
 // ==========================
 // MAIN PAGE COMPONENT
 // ==========================
@@ -155,50 +171,164 @@ export default function FulbrightPage() {
     }
   ];
   const [currentVideoIdx, setCurrentVideoIdx] = useState(0);
-  const [activeBenefitIdx, setActiveBenefitIdx] = useState(0);
+  const [activeBenefitIdx, setActiveBenefitIdx] = useState<number | null>(null);
 
   const benefitsList = [
     {
-      emoji: "💸",
-      title: "Matrícula completa",
-      desc: "Cubierta al 100% en cualquier universidad participante.",
-      longDesc: "Financiamiento integral del 100% de la matrícula académica y tasas obligatorias de la universidad estadounidense seleccionada, para que estudies con total tranquilidad.",
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"
+      icon: GraduationCap,
+      title: "Matrícula Completa",
+      tagline: "100% cubierto",
+      desc: "Aranceles universitarios totalmente cubiertos en instituciones de excelencia académica mundial.",
+      longDesc: "La beca Fulbright cubre el 100% de los costos de matrícula en instituciones partner, eliminando por completo la barrera económica del acceso a la educación superior internacional.",
+      checklist: [
+        "Arancel de posgrado completo",
+        "Costos de inscripción",
+        "Tarifas administrativas",
+        "Acceso a bibliotecas y laboratorios"
+      ],
+      advantages: [
+        "Sin deuda estudiantil",
+        "Instituciones top-tier globales",
+        "Múltiples disciplinas elegibles"
+      ],
+      tip: "Prepara tu expediente académico con 12 meses de anticipación. EduLab ofrece revisión de documentos y simulacros de entrevista gratuitos.",
+      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80",
+      theme: {
+        bg: "bg-blue-50/50",
+        iconColor: "text-blue-600",
+        badgeBg: "bg-blue-50 text-blue-700",
+        accentColor: "#2563eb"
+      }
     },
     {
-      emoji: "✈️",
-      title: "Pasajes internacionales",
-      desc: "Vuelos de ida y vuelta de clase económica cubiertos.",
-      longDesc: "Pasajes aéreos internacionales de ida y vuelta para el becario entre su país de origen y los Estados Unidos, al inicio y finalización oficial del programa académico.",
-      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80"
+      icon: Plane,
+      title: "Pasajes Internacionales",
+      tagline: "Ida y vuelta",
+      desc: "Vuelos de ida y vuelta cubiertos desde tu país de origen hasta el destino del programa.",
+      longDesc: "El programa gestiona y financia en su totalidad los vuelos internacionales de clase económica, garantizando un traslado seguro y sin complicaciones al inicio y término de tu beca.",
+      checklist: [
+        "Vuelo de ida inicial",
+        "Vuelo de retorno final",
+        "Tasas de embarque e impuestos",
+        "Franquicia de equipaje permitida"
+      ],
+      advantages: [
+        "Emisión directa de boletos",
+        "Rutas optimizadas",
+        "Soporte ante cancelaciones"
+      ],
+      tip: "Revisa las restricciones de equipaje de la aerolínea asignada con anticipación para evitar recargos de última hora.",
+      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80",
+      theme: {
+        bg: "bg-sky-50/50",
+        iconColor: "text-sky-600",
+        badgeBg: "bg-sky-50 text-sky-700",
+        accentColor: "#0284c7"
+      }
     },
     {
-      emoji: "💵",
-      title: "Estipendio mensual",
-      desc: "Apoyo mensual para vivienda, libros y manutención.",
-      longDesc: "Asignación mensual de manutención adaptada al costo de vida de la ciudad de destino para cubrir alojamiento, alimentación, transporte y material académico obligatorio.",
-      image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80"
+      icon: Wallet,
+      title: "Estipendio Mensual",
+      tagline: "Hasta USD 3,000/mes",
+      desc: "Asignación mensual ajustada al costo de vida local para alojamiento, alimentación y más.",
+      longDesc: "Recibes una asignación mensual calculada según el costo de vida real en tu ciudad de destino, para que puedas enfocarte completamente en tus estudios sin preocupaciones económicas.",
+      checklist: [
+        "Alojamiento en ciudad destino",
+        "Alimentación y transporte local",
+        "Materiales y útiles académicos",
+        "Gastos personales cotidianos"
+      ],
+      advantages: [
+        "Monto ajustado al costo local",
+        "Depósitos mensuales puntuales",
+        "Hasta USD 3,000 según destino"
+      ],
+      tip: "EduLab ofrece talleres de planificación financiera gratuitos. Aprende a optimizar tu estipendio con estrategias probadas por ex-Fulbrighters.",
+      image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80",
+      theme: {
+        bg: "bg-amber-50/50",
+        iconColor: "text-amber-600",
+        badgeBg: "bg-amber-50 text-amber-700",
+        accentColor: "#d97706"
+      }
     },
     {
-      emoji: "❤️",
-      title: "Seguro médico",
-      desc: "Cobertura médica integral provista por EE.UU.",
-      longDesc: "Plan de cobertura médica complementaria contra accidentes y enfermedades provisto directamente por el Departamento de Estado (cobertura ASPE) durante todo tu programa.",
-      image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80"
+      icon: Shield,
+      title: "Seguro Médico",
+      tagline: "Cobertura integral",
+      desc: "Seguro de salud completo durante todo el programa, incluyendo emergencias y salud mental.",
+      longDesc: "Tu bienestar físico y mental está protegido mediante la cobertura ASPE del Departamento de Estado, que te brinda acceso a redes de salud líderes en EE.UU.",
+      checklist: [
+        "Atención médica de emergencia",
+        "Consultas preventivas",
+        "Medicamentos recetados",
+        "Servicios de salud mental"
+      ],
+      advantages: [
+        "Sin deducibles elevados",
+        "Red nacional de proveedores",
+        "Soporte telefónico 24/7"
+      ],
+      tip: "Registra tu seguro ASPE inmediatamente al llegar para que puedas localizar médicos de la red antes de cualquier necesidad médica.",
+      image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80",
+      theme: {
+        bg: "bg-emerald-50/50",
+        iconColor: "text-emerald-600",
+        badgeBg: "bg-emerald-50 text-emerald-700",
+        accentColor: "#059669"
+      }
     },
     {
-      emoji: "🏢",
-      title: "Apoyo inicial de instalación",
-      desc: "Subvención única al llegar a los EE.UU.",
-      longDesc: "Un desembolso económico inicial y único al llegar a territorio norteamericano para ayudarte a solventar depósitos de alquiler, ropa de invierno u otros gastos de mudanza.",
-      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80"
+      icon: Home,
+      title: "Apoyo de Instalación",
+      tagline: "Llegada sin estrés",
+      desc: "Subsidio inicial único para los primeros gastos al establecerte en el país destino.",
+      longDesc: "Para que tu llegada a EE.UU. sea lo más suave posible, se te otorga un bono inicial destinado a solventar depósitos de alquiler, ropa de invierno y las primeras compras de adaptación.",
+      checklist: [
+        "Subsidio inicial de vivienda",
+        "Bono para libros y tecnología",
+        "Gastos de traslado inicial",
+        "Apoyo para ropa de invierno"
+      ],
+      advantages: [
+        "Desembolso único inmediato",
+        "Libre uso según necesidad",
+        "Reduce el choque inicial"
+      ],
+      tip: "Planifica tus compras esenciales de hogar antes de viajar. Aprovecha los descuentos de estudiantes en las tiendas locales.",
+      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80",
+      theme: {
+        bg: "bg-purple-50/50",
+        iconColor: "text-purple-600",
+        badgeBg: "bg-purple-50 text-purple-700",
+        accentColor: "#7c3aed"
+      }
     },
     {
-      emoji: "🌍",
-      title: "Acceso a red internacional",
-      desc: "+400,000 exbecarios influyentes a nivel mundial.",
-      longDesc: "Forma parte de una comunidad de prestigio mundial con más de 400,000 exbecarios. Conéctate con líderes de diversos sectores, incluyendo premios Nobel y jefes de Estado.",
-      image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80"
+      icon: Globe,
+      title: "Red Global Fulbright",
+      tagline: "+400K alumni",
+      desc: "Acceso vitalicio a la mayor red de líderes académicos y profesionales del mundo.",
+      longDesc: "Fulbright no termina cuando te gradúas. Te integras a una prestigiosa comunidad global de egresados que incluye jefes de estado, ganadores del Premio Nobel y líderes de la industria.",
+      checklist: [
+        "Acceso a plataforma exclusiva",
+        "Eventos y conferencias anuales",
+        "Mentorías con exbecarios",
+        "Bolsa de trabajo internacional"
+      ],
+      advantages: [
+        "Prestigio curricular único",
+        "Networking multidisciplinario",
+        "Alianzas y colaboración global"
+      ],
+      tip: "Participa activamente en la asociación Fulbright de tu país. El networking local tras retornar multiplica las oportunidades laborales.",
+      image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80",
+      theme: {
+        bg: "bg-pink-50/50",
+        iconColor: "text-pink-600",
+        badgeBg: "bg-pink-50 text-pink-700",
+        accentColor: "#db2777"
+      }
     }
   ];
 
@@ -286,7 +416,13 @@ export default function FulbrightPage() {
   return (
     <div className="min-h-screen bg-white font-sans" style={{ fontFamily: "'Inter', sans-serif", scrollBehavior: "smooth" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
+        .font-jakarta {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-geist {
+          font-family: 'Geist Mono', monospace;
+        }
         .hero-grid-pattern {
           background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
@@ -545,63 +681,258 @@ export default function FulbrightPage() {
       </section>
 
       {/* ===================================== */}
-      {/* BENEFICIOS */}
+      {/* BENEFICIOS (Bento Grid) */}
       {/* ===================================== */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white relative overflow-hidden font-jakarta text-[#0f172a]">
+        {/* Subtle top background glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none -z-10" />
+
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold mb-4"
-              style={{ background: "rgba(245,197,66,0.15)", color: "#b8860b" }}>
-              ✨ Beneficios
+          
+          {/* Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-[#d97706]/20 text-[#d97706] text-xs font-bold font-geist mb-4 uppercase tracking-wider">
+              <Star className="w-3.5 h-3.5 fill-[#d97706]" />
+              Beneficios
             </div>
-            <h2 className="text-3xl font-black text-[#00135B]">¿Qué incluye la beca?</h2>
-            <p className="text-slate-400 text-xs mt-2 font-medium">Haz clic en cualquier beneficio para explorar los detalles e imágenes de la cobertura.</p>
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#0f172a] font-jakarta">
+              ¿Qué incluye la beca?
+            </h2>
+            <p className="text-slate-500 text-sm md:text-base mt-4 max-w-2xl mx-auto">
+              Explora los seis pilares de cobertura completa diseñados para asegurar tu excelencia académica y bienestar en los Estados Unidos.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          {/* Bento Grid */}
+          <motion.div 
+            layout 
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch relative"
+          >
             {benefitsList.map((b, i) => {
+              const IconComponent = b.icon;
               const isActive = activeBenefitIdx === i;
+              const isAnyActive = activeBenefitIdx !== null;
+              
+              // Define dynamic theme values for each card
+              const accentColor = b.theme.accentColor;
+              
               return (
-                <div
+                <motion.div
                   key={i}
-                  onClick={() => setActiveBenefitIdx(i)}
-                  className={`relative p-6 rounded-3xl border transition-all duration-500 cursor-pointer overflow-hidden flex flex-col justify-between select-none ${
-                    isActive
-                      ? "col-span-1 md:col-span-2 bg-[#00135B] text-white border-[#5D8CE2] shadow-2xl scale-[1.01] ring-1 ring-[#5D8CE2]/20"
-                      : "col-span-1 bg-slate-50/50 border-gray-150 text-slate-700 opacity-65 scale-[0.97] hover:opacity-90 hover:scale-[0.99] hover:bg-slate-100/50"
+                  layout
+                  onClick={() => {
+                    if (isActive) {
+                      setActiveBenefitIdx(null);
+                    } else {
+                      setActiveBenefitIdx(i);
+                    }
+                  }}
+                  transition={{ type: "spring", stiffness: 340, damping: 32 }}
+                  whileHover={!isAnyActive ? { y: -3, scale: 1.006 } : {}}
+                  className={`relative rounded-3xl border transition-all duration-300 select-none overflow-hidden flex flex-col justify-between ${
+                    isActive 
+                      ? "col-span-1 md:col-span-2 bg-white border-slate-200 shadow-xl cursor-default" 
+                      : isAnyActive
+                        ? "col-span-1 bg-white border-slate-100 opacity-70 shadow-none scale-[0.99] cursor-pointer"
+                        : "col-span-1 bg-white border-slate-150 shadow-sm cursor-pointer hover:shadow-md"
                   }`}
+                  style={{
+                    minHeight: isActive ? "auto" : "180px"
+                  }}
                 >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="text-4xl">{b.emoji}</div>
-                      {isActive && (
-                        <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-[#F5C542] border border-[#F5C542]/30 text-[8px] font-extrabold uppercase tracking-widest animate-pulse">
-                          Cobertura Activa
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className={`font-extrabold text-base transition-colors ${isActive ? "text-[#F5C542]" : "text-[#00135B]"}`}>
-                        {b.title}
-                      </h3>
-                      <p className={`text-xs mt-1 leading-relaxed ${isActive ? "text-slate-200" : "text-slate-500"}`}>
-                        {isActive ? b.longDesc : b.desc}
-                      </p>
-                    </div>
-                  </div>
+                  <AnimatePresence mode="wait">
+                    {!isActive ? (
+                      /* Collapsed View */
+                      <motion.div
+                        key="collapsed"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="p-8 flex flex-col justify-between h-full space-y-4"
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${b.theme.bg}`}>
+                              <IconComponent className={`w-5 h-5 ${b.theme.iconColor}`} />
+                            </div>
+                            <span className="font-geist text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-50 border border-slate-100 text-slate-500">
+                              {b.tagline}
+                            </span>
+                          </div>
+                          
+                          <h3 className="font-bold text-lg text-[#0f172a] font-jakarta">
+                            {b.title}
+                          </h3>
+                          
+                          <p className="text-xs text-slate-500 leading-relaxed font-jakarta">
+                            {b.desc}
+                          </p>
+                        </div>
 
-                  {isActive && b.image && (
-                    <div className="mt-5 rounded-2xl overflow-hidden h-40 w-full relative animate-fadeIn shadow-inner border border-white/5">
-                      <img src={b.image} alt={b.title} className="w-full h-full object-cover opacity-90" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                    </div>
-                  )}
+                        <div className="flex items-center text-xs font-bold" style={{ color: accentColor }}>
+                          Ver cobertura <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      /* Expanded View */
+                      <motion.div
+                        key="expanded"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        exit="hidden"
+                        className="flex flex-col lg:flex-row w-full h-full text-[#0f172a]"
+                        onClick={(e) => e.stopPropagation()} // Prevent collapse when clicking inside the active card content
+                      >
+                        {/* Left Panel */}
+                        <div className="flex-1 p-8 md:p-10 flex flex-col justify-between relative space-y-6">
+                          
+                          {/* Close Button & Badge */}
+                          <div className="flex items-center justify-between">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-[#d97706]/20 text-[#d97706] text-[10px] font-bold font-geist uppercase tracking-wider">
+                              <Star className="w-3 h-3 fill-[#d97706]" />
+                              Cobertura incluida
+                            </span>
+                            
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveBenefitIdx(null);
+                              }}
+                              className="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-150 flex items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer transition-all active:scale-95"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
 
-                  <div className="benefit-accent absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#5D8CE2] to-[#F5C542] transition-all" />
-                </div>
+                          {/* Icon, Title and Tagline */}
+                          <motion.div variants={itemVariants} className="space-y-4">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${b.theme.bg}`}>
+                                <IconComponent className={`w-7 h-7 ${b.theme.iconColor}`} />
+                              </div>
+                              <div>
+                                <h3 className="text-2xl font-extrabold tracking-tight text-[#0f172a] font-jakarta">
+                                  {b.title}
+                                </h3>
+                                <span className={`inline-block font-geist text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mt-1.5 ${b.theme.badgeBg}`}>
+                                  {b.tagline}
+                                </span>
+                              </div>
+                            </div>
+
+                            <p className="text-slate-600 text-sm leading-relaxed font-jakarta">
+                              {b.longDesc}
+                            </p>
+                          </motion.div>
+
+                          {/* Checklist */}
+                          <motion.div variants={itemVariants} className="space-y-3">
+                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-geist">
+                              Qué incluye
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                              {b.checklist.map((item, idx) => (
+                                <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                                  <div className="w-4.5 h-4.5 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                                    <Check className="w-3 h-3 text-[#2563eb]" />
+                                  </div>
+                                  <span>{item}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </motion.div>
+
+                          {/* Advantages */}
+                          <motion.div variants={itemVariants} className="space-y-2">
+                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-geist">
+                              Ventajas clave
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {b.advantages.map((adv, idx) => (
+                                <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-medium text-slate-600 font-jakarta">
+                                  <Star className="w-3 h-3 text-[#d97706] fill-[#d97706]" />
+                                  {adv}
+                                </span>
+                              ))}
+                            </div>
+                          </motion.div>
+
+                          {/* EduLab Tip */}
+                          <motion.div 
+                            variants={itemVariants} 
+                            className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/50 flex items-start gap-3 text-left"
+                          >
+                            <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                            <div className="space-y-0.5">
+                              <span className="block font-geist text-[9px] font-bold text-blue-800 uppercase tracking-wider">
+                                CONSEJO EDULAB
+                              </span>
+                              <p className="text-[11px] text-blue-900 font-medium leading-relaxed font-jakarta">
+                                {b.tip}
+                              </p>
+                            </div>
+                          </motion.div>
+
+                          {/* Action Button */}
+                          <motion.div variants={itemVariants} className="pt-2">
+                            <motion.button
+                              whileTap={{ scale: 0.97 }}
+                              onClick={handleApply}
+                              className="px-6 py-3.5 rounded-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-blue-600/15 cursor-pointer transition-colors"
+                            >
+                              <span>Comenzar postulación</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </motion.button>
+                          </motion.div>
+
+                        </div>
+
+                        {/* Right Panel (Photo) */}
+                        <div className="lg:w-[40%] min-h-[240px] relative overflow-hidden lg:rounded-r-3xl">
+                          <img 
+                            src={b.image} 
+                            alt={b.title} 
+                            className="w-full h-full object-cover" 
+                          />
+                          {/* Colored overlay badge */}
+                          <div 
+                            className="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-bold font-geist text-white shadow-sm uppercase tracking-wider"
+                            style={{ backgroundColor: accentColor }}
+                          >
+                            {b.title}
+                          </div>
+                          {/* Gradient fade to left */}
+                          <div className="hidden lg:block absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                        </div>
+
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               );
             })}
+          </motion.div>
+
+          {/* Footer Section */}
+          <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="text-left space-y-1">
+              <h4 className="font-bold text-base text-[#0f172a] font-jakarta">
+                ¿Listo para postular?
+              </h4>
+              <p className="text-xs text-slate-500 leading-relaxed font-jakarta">
+                Nuestra plataforma con inteligencia artificial te guía paso a paso en tu aplicación Fulbright.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/opportunities")}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-250 hover:border-[#2563eb] hover:bg-blue-50/20 text-[#2563eb] font-bold text-xs transition-all cursor-pointer bg-transparent"
+            >
+              <span>Ver todos los programas Fulbright</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
+
         </div>
       </section>
 
