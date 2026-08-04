@@ -27,3 +27,16 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Node
+node_modules/
+
+# Vite
+.vite/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.tmp
