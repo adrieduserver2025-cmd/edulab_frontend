@@ -844,6 +844,16 @@ export default function OpportunityDetailPage() {
         ? "Simular mi postulación"
         : "Iniciar mi postulación";
 
+  const requisitosLink = opportunity?.slug === "aiesec-voluntariado"
+    ? "https://aiesecenbolivia.org"
+    : opportunity?.slug === "fulbright-beca"
+      ? "https://bo.usembassy.gov/es/intercambio-educativo/"
+      : opportunity?.slug === "daad-beca"
+        ? "https://la-paz.diplo.de/bo-es/themen/kultur/daad-2008116"
+        : opportunity?.slug === "onu-voluntariado"
+          ? "https://www.unv.org/es/voluntariado-por-el-medio-ambiente"
+          : null;
+
   // Background assets based on type
   const heroBg = isScholarship ? fulbrightBg : aiesecBg;
   const orgLogo = isScholarship ? fulbrightLogo : aiesecLogo;
@@ -1013,16 +1023,31 @@ export default function OpportunityDetailPage() {
                 </button>
               )}
 
-              <button
-                onClick={() => scrollToSection("requisitos")}
-                className="px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all bg-transparent cursor-pointer"
-                style={isBeca
-                  ? { border: "1px solid rgba(245,197,66,0.45)", color: "rgba(253,230,138,0.9)" }
-                  : { border: "1px solid rgba(255,255,255,0.3)", color: "white" }
-                }
-              >
-                Ver requisitos
-              </button>
+              {requisitosLink ? (
+                <a
+                  href={requisitosLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all bg-transparent"
+                  style={isBeca
+                    ? { border: "1px solid rgba(245,197,66,0.45)", color: "rgba(253,230,138,0.9)" }
+                    : { border: "1px solid rgba(255,255,255,0.3)", color: "white" }
+                  }
+                >
+                  Link Oficial
+                </a>
+              ) : (
+                <button
+                  onClick={() => scrollToSection("requisitos")}
+                  className="px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all bg-transparent cursor-pointer"
+                  style={isBeca
+                    ? { border: "1px solid rgba(245,197,66,0.45)", color: "rgba(253,230,138,0.9)" }
+                    : { border: "1px solid rgba(255,255,255,0.3)", color: "white" }
+                  }
+                >
+                  Ver requisitos
+                </button>
+              )}
             </div>
           </div>
 
