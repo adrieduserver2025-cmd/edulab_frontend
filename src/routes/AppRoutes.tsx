@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import LandingPage from "../pages/landing/LandingPage";
+import LandingPageV2 from "../pages/landing/LandingPageV2";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
 import MainLayout from "../components/layout/MainLayout";
@@ -16,9 +16,9 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* Public Pages */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LandingPage initialAuthMode="login" />} />
-      <Route path="/register" element={<LandingPage initialAuthMode="register" />} />
+      <Route path="/" element={<LandingPageV2 />} />
+      <Route path="/login" element={<LandingPageV2 initialAuthMode="login" />} />
+      <Route path="/register" element={<LandingPageV2 initialAuthMode="register" />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
 

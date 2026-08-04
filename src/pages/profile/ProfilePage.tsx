@@ -1153,7 +1153,7 @@ export default function ProfilePage() {
             {currentStep === 5 && (
               <div className="space-y-6 animate-fadeIn">
                 <div className="border-b border-gray-100 pb-3">
-                  <h2 className="text-xl font-bold font-display text-[#00135B]">5. Enlaces, Experiencia y Carta</h2>
+                  <h2 className="text-xl font-bold font-display text-[#00135B]">5. Enlaces, Experiencia y Carta (Opcional)</h2>
                   <p className="text-xs text-slate-400 mt-1">Completa tu perfil agregando enlaces a tus portafolios, tu currículum, tu trayectoria y carta de motivación.</p>
                 </div>
 
