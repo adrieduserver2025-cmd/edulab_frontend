@@ -836,6 +836,14 @@ export default function OpportunityDetailPage() {
 
   const isScholarship = opportunity?.type === "scholarship";
   const isBeca = isScholarship; // alias
+  const startPostulationLabel = postulating
+    ? "Procesando..."
+    : existingApp?.status === "started"
+      ? "Continuar postulación"
+      : isScholarship
+        ? "Simular mi postulación"
+        : "Iniciar mi postulación";
+
   // Background assets based on type
   const heroBg = isScholarship ? fulbrightBg : aiesecBg;
   const orgLogo = isScholarship ? fulbrightLogo : aiesecLogo;
@@ -987,7 +995,7 @@ export default function OpportunityDetailPage() {
                     : { background: "#F5C542", color: "#00135B" }
                   }
                 >
-                  {postulating ? "Procesando..." : (existingApp?.status === "started" ? "Continuar postulación" : "Iniciar mi postulación")}
+                  {startPostulationLabel}
                 </button>
               ) : (
                 <button

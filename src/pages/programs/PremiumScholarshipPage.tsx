@@ -513,7 +513,7 @@ export default function PremiumScholarshipPage() {
                     {applying ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : null}
-                    {applying ? "Procesando..." : "Iniciar postulación"}
+                    {applying ? "Procesando..." : "Simular mi postulación"}
                     {!applying && <ArrowRight className="w-4 h-4" />}
                   </button>
                 )}
