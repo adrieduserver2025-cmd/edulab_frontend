@@ -65,6 +65,7 @@ interface ScholarshipProgram {
   instagram_url?: string;
   youtube_url?: string;
   official_url?: string;
+  eligibility?: string;
   benefits_json?: string[];
   requirements?: string[];
   activities?: string[];
@@ -218,6 +219,7 @@ export default function PremiumScholarshipPage() {
   const [applyError, setApplyError] = useState<string | null>(null);
   const [heroImgIdx] = useState(() => Math.floor(Math.random() * SCHOLARSHIP_IMAGES.length));
   const [playHeroVideo, setPlayHeroVideo] = useState(false);
+  const [showIntroVideo, setShowIntroVideo] = useState(false);
 
   const heroVideos = [
     {
@@ -234,43 +236,72 @@ export default function PremiumScholarshipPage() {
 
   const getBenefitDetails = (title: string, index: number) => {
     const cleanTitle = title.replace(/[^\w\saféíóúÁÉÍÓÚñÑ]/gu, "").trim().toLowerCase();
-    
-    const mapper: Record<string, { desc: string; image: string; color: string; bg: string }> = {
+
+    type BenefitDetail = {
+      desc: string; longDesc: string; image: string; color: string; bg: string;
+      checklist: string[]; advantages: string[]; tip: string;
+    };
+
+    const mapper: Record<string, BenefitDetail> = {
       "matricula completa": {
-        desc: "Financiamiento integral del 100% de la matrícula académica y tasas obligatorias de la universidad seleccionada para todo tu periodo de estudios.",
-        image: fulbrightAboutImg,
-        color: "#3b82f6",
-        bg: "rgba(59,130,246,0.05)"
+        desc: "Aranceles universitarios totalmente cubiertos en instituciones de excelencia académica mundial.",
+        longDesc: "La beca cubre el 100% de los costos de matrícula en las instituciones participantes, eliminando por completo la barrera económica del acceso a la educación superior internacional.",
+        image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80",
+        color: "#2563eb",
+        bg: "rgba(37,99,235,0.05)",
+        checklist: ["Arancel de posgrado completo", "Costos de inscripción", "Tarifas administrativas", "Acceso a bibliotecas y laboratorios"],
+        advantages: ["Sin deuda estudiantil", "Instituciones top-tier globales", "Múltiples disciplinas elegibles"],
+        tip: "Prepara tu expediente académico con anticipación. EduLab ofrece revisión de documentos y simulacros de entrevista gratuitos."
       },
       "pasajes internacionales": {
-        desc: "Vuelos de ida hacia la universidad de destino y de retorno al país de origen al finalizar de forma exitosa el programa académico.",
-        image: fulbrightPhoto,
-        color: "#10b981",
-        bg: "rgba(16,185,129,0.05)"
+        desc: "Vuelos de ida y vuelta cubiertos desde tu país de origen hasta el destino del programa.",
+        longDesc: "La beca cubre los pasajes aéreos internacionales de ida al comenzar el programa y de regreso al finalizarlo, garantizando que el acceso geográfico nunca sea un obstáculo.",
+        image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80",
+        color: "#0284c7",
+        bg: "rgba(2,132,199,0.05)",
+        checklist: ["Vuelo de ida al inicio del programa", "Vuelo de regreso al finalizar", "Equipaje documentado incluido", "Escala cubierta cuando corresponda"],
+        advantages: ["Cero gastos de transporte aéreo", "Coordinación directa institucional", "Flexibilidad de fechas"],
+        tip: "Coordina tu vuelo con 8 semanas de anticipación. Los asesores EduLab te acompañan en el proceso de reserva y tramitación de visa."
       },
       "estipendio mensual": {
-        desc: "Subsidio mensual para cubrir alojamiento, alimentación, transporte local y libros, ajustado al costo de vida de la ciudad de destino.",
-        image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80",
-        color: "#f59e0b",
-        bg: "rgba(245,158,11,0.05)"
+        desc: "Asignación mensual ajustada al costo de vida local para alojamiento, alimentación y más.",
+        longDesc: "Recibes una asignación mensual calculada según el costo de vida real en tu ciudad destino, para que puedas enfocarte completamente en tus estudios sin preocupaciones económicas.",
+        image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&q=80",
+        color: "#d97706",
+        bg: "rgba(217,119,6,0.05)",
+        checklist: ["Alojamiento en ciudad destino", "Alimentación y transporte local", "Materiales y útiles académicos", "Gastos personales cotidianos"],
+        advantages: ["Monto ajustado al costo local real", "Depósitos mensuales puntuales", "Manutención garantizada"],
+        tip: "EduLab ofrece talleres de planificación financiera gratuitos. Aprende a optimizar tu estipendio con estrategias probadas por ex-becarios."
       },
       "seguro medico": {
-        desc: "Seguro de salud y accidentes con cobertura médica internacional integral durante la validez de tu estancia y programa de becas.",
-        image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80",
-        color: "#ec4899",
-        bg: "rgba(236,72,153,0.05)"
+        desc: "Seguro de salud completo durante todo el programa, incluyendo emergencias y salud mental.",
+        longDesc: "La beca incluye un seguro médico internacional que cubre desde consultas de rutina hasta emergencias, con acceso a salud preventiva y atención de calidad.",
+        image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80",
+        color: "#059669",
+        bg: "rgba(5,150,105,0.05)",
+        checklist: ["Consultas médicas generales", "Emergencias y hospitalización", "Medicamentos recetados", "Atención en salud mental"],
+        advantages: ["Sin copago en emergencias", "Red de clínicas certificadas global", "Telemedicina 24/7"],
+        tip: "Lleva tu historial médico traducido al idioma del país destino. EduLab ofrece plantillas certificadas en diversos idiomas."
       },
       "apoyo inicial de instalacion": {
-        desc: "Asignación única al llegar al país de destino para ayudarte con los gastos de establecimiento, depósitos de alquiler y compra de materiales básicos.",
-        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&q=80",
-        color: "#8b5cf6",
-        bg: "rgba(139,92,246,0.05)"
+        desc: "Subsidio inicial único para los primeros gastos al establecerte en el país destino.",
+        longDesc: "Un subsidio único al llegar cubre los gastos iniciales críticos del proceso de instalación, para que tu llegada sea tranquila y puedas concentrarte desde el primer día.",
+        image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80",
+        color: "#7c3aed",
+        bg: "rgba(124,58,237,0.05)",
+        checklist: ["Depósito y primer mes de arriendo", "Equipamiento básico del hogar", "Conexiones de servicios básicos", "Traslado local desde el aeropuerto"],
+        advantages: ["Pago único al llegar", "Orientación presencial", "Cubre imprevistos de llegada"],
+        tip: "Únete a la comunidad EduLab en tu ciudad destino antes de llegar para recibir recomendaciones de alojamiento confiables."
       },
-      "acceso a red internacional fulbright": {
-        desc: "Conexión directa con una de las redes de exbecarios más influyentes del mundo, facilitando mentoría, oportunidades de carrera y proyectos globales.",
-        image: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80",
-        color: "#06b6d4",
-        bg: "rgba(6,182,212,0.05)"
+      "acceso a red internacional": {
+        desc: "Acceso vitalicio a la red de líderes académicos y profesionales del programa.",
+        longDesc: "Accedes de por vida a una comunidad internacional de graduados y profesionales líderes en sus áreas alrededor del mundo.",
+        image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80",
+        color: "#db2777",
+        bg: "rgba(219,39,119,0.05)",
+        checklist: ["Comunidad de ex-becarios mundial", "Eventos y conferencias exclusivos", "Plataforma digital de networking", "Programa de mentorías activo"],
+        advantages: ["Conexiones con líderes globales", "Oportunidades laborales exclusivas", "Membresía de por vida"],
+        tip: "EduLab conecta a becarios activos con mentores experimentados en tu área. Agenda tu sesión de mentoría."
       }
     };
 
@@ -280,11 +311,11 @@ export default function PremiumScholarshipPage() {
       }
     }
 
-    const fallbacks = [
-      { desc: "Apoyo financiero completo para cubrir los costos esenciales del programa académico y matrícula.", image: fulbrightAboutImg, color: "#3b82f6", bg: "rgba(59,130,246,0.05)" },
-      { desc: "Transporte y traslados cubiertos para facilitar tu llegada e integración al programa.", image: fulbrightPhoto, color: "#10b981", bg: "rgba(16,185,129,0.05)" },
-      { desc: "Estipendio periódico para garantizar tu bienestar y sustento diario durante el programa.", image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80", color: "#f59e0b", bg: "rgba(245,158,11,0.05)" },
-      { desc: "Seguro de salud para brindarte asistencia y protección médica en todo momento.", image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80", color: "#ec4899", bg: "rgba(236,72,153,0.05)" },
+    const fallbacks: BenefitDetail[] = [
+      { desc: "Apoyo financiero completo para cubrir los costos esenciales del programa académico y matrícula.", longDesc: "La beca cubre al 100% los costos del programa académico seleccionado, eliminando barreras económicas de acceso.", image: fulbrightAboutImg, color: "#3b82f6", bg: "rgba(59,130,246,0.05)", checklist: ["Cobertura completa", "Sin costos adicionales"], advantages: ["100% financiado"], tip: "Consulta a los asesores de EduLab para maximizar tus posibilidades de obtener este beneficio." },
+      { desc: "Transporte y traslados cubiertos para facilitar tu llegada e integración al programa.", longDesc: "Los traslados necesarios para el desarrollo del programa están completamente cubiertos por la beca.", image: fulbrightPhoto, color: "#10b981", bg: "rgba(16,185,129,0.05)", checklist: ["Traslados incluidos", "Coordinación directa"], advantages: ["Sin gastos de transporte"], tip: "EduLab te asesora en la coordinación logística de tu traslado." },
+      { desc: "Estipendio periódico para garantizar tu bienestar y sustento diario durante el programa.", longDesc: "Recibirás un estipendio mensual ajustado al costo de vida real de tu ciudad destino.", image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&q=80", color: "#f59e0b", bg: "rgba(245,158,11,0.05)", checklist: ["Alojamiento", "Alimentación", "Transporte"], advantages: ["Depósitos puntuales"], tip: "Optimiza tu estipendio con los talleres financieros gratuitos de EduLab." },
+      { desc: "Seguro de salud para brindarte asistencia y protección médica en todo momento.", longDesc: "Cobertura médica completa durante todo el programa, incluyendo emergencias y consultas de rutina.", image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80", color: "#ec4899", bg: "rgba(236,72,153,0.05)", checklist: ["Consultas generales", "Emergencias"], advantages: ["Cobertura global"], tip: "Prepara tu historial médico con antelación." },
     ];
     return fallbacks[index % fallbacks.length];
   };
@@ -298,9 +329,11 @@ export default function PremiumScholarshipPage() {
       .then((res) => {
         setProgram(res.data);
         setLoading(false);
+        if (slug === "fulbright-beca") {
+          setTimeout(() => setShowIntroVideo(true), 800);
+        }
       })
       .catch(() => {
-        setError("No se encontró la beca. Verifica la URL o intenta más tarde.");
         setLoading(false);
       });
   }, [slug]);
@@ -422,6 +455,64 @@ export default function PremiumScholarshipPage() {
       `}</style>
 
       <PublicNavbar onOpenAuth={handleOpenAuth} />
+
+      {/* ── INTRO VIDEO MODAL (Fulbright) ── */}
+      <AnimatePresence>
+        {showIntroVideo && program.slug === "fulbright-beca" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[300] flex items-center justify-center p-4"
+            style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)" }}
+            onClick={() => setShowIntroVideo(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 28 }}
+              className="relative flex flex-col items-center w-full max-w-3xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Horizontal Video Container */}
+              <div
+                className="relative w-full rounded-3xl overflow-hidden shadow-2xl bg-black border border-white/20"
+                style={{ aspectRatio: "16/9" }}
+              >
+                <iframe
+                  className="w-full h-full border-none"
+                  src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0"
+                  title="Beca Fulbright - Conoce la experiencia"
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+                {/* Fulbright badge */}
+                <div className="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg pointer-events-none" style={{ background: "rgba(0,19,91,0.85)" }}>
+                  🎓 Beca Fulbright Official
+                </div>
+              </div>
+
+              {/* Close button */}
+              <div className="flex items-center gap-4 mt-4">
+                <button
+                  onClick={() => setShowIntroVideo(false)}
+                  className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-[#00135B] bg-[#F5C542] hover:bg-[#f5b81a] transition-all cursor-pointer shadow-lg"
+                >
+                  <span>Explorar la beca</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setShowIntroVideo(false)}
+                  className="text-white/60 text-xs hover:text-white transition-colors cursor-pointer"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── HERO SECTION ── */}
       <section
@@ -561,119 +652,120 @@ export default function PremiumScholarshipPage() {
               </div>
             </div>
 
-{/* Right - Image/Video card with floating attributes */}
-            <div className="relative pl-0 lg:pl-6">
-              <div
-                className="relative rounded-3xl overflow-hidden shadow-2xl group border border-white/10"
-                style={{ aspectRatio: "4/3" }}
-              >
-                {playHeroVideo ? (
-                  <iframe
-                    className="absolute inset-0 w-full h-full rounded-3xl border-none"
-                    src={
-                      program.slug === "fulbright-beca"
-                        ? "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0&autoplay=1"
-                        : "https://www.youtube.com/embed/iS3qREybbeI?autoplay=1"
-                    }
-                    title={program.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                ) : (
-                  <>
-                    <img
-                      src={
-                        program.slug === "fulbright-beca"
-                          ? fulbrightBg
-                          : program.image_url || "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"
-                      }
-                      alt={program.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+{/* Right side of Hero Section */}
+            <div className="relative flex flex-col justify-center">
+              {program.slug === "fulbright-beca" ? (
+                <div className="relative w-full">
+                  <div
+                    className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/20 bg-black w-full"
+                    style={{ aspectRatio: "16/9" }}
+                  >
+                    <iframe
+                      key="hero-fulbright-video-horizontal"
+                      className="w-full h-full border-none"
+                      src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0"
+                      title="Beca Fulbright - Video"
+                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                      allowFullScreen
                     />
                     <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%)",
-                      }}
-                    />
-                    
-                    {/* Fulbright circular logo */}
-                    {program.slug === "fulbright-beca" && (
-                      <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden border border-amber-400/40">
-                        <img src={fulbrightLogo} alt="Fulbright" className="w-8 h-8 object-contain" />
-                      </div>
-                    )}
-
-                    {/* Convocatoria abierta badge */}
-                    <div
-                      className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold text-white"
+                      className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold text-white pointer-events-none shadow-md"
                       style={{ background: "#22c55e" }}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
                       Convocatoria Abierta
                     </div>
-
-                    {/* Play button */}
-                    <button
-                      onClick={() => setPlayHeroVideo(true)}
-                      className="absolute inset-0 m-auto w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer border-4 border-white/20 bg-[#F5C542]"
-                      style={{ width: 64, height: 64, top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}
-                      aria-label="Ver video"
-                    >
-                      <svg viewBox="0 0 24 24" fill="#000" width="24" height="24">
-                        <polygon points="6,4 20,12 6,20" />
-                      </svg>
-                    </button>
-
-                    {/* Info text */}
-                    <div className="absolute bottom-6 left-6 right-6 z-10 space-y-1 text-left">
-                      <span
-                        className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider"
-                        style={{
-                          background: "rgba(245,197,66,0.2)",
-                          border: "1px solid rgba(245,197,66,0.4)",
-                          color: "#F5C542",
-                        }}
-                      >
-                        {program.slug === "fulbright-beca" ? "🎓 Video Oficial Fulbright" : "🎬 Video Oficial"}
-                      </span>
-                      <p className="text-white font-extrabold text-sm leading-tight">
-                        {program.slug === "fulbright-beca" ? "Becas Fulbright: La oportunidad de tu vida" : `${program.title}: Conoce más`}
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Floating glassmorphism card */}
-              <div
-                className="absolute -bottom-6 left-6 right-6 p-4 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-4 text-left shadow-lg border border-white/10"
-                style={{
-                  background: "rgba(255, 255, 255, 0.08)",
-                  backdropFilter: "blur(20px)",
-                }}
-              >
-                {[
-                  { icon: "💲", label: "Financiamiento", val: program.funding_type || "Completo" },
-                  { icon: "⏱", label: "Duración", val: program.duration || "Variable" },
-                  {
-                    icon: "📅",
-                    label: "Fecha límite",
-                    val: program.deadline
-                      ? new Date(program.deadline).toLocaleDateString("es", { month: "short", year: "numeric" })
-                      : program.dates_info?.substring(0, 20) || "Variable",
-                  },
-                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
-                ].map((item) => (
-                  <div key={item.label} className="space-y-0.5">
-                    <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <span>{item.icon}</span> {item.label}
-                    </div>
-                    <div className="text-white font-extrabold text-xs">{item.val}</div>
                   </div>
-                ))}
-              </div>
+
+                  {/* Attributes bar */}
+                  <div
+                    className="mt-4 p-4 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-4 text-left border border-white/10 w-full"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.08)",
+                      backdropFilter: "blur(20px)",
+                    }}
+                  >
+                    {[
+                      { icon: "💲", label: "Financiamiento", val: program.funding_type || "Completo" },
+                      { icon: "⏱", label: "Duración", val: program.duration || "1-2 años" },
+                      {
+                        icon: "📅",
+                        label: "Fecha límite",
+                        val: program.dates_info?.substring(0, 25) || "Variable",
+                      },
+                      { icon: "🌐", label: "Modalidad", val: "Presencial" },
+                    ].map((item) => (
+                      <div key={item.label} className="space-y-0.5">
+                        <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+                          <span>{item.icon}</span> {item.label}
+                        </div>
+                        <div className="text-white font-extrabold text-xs">{item.val}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                /* Ficha Técnica oficial para becas sin video */
+                <div
+                  className="p-8 rounded-3xl border border-white/20 shadow-2xl space-y-6 text-white"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.08)",
+                    backdropFilter: "blur(20px)",
+                  }}
+                >
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                    <div className="space-y-1">
+                      <span className="text-xs font-bold text-[#F5C542] uppercase tracking-wider">Ficha Técnica Oficial</span>
+                      <h3 className="text-2xl font-black">{program.title}</h3>
+                    </div>
+                    <div className="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      Convocatoria Verificada
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider">País Destino</span>
+                      <p className="font-extrabold text-sm text-white">{program.country}</p>
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Entidad</span>
+                      <p className="font-extrabold text-sm text-white truncate">{program.organization_name || program.organization}</p>
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Duración</span>
+                      <p className="font-extrabold text-sm text-white">{program.duration || "1-2 años"}</p>
+                    </div>
+                    <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Financiamiento</span>
+                      <p className="font-extrabold text-sm text-[#F5C542]">{program.funding_type || "Total"}</p>
+                    </div>
+                  </div>
+
+                  {program.dates_info && (
+                    <div className="p-4 rounded-2xl bg-[#F5C542]/10 border border-[#F5C542]/30 flex items-center gap-3">
+                      <Clock className="w-5 h-5 text-[#F5C542] shrink-0" />
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#F5C542]">Plazo / Convocatoria</span>
+                        <p className="text-xs font-semibold text-white/90">{program.dates_info}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {program.official_url && (
+                    <a
+                      href={program.official_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center gap-2 text-sm font-bold text-white transition-all"
+                    >
+                      <ExternalLink className="w-4 h-4 text-[#F5C542]" />
+                      Verificar en sitio oficial ({new URL(program.official_url).hostname})
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -716,10 +808,10 @@ export default function PremiumScholarshipPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { icon: Globe, title: "Programa global", sub: "160+ países participantes" },
-                  { icon: Trophy, title: "Reconocimiento", sub: "Prestigio mundial" },
-                  { icon: Users, title: "Red alumni", sub: "+400,000 exbecarios" },
-                  { icon: Lightbulb, title: "Impacto real", sub: "Liderazgo y cambio" },
+                  { icon: Globe, title: "Programa global", sub: `${program.country} - ${program.level || "Posgrado"}` },
+                  { icon: Trophy, title: "Reconocimiento", sub: "Prestigio internacional" },
+                  { icon: Users, title: "Red alumni", sub: "Comunidad global de becarios" },
+                  { icon: Lightbulb, title: "Impacto real", sub: "Desarrollo profesional y profesional" },
                 ].map((card) => {
                   const Icon = card.icon;
                   return (
@@ -742,89 +834,70 @@ export default function PremiumScholarshipPage() {
               </div>
             </div>
 
-{/* Right side of About Section */}
-            {program.slug === "fulbright-beca" ? (
-              <div className="relative flex flex-col items-center justify-center p-6 bg-slate-50 rounded-3xl border border-slate-100/80 w-full">
-                <div
-                  className="w-full max-w-[280px] rounded-3xl overflow-hidden shadow-2xl bg-black relative border border-white/10"
-                  style={{ aspectRatio: "9/16" }}
-                >
-                  <iframe
-                    key={currentVideoIdx}
-                    className="w-full h-full border-none"
-                    src={heroVideos[currentVideoIdx].url}
-                    title={heroVideos[currentVideoIdx].title}
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                </div>
-
-                {/* Carousel controls */}
-                <div className="flex items-center gap-4 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentVideoIdx((prev) => (prev === 0 ? heroVideos.length - 1 : prev - 1))}
-                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 transition-all cursor-pointer active:scale-95 shadow-sm"
-                    aria-label="Video anterior"
+            {/* Right side of About Section */}
+            <div className="flex flex-col items-center justify-center">
+              {program.slug === "fulbright-beca" ? (
+                <div className="flex flex-col items-center gap-4">
+                  <div
+                    className="relative rounded-[3rem] overflow-hidden shadow-2xl bg-black border-[7px] border-slate-900"
+                    style={{ width: 320, aspectRatio: "9/16" }}
                   >
-                    <ArrowLeft className="w-4 h-4" />
-                  </button>
-                  <div className="flex gap-1.5">
-                    {heroVideos.map((_, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setCurrentVideoIdx(idx)}
-                        className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
-                          currentVideoIdx === idx ? "bg-[#5D8CE2] w-4" : "bg-slate-300"
-                        }`}
-                        aria-label={`Ir al video ${idx + 1}`}
-                      />
-                    ))}
+                    <iframe
+                      className="w-full h-full border-none"
+                      src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F991543300065303&show_text=0"
+                      title="Testimonio Ex-Becarios Fulbright"
+                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-5 bg-slate-900 rounded-full pointer-events-none flex items-center justify-end px-2">
+                      <div className="w-2.5 h-2.5 rounded-full bg-slate-800" />
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentVideoIdx((prev) => (prev === heroVideos.length - 1 ? 0 : prev + 1))}
-                    className="w-9 h-9 rounded-full flex items-center justify-center bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 transition-all cursor-pointer active:scale-95 shadow-sm"
-                    aria-label="Siguiente video"
-                  >
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <span className="text-[#00135B] text-xs uppercase font-extrabold tracking-wider bg-blue-50/80 px-4 py-2 rounded-full border border-blue-100/80 shadow-sm flex items-center gap-2">
+                    <span>🎬</span> Testimonio de Ex-Becarios Fulbright
+                  </span>
                 </div>
+              ) : (
+                <div className="w-full bg-gradient-to-br from-[#00135B] to-[#002d9c] p-8 rounded-3xl text-white shadow-xl space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-[#F5C542]" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#F5C542]">Orientación EduLab</span>
+                      <h4 className="font-extrabold text-lg text-white">Consejos para postular a {program.title}</h4>
+                    </div>
+                  </div>
 
-                {/* Title indicator */}
-                <p className="text-slate-600 text-[10px] uppercase font-bold tracking-wider mt-2.5 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm">
-                  🎬 {heroVideos[currentVideoIdx].title}
-                </p>
-              </div>
-            ) : (
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80"
-                  alt="Graduación universitaria"
-                  className="w-full rounded-3xl object-cover shadow-2xl"
-                  style={{ aspectRatio: "4/3" }}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = SCHOLARSHIP_IMAGES[1];
-                  }}
-                />
-                {/* Floating stat */}
-                <div
-                  className="absolute -bottom-6 -left-6 p-5 rounded-2xl shadow-xl"
-                  style={{ background: "white", border: "1px solid rgba(93,140,226,0.15)" }}
-                >
-                  <p
-                    className="text-3xl font-black"
-                    style={{ color: "#F5C542" }}
-                  >
-                    400k+
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    {program.eligibility || program.short_description}
                   </p>
-                  <p className="text-xs text-slate-500 font-semibold mt-0.5">
-                    Alumni en el mundo
-                  </p>
+
+                  <div className="space-y-3 pt-2 border-t border-white/10">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-white/50">Requisitos clave de la convocatoria:</span>
+                    <div className="space-y-2">
+                      {program.requirements?.slice(0, 4).map((req, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-xs text-white/90">
+                          <CheckCircle2 className="w-4 h-4 text-[#F5C542] shrink-0 mt-0.5" />
+                          <span>{req}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {program.official_url && (
+                    <a
+                      href={program.official_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#F5C542] hover:bg-[#f5b81a] text-[#00135B] font-extrabold text-xs transition-all shadow-md mt-2"
+                    >
+                      Ir al sitio oficial <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -1015,30 +1088,54 @@ export default function PremiumScholarshipPage() {
                         </div>
 
                         {/* Benefit Description */}
-                        <div className="p-6 flex-1 flex flex-col justify-between space-y-6">
-                          <div className="space-y-3">
+                        <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
+                          <div className="space-y-2">
                             <h3 className="text-xl font-extrabold text-[#00135B]">
-                              Detalle de Cobertura
+                              {text || b}
                             </h3>
                             <p className="text-slate-600 text-sm leading-relaxed">
-                              {details.desc}
+                              {details.longDesc}
                             </p>
                           </div>
 
+                          {/* Qué incluye */}
+                          <div className="space-y-2">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Qué incluye</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
+                              {details.checklist.map((item: string, ci: number) => (
+                                <div key={ci} className="flex items-center gap-2 text-xs font-semibold text-slate-700 py-1 px-2 rounded-lg hover:bg-blue-50/50 transition-colors">
+                                  <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0" style={{ background: `${details.color}18` }}>
+                                    <svg className="w-2.5 h-2.5" fill="none" stroke={details.color} strokeWidth={3} viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                                  </div>
+                                  {item}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Ventajas clave */}
+                          <div className="space-y-2">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ventajas clave</p>
+                            <div className="flex flex-wrap gap-2">
+                              {details.advantages.map((adv: string, ai: number) => (
+                                <span key={ai} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-xs font-semibold text-amber-800">
+                                  <svg className="w-3 h-3 fill-[#d97706] text-[#d97706]" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                  {adv}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* EduLab Tip */}
                           <div
-                            className="p-4.5 rounded-2xl flex items-start gap-3.5 border text-left"
-                            style={{
-                              background: details.bg,
-                              borderColor: `${details.color}25`
-                            }}
+                            className="p-4 rounded-2xl flex items-start gap-3 border text-left"
+                            style={{ background: details.bg, borderColor: `${details.color}25` }}
                           >
                             <Sparkles className="w-5 h-5 shrink-0 mt-0.5" style={{ color: details.color }} />
                             <div className="space-y-0.5">
-                              <p className="text-xs font-bold text-[#00135B]">
-                                Ventaja de Postulación con EduLab
-                              </p>
-                              <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
-                                Optimizamos tus cartas de motivación para justificar tu necesidad y mérito para la obtención de este beneficio al 100%.
+                              <p className="text-[9px] font-bold text-[#00135B] uppercase tracking-wider">Consejo EduLab</p>
+                              <p className="text-[11px] text-slate-600 font-medium leading-relaxed">
+                                {details.tip}
                               </p>
                             </div>
                           </div>
@@ -1571,6 +1668,132 @@ export default function PremiumScholarshipPage() {
           </div>
         </div>
       </section>
+
+      {/* ── CURSOS EDULAB ── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold mb-4"
+              style={{ background: "rgba(245,197,66,0.15)", color: "#b8860b" }}
+            >
+              <Sparkles className="w-4 h-4" />
+              Cursos de Preparación EduLab
+            </div>
+            <h2 className="text-3xl font-black text-[#00135B]">
+              Prepárate con nuestros expertos para {program.title}
+            </h2>
+            <p className="text-slate-500 text-sm mt-3 max-w-xl mx-auto">
+              Cursos diseñados por ex-becarios y asesores internacionales para maximizar tus posibilidades de ser seleccionado.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {[
+              {
+                title: `Redacción de Ensayos & Postulación`,
+                instructor: "Dr. Marcos Villanueva",
+                tag: "Más vendido",
+                tagColor: "#22c55e",
+                rating: "4.9",
+                students: "1,240",
+                price: "Gratuito",
+                image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80",
+                badge: "🏆"
+              },
+              {
+                title: "Inglés para Entrevistas Académicas",
+                instructor: "Prof. Sarah Kimura",
+                tag: "Nuevo",
+                tagColor: "#3b82f6",
+                rating: "4.8",
+                students: "890",
+                price: "Gratuito",
+                image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=400&q=80",
+                badge: "🎤"
+              },
+              {
+                title: "Simulacro de Entrevista de Selección",
+                instructor: "Lic. Andrea Quispe",
+                tag: "Popular",
+                tagColor: "#f59e0b",
+                rating: "4.9",
+                students: "2,100",
+                price: "Gratuito",
+                image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80",
+                badge: "🎯"
+              },
+              {
+                title: "Construye tu Perfil con IA de EduLab",
+                instructor: "EduLab AI Team",
+                tag: "IA",
+                tagColor: "#8b5cf6",
+                rating: "5.0",
+                students: "3,400",
+                price: "Gratuito",
+                image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=400&q=80",
+                badge: "🤖"
+              }
+            ].map((course, i) => (
+                <motion.div
+                  key={i}
+                  whileHover={{ y: -6, boxShadow: "0 20px 40px rgba(0,19,91,0.12)" }}
+                  className="bg-white rounded-3xl border border-slate-100 overflow-hidden flex flex-col cursor-pointer group"
+                  style={{ transition: "all 0.3s ease" }}
+                >
+                  {/* Vertical image (3:4 ratio) */}
+                  <div className="relative overflow-hidden" style={{ aspectRatio: "3/4" }}>
+                    <img
+                      src={course.image}
+                      alt={course.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    {/* Tag */}
+                    <div
+                      className="absolute top-3 left-3 px-2 py-0.5 rounded-full text-[9px] font-bold text-white"
+                      style={{ background: course.tagColor }}
+                    >
+                      {course.tag}
+                    </div>
+                    {/* Badge emoji */}
+                    <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center text-base shadow">
+                      {course.badge}
+                    </div>
+                    {/* Price on image bottom */}
+                    <div className="absolute bottom-3 left-3">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#F5C542] text-[#00135B]">
+                        {course.price}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-4 flex flex-col gap-2 flex-1">
+                    <h3 className="font-bold text-[#00135B] text-sm leading-snug line-clamp-2">
+                      {course.title}
+                    </h3>
+                    <p className="text-[11px] text-slate-400 font-medium">{course.instructor}</p>
+                    <div className="flex items-center gap-2 mt-auto pt-2">
+                      <span className="text-[#f59e0b] text-xs font-bold">★ {course.rating}</span>
+                      <span className="text-[10px] text-slate-400">({course.students} alumnos)</span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-10 text-center">
+              <button
+                onClick={() => navigate("/courses")}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-[#00135B] border border-[#00135B]/20 hover:bg-[#00135B]/5 transition-all"
+              >
+                Ver todos los cursos
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </section>
 
       {/* Footer dark */}
       <footer

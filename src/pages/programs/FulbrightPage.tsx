@@ -205,19 +205,19 @@ export default function FulbrightPage() {
       title: "Pasajes Internacionales",
       tagline: "Ida y vuelta",
       desc: "Vuelos de ida y vuelta cubiertos desde tu país de origen hasta el destino del programa.",
-      longDesc: "El programa gestiona y financia en su totalidad los vuelos internacionales de clase económica, garantizando un traslado seguro y sin complicaciones al inicio y término de tu beca.",
+      longDesc: "Fulbright cubre los pasajes aéreos internacionales de ida al comenzar el programa y de regreso al finalizarlo, garantizando que el acceso geográfico nunca sea un obstáculo.",
       checklist: [
-        "Vuelo de ida inicial",
-        "Vuelo de retorno final",
-        "Tasas de embarque e impuestos",
-        "Franquicia de equipaje permitida"
+        "Vuelo de ida al inicio del programa",
+        "Vuelo de regreso al finalizar",
+        "Equipaje documentado incluido",
+        "Escala cubierta cuando corresponda"
       ],
       advantages: [
-        "Emisión directa de boletos",
-        "Rutas optimizadas",
-        "Soporte ante cancelaciones"
+        "Cero gastos de transporte aéreo",
+        "Coordinación directa con Fulbright",
+        "Flexibilidad de fechas"
       ],
-      tip: "Revisa las restricciones de equipaje de la aerolínea asignada con anticipación para evitar recargos de última hora.",
+      tip: "Coordina tu vuelo con 8 semanas de anticipación. Los asesores EduLab te acompañan en el proceso de booking y tramitación de visa.",
       image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80",
       theme: {
         bg: "bg-sky-50/50",
@@ -231,7 +231,7 @@ export default function FulbrightPage() {
       title: "Estipendio Mensual",
       tagline: "Hasta USD 3,000/mes",
       desc: "Asignación mensual ajustada al costo de vida local para alojamiento, alimentación y más.",
-      longDesc: "Recibes una asignación mensual calculada según el costo de vida real en tu ciudad de destino, para que puedas enfocarte completamente en tus estudios sin preocupaciones económicas.",
+      longDesc: "Recibes una asignación mensual calculada según el costo de vida real en tu ciudad destino, para que puedas enfocarte completamente en tus estudios sin preocupaciones económicas.",
       checklist: [
         "Alojamiento en ciudad destino",
         "Alimentación y transporte local",
@@ -239,7 +239,7 @@ export default function FulbrightPage() {
         "Gastos personales cotidianos"
       ],
       advantages: [
-        "Monto ajustado al costo local",
+        "Monto ajustado al costo local real",
         "Depósitos mensuales puntuales",
         "Hasta USD 3,000 según destino"
       ],
@@ -257,19 +257,19 @@ export default function FulbrightPage() {
       title: "Seguro Médico",
       tagline: "Cobertura integral",
       desc: "Seguro de salud completo durante todo el programa, incluyendo emergencias y salud mental.",
-      longDesc: "Tu bienestar físico y mental está protegido mediante la cobertura ASPE del Departamento de Estado, que te brinda acceso a redes de salud líderes en EE.UU.",
+      longDesc: "Fulbright incluye un seguro médico de clase mundial que cubre desde consultas de rutina hasta emergencias, con acceso a telemedicina 24/7 y atención en salud mental.",
       checklist: [
-        "Atención médica de emergencia",
-        "Consultas preventivas",
+        "Consultas médicas generales",
+        "Emergencias y hospitalización",
         "Medicamentos recetados",
-        "Servicios de salud mental"
+        "Atención en salud mental"
       ],
       advantages: [
-        "Sin deducibles elevados",
-        "Red nacional de proveedores",
-        "Soporte telefónico 24/7"
+        "Sin copago en emergencias",
+        "Red de clínicas certificadas global",
+        "Telemedicina 24/7"
       ],
-      tip: "Registra tu seguro ASPE inmediatamente al llegar para que puedas localizar médicos de la red antes de cualquier necesidad médica.",
+      tip: "Lleva tu historial médico traducido al idioma del país destino. EduLab ofrece plantillas certificadas en 15 idiomas.",
       image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&q=80",
       theme: {
         bg: "bg-emerald-50/50",
@@ -283,19 +283,19 @@ export default function FulbrightPage() {
       title: "Apoyo de Instalación",
       tagline: "Llegada sin estrés",
       desc: "Subsidio inicial único para los primeros gastos al establecerte en el país destino.",
-      longDesc: "Para que tu llegada a EE.UU. sea lo más suave posible, se te otorga un bono inicial destinado a solventar depósitos de alquiler, ropa de invierno y las primeras compras de adaptación.",
+      longDesc: "Un subsidio único al llegar cubre los gastos iniciales críticos del proceso de instalación, para que tu llegada sea tranquila y puedas concentrarte desde el primer día.",
       checklist: [
-        "Subsidio inicial de vivienda",
-        "Bono para libros y tecnología",
-        "Gastos de traslado inicial",
-        "Apoyo para ropa de invierno"
+        "Depósito y primer mes de arriendo",
+        "Equipamiento básico del hogar",
+        "Conexiones de servicios básicos",
+        "Traslado local desde el aeropuerto"
       ],
       advantages: [
-        "Desembolso único inmediato",
-        "Libre uso según necesidad",
-        "Reduce el choque inicial"
+        "Pago único al llegar",
+        "Hasta USD 1,500 disponibles",
+        "Orientación presencial de Fulbright"
       ],
-      tip: "Planifica tus compras esenciales de hogar antes de viajar. Aprovecha los descuentos de estudiantes en las tiendas locales.",
+      tip: "Únete al canal de becarios EduLab en tu ciudad destino antes de llegar. La comunidad comparte recomendaciones de barrios y contactos confiables.",
       image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80",
       theme: {
         bg: "bg-purple-50/50",
@@ -309,19 +309,19 @@ export default function FulbrightPage() {
       title: "Red Global Fulbright",
       tagline: "+400K alumni",
       desc: "Acceso vitalicio a la mayor red de líderes académicos y profesionales del mundo.",
-      longDesc: "Fulbright no termina cuando te gradúas. Te integras a una prestigiosa comunidad global de egresados que incluye jefes de estado, ganadores del Premio Nobel y líderes de la industria.",
+      longDesc: "Al convertirte en becario Fulbright accedes de por vida a una comunidad de más de 400,000 líderes en 160 países: académicos, diplomáticos, emprendedores y premios Nobel.",
       checklist: [
-        "Acceso a plataforma exclusiva",
-        "Eventos y conferencias anuales",
-        "Mentorías con exbecarios",
-        "Bolsa de trabajo internacional"
+        "+400,000 alumni en 160 países",
+        "Eventos y conferencias exclusivos",
+        "Plataforma digital de networking",
+        "Programa de mentorías activo"
       ],
       advantages: [
-        "Prestigio curricular único",
-        "Networking multidisciplinario",
-        "Alianzas y colaboración global"
+        "Conexiones con líderes globales",
+        "Oportunidades laborales exclusivas",
+        "Membresía de por vida"
       ],
-      tip: "Participa activamente en la asociación Fulbright de tu país. El networking local tras retornar multiplica las oportunidades laborales.",
+      tip: "EduLab conecta a becarios activos con mentores Fulbright en tu área de expertise. Agenda tu sesión de mentoría gratuita antes de que comience el programa.",
       image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80",
       theme: {
         bg: "bg-pink-50/50",
@@ -681,16 +681,48 @@ export default function FulbrightPage() {
       </section>
 
       {/* ===================================== */}
-      {/* BENEFICIOS (Bento Grid) */}
+      {/* BENEFICIOS - Layout tipo Figma */}
       {/* ===================================== */}
       <section className="py-20 bg-white relative overflow-hidden font-jakarta text-[#0f172a]">
-        {/* Subtle top background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none -z-10" />
+        <style>{`
+          .benefit-list-item {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          .benefit-list-item:hover {
+            background: rgba(93,140,226,0.04);
+            border-color: rgba(93,140,226,0.25) !important;
+          }
+          .benefit-list-item.active {
+            background: #EEF4FF;
+            border-color: #5D8CE2 !important;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.10);
+          }
+          .benefit-panel-enter {
+            animation: panelFadeIn 0.35s cubic-bezier(0.4,0,0.2,1);
+          }
+          @keyframes panelFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          .check-item {
+            transition: background 0.2s;
+          }
+          .adv-badge {
+            transition: background 0.2s, border-color 0.2s;
+          }
+          .adv-badge:hover {
+            background: #FEF3C7;
+            border-color: #F59E0B;
+          }
+        `}</style>
+
+        {/* Subtle bg glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-50/40 to-transparent pointer-events-none -z-10" />
 
         <div className="max-w-7xl mx-auto px-6">
-          
+
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-14">
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 border border-[#d97706]/20 text-[#d97706] text-xs font-bold font-geist mb-4 uppercase tracking-wider">
               <Star className="w-3.5 h-3.5 fill-[#d97706]" />
               Beneficios
@@ -703,216 +735,158 @@ export default function FulbrightPage() {
             </p>
           </div>
 
-          {/* Bento Grid */}
-          <motion.div 
-            layout 
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch relative"
-          >
-            {benefitsList.map((b, i) => {
-              const IconComponent = b.icon;
-              const isActive = activeBenefitIdx === i;
-              const isAnyActive = activeBenefitIdx !== null;
-              
-              // Define dynamic theme values for each card
-              const accentColor = b.theme.accentColor;
-              
-              return (
-                <motion.div
-                  key={i}
-                  layout
-                  onClick={() => {
-                    if (isActive) {
-                      setActiveBenefitIdx(null);
-                    } else {
-                      setActiveBenefitIdx(i);
-                    }
-                  }}
-                  transition={{ type: "spring", stiffness: 340, damping: 32 }}
-                  whileHover={!isAnyActive ? { y: -3, scale: 1.006 } : {}}
-                  className={`relative rounded-3xl border transition-all duration-300 select-none overflow-hidden flex flex-col justify-between ${
-                    isActive 
-                      ? "col-span-1 md:col-span-2 bg-white border-slate-200 shadow-xl cursor-default" 
-                      : isAnyActive
-                        ? "col-span-1 bg-white border-slate-100 opacity-70 shadow-none scale-[0.99] cursor-pointer"
-                        : "col-span-1 bg-white border-slate-150 shadow-sm cursor-pointer hover:shadow-md"
-                  }`}
-                  style={{
-                    minHeight: isActive ? "auto" : "180px"
-                  }}
-                >
-                  <AnimatePresence mode="wait">
-                    {!isActive ? (
-                      /* Collapsed View */
-                      <motion.div
-                        key="collapsed"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="p-8 flex flex-col justify-between h-full space-y-4"
+          {/* Two-column layout */}
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+
+            {/* LEFT — Benefit list */}
+            <div className="lg:w-[38%] flex flex-col gap-3">
+              {benefitsList.map((b, i) => {
+                const IconComponent = b.icon;
+                const isActive = (activeBenefitIdx ?? 0) === i;
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setActiveBenefitIdx(i)}
+                    className={`benefit-list-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl border text-left cursor-pointer ${isActive ? "active" : "border-slate-100 bg-white"}`}
+                  >
+                    {/* Icon */}
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${b.theme.bg}`}>
+                      <IconComponent className={`w-5 h-5 ${b.theme.iconColor}`} />
+                    </div>
+                    {/* Text */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm text-[#0f172a] font-jakarta leading-tight">{b.title}</p>
+                      <p className={`text-xs mt-0.5 font-medium ${isActive ? "text-[#2563eb]" : "text-slate-400"}`}>
+                        {isActive ? "Mostrando detalles" : "Ver cobertura e información"}
+                      </p>
+                    </div>
+                    {/* Active indicator */}
+                    {isActive && (
+                      <div className="w-2 h-2 rounded-full bg-[#2563eb] shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* RIGHT — Detail panel */}
+            <div className="lg:flex-1 min-h-[520px]">
+              {(() => {
+                const idx = activeBenefitIdx ?? 0;
+                const b = benefitsList[idx];
+                const IconComponent = b.icon;
+                const accentColor = b.theme.accentColor;
+                return (
+                  <div key={idx} className="benefit-panel-enter bg-white rounded-3xl border border-slate-100 shadow-lg overflow-hidden flex flex-col">
+                    
+                    {/* Top image strip */}
+                    <div className="relative h-52 overflow-hidden">
+                      <img
+                        src={b.image}
+                        alt={b.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      {/* Badge on image */}
+                      <div
+                        className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold font-geist text-white uppercase tracking-wider shadow-md"
+                        style={{ backgroundColor: accentColor }}
                       >
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${b.theme.bg}`}>
-                              <IconComponent className={`w-5 h-5 ${b.theme.iconColor}`} />
+                        <IconComponent className="w-3 h-3" />
+                        {b.title}
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-7 flex flex-col gap-6">
+
+                      {/* Title block */}
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${b.theme.bg}`}>
+                          <IconComponent className={`w-6 h-6 ${b.theme.iconColor}`} />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-extrabold text-[#0f172a] font-jakarta leading-tight">{b.title}</h3>
+                          <span className={`inline-block font-geist text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mt-1.5 ${b.theme.badgeBg}`}>
+                            {b.tagline}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Long description */}
+                      <p className="text-slate-600 text-sm leading-relaxed font-jakarta">
+                        {b.longDesc}
+                      </p>
+
+                      {/* Qué incluye */}
+                      <div className="space-y-2.5">
+                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-geist">
+                          Qué incluye
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                          {b.checklist.map((item, idx2) => (
+                            <div key={idx2} className="check-item flex items-center gap-2.5 text-xs font-semibold text-slate-700 py-1 px-2 rounded-lg hover:bg-blue-50/50">
+                              <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: `${accentColor}18` }}>
+                                <Check className="w-3 h-3" style={{ color: accentColor }} />
+                              </div>
+                              <span>{item}</span>
                             </div>
-                            <span className="font-geist text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-50 border border-slate-100 text-slate-500">
-                              {b.tagline}
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Ventajas clave */}
+                      <div className="space-y-2.5">
+                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-geist">
+                          Ventajas clave
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {b.advantages.map((adv, idx2) => (
+                            <span key={idx2} className="adv-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-xs font-semibold text-amber-800 font-jakarta">
+                              <Star className="w-3 h-3 text-[#d97706] fill-[#d97706]" />
+                              {adv}
                             </span>
-                          </div>
-                          
-                          <h3 className="font-bold text-lg text-[#0f172a] font-jakarta">
-                            {b.title}
-                          </h3>
-                          
-                          <p className="text-xs text-slate-500 leading-relaxed font-jakarta">
-                            {b.desc}
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* EduLab Tip */}
+                      <div className="p-4 rounded-2xl flex items-start gap-3" style={{ background: "rgba(93,140,226,0.05)", border: "1px solid rgba(93,140,226,0.15)" }}>
+                        <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                        <div className="space-y-1">
+                          <span className="block font-geist text-[9px] font-bold text-[#00135B] uppercase tracking-wider">
+                            Consejo EduLab
+                          </span>
+                          <p className="text-xs text-slate-700 font-medium leading-relaxed font-jakarta">
+                            {b.tip}
                           </p>
                         </div>
+                      </div>
 
-                        <div className="flex items-center text-xs font-bold" style={{ color: accentColor }}>
-                          Ver cobertura <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
-                        </div>
-                      </motion.div>
-                    ) : (
-                      /* Expanded View */
-                      <motion.div
-                        key="expanded"
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="show"
-                        exit="hidden"
-                        className="flex flex-col lg:flex-row w-full h-full text-[#0f172a]"
-                        onClick={(e) => e.stopPropagation()} // Prevent collapse when clicking inside the active card content
-                      >
-                        {/* Left Panel */}
-                        <div className="flex-1 p-8 md:p-10 flex flex-col justify-between relative space-y-6">
-                          
-                          {/* Close Button & Badge */}
-                          <div className="flex items-center justify-between">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-[#d97706]/20 text-[#d97706] text-[10px] font-bold font-geist uppercase tracking-wider">
-                              <Star className="w-3 h-3 fill-[#d97706]" />
-                              Cobertura incluida
-                            </span>
-                            
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveBenefitIdx(null);
-                              }}
-                              className="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-150 flex items-center justify-center text-slate-400 hover:text-slate-600 cursor-pointer transition-all active:scale-95"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
+                      {/* CTA */}
+                      <div className="flex items-center gap-3 pt-1">
+                        <motion.button
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={handleApply}
+                          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-bold text-sm text-white cursor-pointer shadow-lg transition-colors"
+                          style={{ background: `linear-gradient(135deg, ${accentColor}, #00135B)`, boxShadow: `0 4px 20px ${accentColor}35` }}
+                        >
+                          <Sparkles className="w-4 h-4" />
+                          <span>Comenzar postulación</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </motion.button>
+                      </div>
 
-                          {/* Icon, Title and Tagline */}
-                          <motion.div variants={itemVariants} className="space-y-4">
-                            <div className="flex items-center gap-4">
-                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${b.theme.bg}`}>
-                                <IconComponent className={`w-7 h-7 ${b.theme.iconColor}`} />
-                              </div>
-                              <div>
-                                <h3 className="text-2xl font-extrabold tracking-tight text-[#0f172a] font-jakarta">
-                                  {b.title}
-                                </h3>
-                                <span className={`inline-block font-geist text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mt-1.5 ${b.theme.badgeBg}`}>
-                                  {b.tagline}
-                                </span>
-                              </div>
-                            </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
 
-                            <p className="text-slate-600 text-sm leading-relaxed font-jakarta">
-                              {b.longDesc}
-                            </p>
-                          </motion.div>
-
-                          {/* Checklist */}
-                          <motion.div variants={itemVariants} className="space-y-3">
-                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-geist">
-                              Qué incluye
-                            </h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
-                              {b.checklist.map((item, idx) => (
-                                <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                                  <div className="w-4.5 h-4.5 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                                    <Check className="w-3 h-3 text-[#2563eb]" />
-                                  </div>
-                                  <span>{item}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </motion.div>
-
-                          {/* Advantages */}
-                          <motion.div variants={itemVariants} className="space-y-2">
-                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-geist">
-                              Ventajas clave
-                            </h4>
-                            <div className="flex flex-wrap gap-2">
-                              {b.advantages.map((adv, idx) => (
-                                <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-medium text-slate-600 font-jakarta">
-                                  <Star className="w-3 h-3 text-[#d97706] fill-[#d97706]" />
-                                  {adv}
-                                </span>
-                              ))}
-                            </div>
-                          </motion.div>
-
-                          {/* EduLab Tip */}
-                          <motion.div 
-                            variants={itemVariants} 
-                            className="p-4 rounded-2xl bg-blue-50/50 border border-blue-100/50 flex items-start gap-3 text-left"
-                          >
-                            <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                            <div className="space-y-0.5">
-                              <span className="block font-geist text-[9px] font-bold text-blue-800 uppercase tracking-wider">
-                                CONSEJO EDULAB
-                              </span>
-                              <p className="text-[11px] text-blue-900 font-medium leading-relaxed font-jakarta">
-                                {b.tip}
-                              </p>
-                            </div>
-                          </motion.div>
-
-                          {/* Action Button */}
-                          <motion.div variants={itemVariants} className="pt-2">
-                            <motion.button
-                              whileTap={{ scale: 0.97 }}
-                              onClick={handleApply}
-                              className="px-6 py-3.5 rounded-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-blue-600/15 cursor-pointer transition-colors"
-                            >
-                              <span>Comenzar postulación</span>
-                              <ArrowRight className="w-4 h-4" />
-                            </motion.button>
-                          </motion.div>
-
-                        </div>
-
-                        {/* Right Panel (Photo) */}
-                        <div className="lg:w-[40%] min-h-[240px] relative overflow-hidden lg:rounded-r-3xl">
-                          <img 
-                            src={b.image} 
-                            alt={b.title} 
-                            className="w-full h-full object-cover" 
-                          />
-                          {/* Colored overlay badge */}
-                          <div 
-                            className="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-bold font-geist text-white shadow-sm uppercase tracking-wider"
-                            style={{ backgroundColor: accentColor }}
-                          >
-                            {b.title}
-                          </div>
-                          {/* Gradient fade to left */}
-                          <div className="hidden lg:block absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-                        </div>
-
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </motion.div>
+          </div>
 
           {/* Footer Section */}
           <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">

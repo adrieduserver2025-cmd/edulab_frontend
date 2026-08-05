@@ -134,55 +134,121 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 15 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
-                    className="absolute top-[calc(100%-8px)] left-0 w-80 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-xl p-4 flex flex-col gap-2 z-50"
+                    className={`absolute top-[calc(100%-8px)] left-0 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-xl p-4 flex flex-col gap-2 z-50 ${
+                      menu === "Oportunidades" ? "w-[560px]" : "w-80"
+                    }`}
                   >
-                    {menuData[menu]?.map((item, idx) => {
-                      const Icon = item.icon;
-                      return (
-                        <div
-                          key={idx}
-                          onClick={() => {
-                            if (item.slug) {
-                              // Fulbright and scholarships use /becas/ route (PremiumScholarshipPage)
-                              if (item.slug === "fulbright-beca") {
-                                navigate(`/becas/${item.slug}`);
-                              } else {
-                                navigate(`/opportunities/${item.slug}`);
-                              }
-                            } else {
-                              if (isAuthenticated) {
-                                if (menu === "IA") navigate("/ai-tools");
-                                else if (menu === "Oportunidades" || menu === "Voluntariados") navigate("/programs");
-                              } else {
-                                handleLinkClick("/login");
-                              }
-                            }
-                          }}
-                          className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 group/item
-                            ${item.highlight 
-                              ? "bg-amber-500/5 hover:bg-amber-500/10 border border-[#F5C542]/20 hover:border-[#F5C542]/40" 
-                              : "hover:bg-gray-50 border border-transparent"}`}
-                        >
-                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border
-                            ${item.highlight 
-                              ? "bg-amber-500/10 border-[#F5C542]/30" 
-                              : "bg-gray-50 border-gray-100 group-hover/item:border-[#5D8CE2]/20"}`}>
-                            <Icon className={`w-4.5 h-4.5 ${item.highlight ? "text-[#F5C542]" : "text-[#00135B]/60 group-hover/item:text-[#5D8CE2]"}`} />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-1.5">
-                              <span className={`text-xs font-bold font-display ${item.highlight ? "text-[#00135B]" : "text-[#00135B]/90 group-hover/item:text-[#5D8CE2]"}`}>
-                                {item.title}
+                    {menu === "Oportunidades" ? (
+                      <div className="grid grid-cols-3 gap-4">
+                        {[
+                          {
+                            continent: "América",
+                            emoji: "🌎",
+                            color: "#2563eb",
+                            items: [
+                              { title: "Beca Fulbright", desc: "Estudia en EE.UU. con financiamiento 100%.", slug: "fulbright-beca", flag: "🇺🇸", tag: "EE.UU." },
+                            ]
+                          },
+                          {
+                            continent: "Europa",
+                            emoji: "🇪🇺",
+                            color: "#059669",
+                            items: [
+                              { title: "Chevening Scholarships", desc: "Maestría en Reino Unido 100% financiada.", slug: "chevening-beca", flag: "🇬🇧", tag: "Reino Unido" },
+                              { title: "Fundación Carolina", desc: "Posgrado y doctorado en España.", slug: "fundacion-carolina-beca", flag: "🇪🇸", tag: "España" },
+                              { title: "Becas Patiño", desc: "Maestría para bolivianos en Suiza y Bélgica.", slug: "patino-beca", flag: "🇨🇭🇧🇪", tag: "Suiza/Bélgica" },
+                              { title: "Erasmus Mundus", desc: "Maestrías conjuntas internacionales.", slug: "erasmus-mundus-beca", flag: "🇪🇺", tag: "Unión Europea" },
+                            ]
+                          },
+                          {
+                            continent: "Asia",
+                            emoji: "🌏",
+                            color: "#7c3aed",
+                            items: [
+                              { title: "GKS Corea del Sur", desc: "Beca integral + 1 año de idioma coreano.", slug: "gks-korea-beca", flag: "🇰🇷", tag: "Corea del Sur" },
+                            ]
+                          }
+                        ].map((group) => (
+                          <div key={group.continent} className="space-y-2">
+                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 border border-gray-100">
+                              <span className="text-sm">{group.emoji}</span>
+                              <span className="text-[11px] font-black uppercase tracking-wider text-[#00135B]">
+                                {group.continent}
                               </span>
-                              {item.highlight && (
-                                <Sparkles className="w-3.5 h-3.5 text-[#F5C542] animate-pulse" />
-                              )}
                             </div>
-                            <p className="text-[10px] text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
+                            <div className="space-y-1">
+                              {group.items.map((item) => (
+                                <div
+                                  key={item.slug}
+                                  onClick={() => {
+                                    setActiveMenu(null);
+                                    navigate(`/becas/${item.slug}`);
+                                  }}
+                                  className="p-2 rounded-xl cursor-pointer hover:bg-blue-50/60 border border-transparent hover:border-blue-100 transition-all duration-200 group/item"
+                                >
+                                  <div className="flex items-center justify-between gap-1">
+                                    <span className="text-xs font-bold text-[#00135B] group-hover/item:text-[#5D8CE2] truncate">
+                                      {item.flag} {item.title}
+                                    </span>
+                                  </div>
+                                  <p className="text-[10px] text-gray-500 line-clamp-2 mt-0.5 leading-tight">
+                                    {item.desc}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        ))}
+                      </div>
+                    ) : (
+                      menuData[menu]?.map((item, idx) => {
+                        const Icon = item.icon;
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setActiveMenu(null);
+                              if (item.slug) {
+                                if (item.slug.endsWith("-beca")) {
+                                  navigate(`/becas/${item.slug}`);
+                                } else {
+                                  navigate(`/opportunities/${item.slug}`);
+                                }
+                              } else {
+                                if (isAuthenticated) {
+                                  if (menu === "IA") navigate("/ai-tools");
+                                  else if (menu === "Oportunidades" || menu === "Voluntariados") navigate("/programs");
+                                } else {
+                                  handleLinkClick("/login");
+                                }
+                              }
+                            }}
+                            className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 group/item
+                              ${item.highlight 
+                                ? "bg-amber-500/5 hover:bg-amber-500/10 border border-[#F5C542]/20 hover:border-[#F5C542]/40" 
+                                : "hover:bg-gray-50 border border-transparent"}`}
+                          >
+                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border
+                              ${item.highlight 
+                                ? "bg-amber-500/10 border-[#F5C542]/30" 
+                                : "bg-gray-50 border-gray-100 group-hover/item:border-[#5D8CE2]/20"}`}>
+                              <Icon className={`w-4.5 h-4.5 ${item.highlight ? "text-[#F5C542]" : "text-[#00135B]/60 group-hover/item:text-[#5D8CE2]"}`} />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-1.5">
+                                <span className={`text-xs font-bold font-display ${item.highlight ? "text-[#00135B]" : "text-[#00135B]/90 group-hover/item:text-[#5D8CE2]"}`}>
+                                  {item.title}
+                                </span>
+                                {item.highlight && (
+                                  <Sparkles className="w-3.5 h-3.5 text-[#F5C542] animate-pulse" />
+                                )}
+                              </div>
+                              <p className="text-[10px] text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

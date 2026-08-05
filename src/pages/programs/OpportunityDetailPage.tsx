@@ -29,11 +29,103 @@ import aiesecLogo from "../../assets/iaesec/images.png";
 import fulbrightBg from "../../assets/fulbright/662bb8d0a1a92_.png";
 import fulbrightLogo from "../../assets/fulbright/images (1).png";
 import fulbrightPhoto from "../../assets/fulbright/images (2).jpeg";
+import cursosImg1 from "../../assets/cursos_eduserver/REGULARES 2026 (1).jpg.jpeg";
+import cursosImg2 from "../../assets/cursos_eduserver/REGULARES 2026.jpg.jpeg";
 import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
 
 
 
 
+
+// ─── EduServer Courses Ad ────────────────────────────────────────────────────
+const cursosImgs = [cursosImg1, cursosImg2];
+
+function EduServerAdCard() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive((prev) => (prev + 1) % cursosImgs.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const whatsappMsg = encodeURIComponent(
+    "Hola, me interesa información sobre los cursos de idiomas de EduServer 🌍"
+  );
+
+  return (
+    <div className="rounded-3xl overflow-hidden shadow-xl border border-slate-200/60 bg-white">
+      {/* Header */}
+      <div className="px-4 pt-4 pb-2 flex items-center justify-between">
+        <div>
+          <p className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">
+            Publicidad · EduServer
+          </p>
+          <p className="text-xs font-bold text-[#00135B] mt-0.5">
+            🌐 Aprende el idioma que necesitas
+          </p>
+        </div>
+        <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-extrabold border border-amber-200">
+          PATROCINADO
+        </span>
+      </div>
+
+      {/* Image carousel */}
+      <div className="relative w-full aspect-[9/16] max-h-72 overflow-hidden cursor-pointer"
+        onClick={() =>
+          window.open(`https://wa.me/59169440951?text=${whatsappMsg}`, "_blank")
+        }
+      >
+        {cursosImgs.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt={`Cursos EduServer ${i + 1}`}
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+            style={{ opacity: active === i ? 1 : 0 }}
+          />
+        ))}
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+      </div>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-1.5 py-2">
+        {cursosImgs.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className={`rounded-full border-none transition-all cursor-pointer ${
+              active === i
+                ? "w-5 h-1.5 bg-[#00135B]"
+                : "w-1.5 h-1.5 bg-slate-300"
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* CTA */}
+      <div className="px-4 pb-4">
+        <a
+          href={`https://wa.me/59169440951?text=${whatsappMsg}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#25D366] hover:bg-[#1ebe5d] text-white font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 no-underline"
+        >
+          <svg className="w-4 h-4 fill-white shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+          </svg>
+          Consultar por WhatsApp
+        </a>
+        <p className="text-center text-[9px] text-slate-400 font-medium mt-1.5">
+          380 Bs/mes · Clases 100% online y en vivo
+        </p>
+      </div>
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -148,6 +240,7 @@ interface ProgramDetail {
   video_url?: string;
   image_url?: string;
   is_demo?: boolean;
+  official_url?: string;
   required_profile_fields?: string[];
   custom_questions?: Array<{
     id: string;
@@ -607,6 +700,126 @@ export default function OpportunityDetailPage() {
             youtube_url: "https://www.youtube.com/@FulbrightExchanges",
             video_url: "https://www.youtube.com/watch?v=iS3qREybbeI",
             image_url: "/assets/fulbright/662bb8d0a1a92_.png",
+            is_demo: false
+          });
+        } else if (slug === "chevening-beca") {
+          setOpportunity({
+            id: 102,
+            title: "Chevening Scholarships",
+            description: "Programa de élite del gobierno británico que busca profesionales bolivianos con alto potencial de liderazgo y compromiso social para realizar una maestría de un año en cualquier universidad del Reino Unido. Cubre matrícula, manutención, pasajes y costo de visa.\n\nChevening evalúa el potencial de liderazgo, la excelencia académica y la red de contactos profesionales del postulante. Al finalizar, el becario debe retornar a Bolivia por al menos 2 años.",
+            type: "scholarship",
+            organization: "Gobierno del Reino Unido (FCDO)",
+            country: "Reino Unido",
+            deadline: "2026-10-07",
+            eligibility: "Ciudadanía boliviana, título universitario equivalente a 2:1 británico, mínimo 2.800 horas de experiencia laboral o voluntariado post-grado, certificado de inglés.",
+            benefits: "Matrícula completa, pasajes ida y vuelta, estipendio mensual (£1.690 en Londres / £1.378 fuera), visa y asignaciones.",
+            slots: 10,
+            slug: "chevening-beca",
+            organization_name: "Chevening UK",
+            status: "open",
+            short_description: "Programa de élite del gobierno británico que busca profesionales bolivianos con alto potencial de liderazgo y compromiso social para realizar una maestría de un año en el Reino Unido.",
+            activities: ["Maestría de 1 año en Reino Unido 🇬🇧", "Networking en la Red Global Chevening 🤝", "Eventos del FCDO 🏛️"],
+            requirements: ["Ciudadanía boliviana", "Título universitario (2:1 británico)", "2.800+ horas de experiencia", "Certificado de inglés", "3 maestrías en Reino Unido", "Retorno 2 años a Bolivia"],
+            benefits_json: ["Matrícula 100% 💸", "Pasajes aéreos ✈️", "Estipendio hasta £1.690/mes 💰", "Visa y llegada 📦"],
+            dates_info: "Cierre: 7 de Octubre de 2026",
+            support_ai: ["Redactar ensayos de liderazgo Chevening", "Calcular 2.800 horas de experiencia", "Simulacro de entrevista"],
+            official_url: "https://www.chevening.org",
+            is_demo: false
+          });
+        } else if (slug === "fundacion-carolina-beca") {
+          setOpportunity({
+            id: 103,
+            title: "Becas Fundación Carolina",
+            description: "Programa de becas iberoamericano gestionado desde España, dirigido a profesionales latinoamericanos. La convocatoria ofrece 736 becas en 203 programas académicos alineados con los Objetivos de Desarrollo Sostenible (ODS).\n\nNo se postula a la universidad directamente; se postula a través del portal de la Fundación Carolina seleccionando el programa específico del catálogo.",
+            type: "scholarship",
+            organization: "Fundación Carolina",
+            country: "España",
+            deadline: "2026-03-02",
+            eligibility: "Ciudadanía iberoamericana (Bolivia incluida), título de licenciatura, expediente académico destacado.",
+            benefits: "Matrícula del 50% al 100%, asignación mensual para manutención, seguro médico y billetes aéreos.",
+            slots: 736,
+            slug: "fundacion-carolina-beca",
+            organization_name: "Fundación Carolina",
+            status: "open",
+            short_description: "Programa de becas iberoamericano gestionado desde España para profesionales latinoamericanos en 203 programas alineados con ODS.",
+            activities: ["Estudios de posgrado/doctorado en España 🇪🇸", "Red Iberoamericana Carolina 🌐"],
+            requirements: ["Ciudadanía iberoamericana", "Título de licenciatura", "Expediente académico destacado", "Postulación en portal Carolina"],
+            benefits_json: ["Matrícula 50%-100% 💸", "Pasajes aéreos ✈️", "Bolsa de estudios mensual 💰", "Seguro médico 🛡️"],
+            dates_info: "Posgrado: Enero - Marzo | Doctorado: Enero - Abril",
+            support_ai: ["Elegir 2 programas del catálogo Carolina", "Redactar carta de motivación", "Optimizar CV europeo"],
+            official_url: "https://www.fundacioncarolina.es",
+            is_demo: false
+          });
+        } else if (slug === "patino-beca") {
+          setOpportunity({
+            id: 104,
+            title: "Becas Patiño (Bélgica y Suiza)",
+            description: "Programa creado específicamente para bolivianos con el fin de formar profesionales de alto nivel en áreas estratégicas (excepto medicina y odontología) que contribuyan al desarrollo nacional.\n\nOfrece financiamiento 100% integral incluyendo colegiatura, estadía completa y pasajes. Exige compromiso formal de retorno a Bolivia por un mínimo de 3 años.",
+            type: "scholarship",
+            organization: "Fundación Simón I. Patiño",
+            country: "Bélgica y Suiza",
+            deadline: "2026-11-30",
+            eligibility: "Bolivianos residentes en Bolivia, menores de 30 años, promedio sobresaliente, dominio de francés, inglés o alemán.",
+            benefits: "Matrícula completa, colegiatura, estadía integral (alojamiento y alimentos) y pasajes internacionales.",
+            slots: 15,
+            slug: "patino-beca",
+            organization_name: "Fundación Patiño",
+            status: "open",
+            short_description: "Programa creado específicamente para profesionales bolivianos en áreas estratégicas para realizar maestrías en Bélgica y Suiza.",
+            activities: ["Maestría en Suiza o Bélgica 🇨🇭🇧🇪", "Investigación orientada a Bolivia 🇧🇴", "Retorno obligatorio 3 años 🤝"],
+            requirements: ["Nacionalidad boliviana", "Residir en Bolivia", "Menor de 30 años", "Dominio de idioma (Francés/Inglés/Alemán)", "Retorno 3 años"],
+            benefits_json: ["Matrícula y colegiatura 100% 💸", "Pasajes aéreos ✈️", "Estadía completa 🏠", "Seguro de salud 🛡️"],
+            dates_info: "Cierre anual en Noviembre",
+            support_ai: ["Revisión de promedio académico", "Carta de compromiso con Bolivia", "Preparación de postulación"],
+            official_url: "https://patino.org/becas/",
+            is_demo: false
+          });
+        } else if (slug === "erasmus-mundus-beca") {
+          setOpportunity({
+            id: 105,
+            title: "Erasmus Mundus Joint Masters",
+            description: "Programa estrella de la Unión Europea para maestrías conjuntas impartidas por consorcios de al menos tres universidades europeas con movilidad internacional obligatoria entre países.\n\nCubre estipendio mensual de €1.400, matrícula completa, seguro médico internacional y gastos de viaje.",
+            type: "scholarship",
+            organization: "Unión Europea (EACEA)",
+            country: "Unión Europea",
+            deadline: "2027-01-31",
+            eligibility: "Graduados universitarios de cualquier país (Bolivia elegible), sin límite de edad, nivel de inglés B2/C1.",
+            benefits: "Estipendio mensual €1.400/mes, matrícula completa, seguro médico, pasajes y costos de visa.",
+            slots: 50,
+            slug: "erasmus-mundus-beca",
+            organization_name: "Unión Europea",
+            status: "open",
+            short_description: "Programa estrella de la Unión Europea para maestrías conjuntas con movilidad obligatoria entre al menos 2-3 países europeos.",
+            activities: ["Estudios en 2-3 países de Europa 🇪🇺", "Título conjunto internacional 🎓", "Experiencia multicultural 🌍"],
+            requirements: ["Título de licenciatura", "Inglés B2/C1", "CV Europass", "Cartas de recomendación", "Postulación al consorcio"],
+            benefits_json: ["Estipendio €1.400/mes 💰", "Matrícula 100% 💸", "Seguro médico 🛡️", "Viajes y visa ✈️"],
+            dates_info: "Cierres entre Noviembre y Febrero",
+            support_ai: ["Catálogo Erasmus Mundus", "Formateo CV Europass", "Letter of Motivation"],
+            official_url: "https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en",
+            is_demo: false
+          });
+        } else if (slug === "gks-korea-beca") {
+          setOpportunity({
+            id: 106,
+            title: "Global Korea Scholarship (GKS-G)",
+            description: "Beca integral otorgada por el gobierno de Corea del Sur (NIIED) que cubre pasajes aéreos, matrícula universitaria completa, estipendio mensual, seguro médico y un año de curso intensivo de idioma coreano antes de la maestría.",
+            type: "scholarship",
+            organization: "Gobierno de Corea del Sur (NIIED)",
+            country: "Corea del Sur",
+            deadline: "2026-02-28",
+            eligibility: "Nacionalidad boliviana, menor de 40 años, promedio acumulado superior al 80% (GPA equivalente).",
+            benefits: "Pasajes aéreos ida y vuelta, 1 año de idioma coreano, matrícula completa, estipendio mensual y seguro.",
+            slots: 10,
+            slug: "gks-korea-beca",
+            organization_name: "Gobierno de Corea del Sur",
+            status: "open",
+            short_description: "Beca integral del gobierno coreano para maestrías. Incluye 1 año obligatorio de idioma coreano + 2 años de maestría.",
+            activities: ["1 año de idioma coreano 🇰🇷", "Maestría en Corea del Sur 🎓", "Intercambio tecnológico 🔬"],
+            requirements: ["Nacionalidad boliviana", "Menor de 40 años", "Título de licenciatura", "Promedio 80%+", "Personal Statement"],
+            benefits_json: ["Matrícula 100% 💸", "1 año de coreano 🇰🇷", "Pasajes aéreos ✈️", "Mensualidad 💰"],
+            dates_info: "Convocatoria anual en Febrero",
+            support_ai: ["Cálculo GPA 80%", "Personal Statement GKS", "Estrategia Vía Embajada vs Universidad"],
+            official_url: "https://www.studyinkorea.go.kr/",
             is_demo: false
           });
         } else {
@@ -1552,6 +1765,9 @@ export default function OpportunityDetailPage() {
                 <p className="text-center text-[9px] text-slate-500 font-medium">Sin tarjeta de crédito · Cancela cuando quieras</p>
               </div>
             </div>
+
+            {/* EduServer — Publicidad Cursos de Idiomas */}
+            <EduServerAdCard />
 
           </div>
         </div>

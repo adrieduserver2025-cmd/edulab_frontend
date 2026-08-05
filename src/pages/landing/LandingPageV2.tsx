@@ -504,12 +504,15 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
               >
                 Explorar oportunidades <ArrowRight className="h-5 w-5" />
               </button>
-              <a
-                href="#como-funciona"
-                className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/35 bg-white/10 px-8 text-base font-bold text-white backdrop-blur-md transition hover:-translate-y-1 hover:bg-white/18"
-              >
-                Registrate Gratis
-              </a>
+              {!isAuthenticated && (
+                <button
+                  type="button"
+                  onClick={() => openAuth("register")}
+                  className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/35 bg-white/10 px-8 text-base font-bold text-white backdrop-blur-md transition hover:-translate-y-1 hover:bg-white/18"
+                >
+                  Regístrate Gratis
+                </button>
+              )}
             </div>
 
             <div className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 md:grid-cols-4">
@@ -969,12 +972,21 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                   <span className="font-display text-4xl font-extrabold text-[#00135B]">Gratis</span>
                   <p className="mt-1 text-xs font-bold text-slate-400">Sin tarjeta y sin suscripción</p>
                 </div>
-                <button
-                  onClick={() => openAuth("register")}
-                  className="rounded-xl border-none bg-[#F5C542] px-7 py-3.5 text-sm font-extrabold text-[#00135B] shadow-md shadow-yellow-300/30 transition hover:-translate-y-0.5 hover:bg-[#ebd035] cursor-pointer"
-                >
-                  Crear mi perfil gratis
-                </button>
+                {!isAuthenticated ? (
+                  <button
+                    onClick={() => openAuth("register")}
+                    className="rounded-xl border-none bg-[#F5C542] px-7 py-3.5 text-sm font-extrabold text-[#00135B] shadow-md shadow-yellow-300/30 transition hover:-translate-y-0.5 hover:bg-[#ebd035] cursor-pointer"
+                  >
+                    Crear mi perfil gratis
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigate("/programs")}
+                    className="rounded-xl border-none bg-[#F5C542] px-7 py-3.5 text-sm font-extrabold text-[#00135B] shadow-md shadow-yellow-300/30 transition hover:-translate-y-0.5 hover:bg-[#ebd035] cursor-pointer"
+                  >
+                    Explorar oportunidades
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -1024,14 +1036,14 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                   </div>
 
                   <button
-                    onClick={() => openAuth("register")}
+                    onClick={() => isAuthenticated ? navigate("/programs") : openAuth("register")}
                     className={`mt-auto w-full rounded-xl border-none px-5 py-3.5 text-sm font-extrabold transition hover:-translate-y-0.5 cursor-pointer ${
                       plan.featured
                         ? "bg-[#00135B] text-white shadow-md shadow-blue-900/20 hover:bg-[#0d288c]"
                         : "bg-blue-50 text-[#00135B] hover:bg-blue-100"
                     }`}
                   >
-                    {plan.button}
+                    {isAuthenticated ? "Explorar oportunidades" : plan.button}
                   </button>
                 </motion.article>
               );
@@ -1279,13 +1291,23 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
             <h2 className="text-2xl font-black sm:text-3xl">Empieza a explorar tu próxima oportunidad</h2>
             <p className="mt-2 text-white/70">Crea tu perfil y reúne en un solo lugar todo lo necesario para postular.</p>
           </div>
-          <button
-            type="button"
-            onClick={() => openAuth("register")}
-            className="shrink-0 rounded-xl bg-[#ffc928] px-7 py-4 font-extrabold text-[#061b58] transition hover:-translate-y-0.5 hover:bg-[#ffd34f]"
-          >
-            Regístrate gratis
-          </button>
+          {!isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => openAuth("register")}
+              className="shrink-0 rounded-xl bg-[#ffc928] px-7 py-4 font-extrabold text-[#061b58] transition hover:-translate-y-0.5 hover:bg-[#ffd34f]"
+            >
+              Regístrate gratis
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate("/programs")}
+              className="shrink-0 rounded-xl bg-[#ffc928] px-7 py-4 font-extrabold text-[#061b58] transition hover:-translate-y-0.5 hover:bg-[#ffd34f]"
+            >
+              Explorar oportunidades
+            </button>
+          )}
         </div>
       </section>
 
