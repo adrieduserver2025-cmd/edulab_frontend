@@ -453,6 +453,21 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
     openAuth("register");
   };
 
+  // Video modal state
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+
+  const openVideo = (src: string) => {
+    setActiveVideo(src);
+    setVideoOpen(true);
+    setMenuOpen(false);
+  };
+
+  const closeVideo = () => {
+    setVideoOpen(false);
+    setActiveVideo(null);
+  };
+
   return (
     <main className="min-h-screen bg-white text-[#061b58]">
       <PublicNavbar onOpenAuth={openAuth} />
@@ -517,20 +532,83 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
 
             <div className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 md:grid-cols-4">
               {[
-                [GraduationCap, "Becas actualizadas"],
-                [CheckCircle2, "Oportunidades verificadas"],
-                [BookOpen, "Recursos para postular"],
-                [UserRound, "Acompañamiento en tu proceso"],
-              ].map(([Icon, label]) => {
+                [BookOpen, "Generador y editor de CV", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
+                [BookOpen, "Generador y editor de cartas de motivación", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
+                [BookOpen, "Simulador de Postulación", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
+                [UserRound, "Preparación de entrevistas", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
+              ].map(([Icon, label, src], idx) => {
                 const FeatureIcon = Icon as typeof GraduationCap;
                 return (
-                  <div key={String(label)} className="landing-v2-benefit">
-                    <FeatureIcon className="h-6 w-6 text-[#ffc928]" />
-                    <span>{String(label)}</span>
-                  </div>
+                  <motion.button
+                    key={String(label)}
+                    type="button"
+                    onClick={() => openVideo(String(src))}
+                    aria-label={`Abrir video: ${String(label)}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45, delay: idx * 0.06 }}
+                    whileHover={{ y: -6, scale: 1.02 }}
+                    whileTap={{ scale: 0.985 }}
+                    className={
+                      "landing-v2-benefit group text-left rounded-lg px-3 py-3 bg-white/6 hover:bg-white/12 ring-1 ring-white/6 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-3"
+                    }
+                  >
+                    <motion.span
+                      className="flex items-center justify-center rounded-md p-1"
+                      whileHover={{ rotate: 6 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                      <FeatureIcon className="h-6 w-6 text-[#ffc928] group-hover:scale-105" />
+                    </motion.span>
+
+                    <span className="font-semibold text-sm text-white/95 group-hover:text-white">
+                      {String(label)}
+                    </span>
+                  </motion.button>
                 );
               })}
             </div>
+
+            {videoOpen && activeVideo && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-black/60" onClick={closeVideo} />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.18 }}
+                  className="relative z-10 max-w-3xl w-full rounded-lg overflow-hidden bg-black"
+                >
+                  <button
+                    onClick={closeVideo}
+                    aria-label="Cerrar video"
+                    className="absolute right-3 top-3 z-20 p-2 rounded-full bg-white/20 text-white"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                  {activeVideo.includes("youtube.com") || activeVideo.includes("youtu.be") ? (
+                    (() => {
+                      // extract video id
+                      const url = new URL(activeVideo);
+                      const v = url.searchParams.get("v");
+                      const id = v ?? (activeVideo.includes("youtu.be") ? activeVideo.split("/").pop() : null);
+                      const embed = id ? `https://www.youtube.com/embed/${id}?autoplay=1` : activeVideo;
+                      return (
+                        <iframe
+                          title="Video"
+                          src={embed}
+                          className="w-full h-[56vh] md:h-[60vh] bg-black"
+                          allow="autoplay; encrypted-media; fullscreen"
+                          frameBorder={0}
+                        />
+                      );
+                    })()
+                  ) : (
+                    <video src={activeVideo} controls autoPlay className="w-full h-auto bg-black" />
+                  )}
+                </motion.div>
+              </div>
+            )}
 
             <div className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-semibold text-white/72 sm:text-sm">
               <span>Información verificada</span>
@@ -1048,104 +1126,6 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                 </motion.article>
               );
             })}
-          </div>
-        </motion.div>
-      </section>
-
-
-      <section className="w-full bg-white py-24 px-6 z-20 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="max-w-7xl mx-auto space-y-20"
-        >
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <h2 className="font-display font-extrabold text-4xl text-[#00135B] tracking-tight">
-              ¿Cómo Funciona?
-            </h2>
-            <p className="text-sm text-gray-500 font-medium leading-relaxed">
-              Un proceso simple y guiado para alcanzar tus metas internacionales
-            </p>
-          </div>
-
-          {/* Timeline Pipeline */}
-          <div className="relative">
-            {/* Center Line */}
-            <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#00135B] via-[#5D8CE2] to-[#F5C542] max-md:left-4"></div>
-
-            <div className="space-y-12">
-              {steps.map((step, idx) => {
-                const Icon = step.icon;
-                const isEven = idx % 2 === 0;
-                return (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: isEven ? -40 : 40 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.15 }}
-                    transition={{ type: "spring", stiffness: 85, delay: 0.1 }}
-                    className={`flex items-center w-full max-md:flex-row-reverse
-                      ${isEven ? "flex-row" : "flex-row-reverse"}`}
-                  >
-                    {/* Left/Right Container with color-matched borders */}
-                    <div className="w-1/2 px-8 max-md:w-full max-md:pl-12 max-md:pr-0">
-                      <div className={`relative overflow-hidden rounded-[24px] border ${step.borderColor} min-h-[200px] flex flex-col justify-end p-6 shadow-sm ${step.hoverShadow} hover:-translate-y-1 transition-all duration-300 group cursor-pointer`}>
-                        {/* Background Image */}
-                        <div className="absolute inset-0 z-0">
-                          <img
-                            src={step.image}
-                            alt={step.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                          {/* Colored Gradient Overlay */}
-                          <div className={`absolute inset-0 bg-gradient-to-t ${step.overlay}`} />
-                        </div>
-
-                        {/* Top Badges */}
-                        <div className="flex flex-wrap gap-1.5 absolute top-5 left-5 z-10">
-                          <span className="bg-white/95 text-[#00135B] text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider shadow-sm">
-                            Paso {step.num}
-                          </span>
-                          {step.tags.map((tag, tIdx) => (
-                            <span
-                              key={tIdx}
-                              className="bg-black/30 backdrop-blur-md text-white border border-white/10 text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-
-                        {/* Content */}
-                        <div className="relative z-10 flex items-start gap-4 mt-12">
-                          <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0 shadow-sm">
-                            <Icon className="w-5 h-5 text-white" />
-                          </div>
-                          <div className="space-y-1">
-                            <h4 className="font-display font-extrabold text-base text-white tracking-wide">
-                              {step.title}
-                            </h4>
-                            <p className="text-xs text-slate-200/90 font-medium leading-relaxed">
-                              {step.desc}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Timeline Node dot */}
-                    <div className="absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white border-4 border-[#00135B] flex items-center justify-center z-10 shadow-md max-md:left-4 max-md:-translate-x-0 transition-transform duration-300 hover:scale-110">
-                      <div className={`w-3 h-3 ${step.glowBg} rounded-full animate-pulse`}></div>
-                    </div>
-
-                    {/* Empty Space */}
-                    <div className="w-1/2 max-md:hidden"></div>
-                  </motion.div>
-                );
-              })}
-            </div>
           </div>
         </motion.div>
       </section>
