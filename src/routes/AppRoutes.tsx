@@ -15,6 +15,7 @@ import CarolinaPage from "../pages/programs/CarolinaPage";
 import ErasmusPage from "../pages/programs/ErasmusPage";
 import GksPage from "../pages/programs/GksPage";
 import DaadPage from "../pages/programs/DaadPage";
+import TechoPage from "../pages/programs/TechoPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRoutes() {
@@ -45,6 +46,10 @@ export default function AppRoutes() {
       {/* Dedicated Beca DAAD EPOS Alemania routes */}
       <Route path="/becas/daad-epos" element={<DaadPage />} />
       <Route path="/becas/daad-epos-beca" element={<DaadPage />} />
+
+      {/* Dedicated TECHO Volunteering routes */}
+      <Route path="/voluntariados/techo" element={<TechoPage />} />
+      <Route path="/voluntariados/techo-voluntariado" element={<TechoPage />} />
 
       {/* 
         Premium Scholarship pages — dynamic template (PremiumScholarshipPage).
