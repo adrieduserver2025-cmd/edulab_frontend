@@ -75,7 +75,8 @@ const VOLUNTEERS_BY_CONTINENT = [
     emoji: "🌎",
     color: "#2563eb",
     items: [
-      { title: "Voluntariado AIESEC", desc: "Proyectos de impacto social internacional.", slug: "aiesec-voluntariado", flag: "🌎", tag: "AIESEC" }
+      { title: "Voluntariado AIESEC", desc: "Proyectos de impacto social internacional.", slug: "aiesec-voluntariado", flag: "🌎", tag: "AIESEC" },
+      { title: "Voluntariado TECHO", desc: "Construcción comunitaria y desarrollo social.", slug: "techo-voluntariado", flag: "🇧🇴", tag: "TECHO", highlight: true }
     ]
   }
 ];
@@ -117,6 +118,13 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
         icon: HeartHandshake, 
         highlight: true,
         slug: "aiesec-voluntariado"
+      },
+      { 
+        title: "VOLUNTARIADO CON TECHO", 
+        desc: "Construcción comunitaria y desarrollo social en asentamientos.", 
+        icon: HeartHandshake, 
+        highlight: true,
+        slug: "techo-voluntariado"
       },
       { title: "Voluntariado Ambiental ONU", desc: "Acción climática y conservación ecológica global.", icon: Globe, slug: "onu-voluntariado" },
       { title: "Cruz Roja Internacional", desc: "Apoyo humanitario y salud comunitaria.", icon: HeartHandshake },
@@ -234,6 +242,8 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
                                         setActiveMenu(null);
                                         if (item.slug.includes("-beca")) {
                                           navigate(`/becas/${item.slug}`);
+                                        } else if (item.slug === "techo-voluntariado" || item.slug === "techo") {
+                                          navigate(`/voluntariados/techo-voluntariado`);
                                         } else {
                                           navigate(`/opportunities/${item.slug}`);
                                         }
@@ -275,6 +285,8 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
                               if (item.slug) {
                                 if (item.slug.endsWith("-beca")) {
                                   navigate(`/becas/${item.slug}`);
+                                } else if (item.slug === "techo-voluntariado" || item.slug === "techo") {
+                                  navigate(`/voluntariados/techo-voluntariado`);
                                 } else {
                                   navigate(`/opportunities/${item.slug}`);
                                 }

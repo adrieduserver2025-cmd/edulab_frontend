@@ -21,9 +21,9 @@ import pusanLogo from "../../assets/beca_gks_koreasur/imagenes/LOGO Universidad 
 import yonseiLogo from "../../assets/beca_gks_koreasur/imagenes/Universidad Yonsei.jfif";
 import koreaUnivLogo from "../../assets/beca_gks_koreasur/imagenes/Universidad de Corea (Korea University).png";
 import gksPhoto1 from "../../assets/beca_gks_koreasur/imagenes/630ff758-4652-475e-8ab9-f57b5176bde0.jpg";
-import gksPhoto2 from "../../assets/beca_gks_koreasur/imagenes/7-e2s8PQ4HqWqE-JGvHJYKrKxrw8fAhqcmzFCAd6LzgRRONM9_tYTaqzE8_FmME2RPjrGMoQyVw2dQPnp_JjFbhRxb2CxQ29xEoE7TEQ6I-GYoz9LucZGdeie5wLaeNZqSQpL4bQqv6PW2DQzpYdkEQJAluXY_AtW4Nj4zefAVOibnjM2v2SWx1fAxnvWX0s.jfif";
+import gksPhoto2 from "../../assets/beca_gks_koreasur/imagenes/gks_photo_2.jfif";
 import gksPhoto3 from "../../assets/beca_gks_koreasur/imagenes/images (7).jfif";
-import gksPhoto4 from "../../assets/beca_gks_koreasur/imagenes/yKGaBbqbnx4UYMTaXkhc_olFv6PN5XLqkZPat560kOV6vO6lRIymDghaMxNwYNEhQNCPXH4RfhPcAIMij1dgeGpSLXs6FFm_BtlPDZ_rXEeerjxXPGGHZlQCuhzhI3xbrRVCcyJcMLblPt0GzUWyp25HzUV9D7fbj1O5fK7Vhd7Z312NBcOfsah1GvoYhwiQ.jfif";
+import gksPhoto4 from "../../assets/beca_gks_koreasur/imagenes/gks_photo_4.jfif";
 
 // Social Icons Components
 function FacebookIcon({ className }: { className?: string }) {
