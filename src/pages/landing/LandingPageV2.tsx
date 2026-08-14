@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  ArrowLeft,
   ArrowRight,
   Bell,
   BookOpen,
@@ -35,6 +36,8 @@ Quote,
 import AuthModal from "../../components/auth/AuthModal";
 import { useAuthStore } from "../../store/useAuthStore";
 import PublicNavbar from "../../components/navigation/PublicNavbar";
+import { productsData, type ProductItem } from "../../constants/productsData";
+import ProductInfoModal from "../../components/landing/ProductInfoModal";
 
 interface LandingPageV2Props {
   initialAuthMode?: "login" | "register";
@@ -255,45 +258,432 @@ const steps = [
 const closingSoonOpportunities = [
   {
     id: 1,
-    type: "Beca de maestría",
-    title: "Maestrías en Alemania con beca completa",
-    country: "Alemania",
-    flag: "🇩🇪",
-    deadline: "Cierra en 6 días",
-    image: "/public/images/opportunities/alemania.jpg",
-    badgeClass: "bg-cyan-50 text-cyan-700",
+    type: "Posgrado & Doctorado",
+    title: "Becas Fundación Carolina 2026-2027",
+    country: "España",
+    flag: "🇪🇸",
+    deadline: "Cierra en 12 días",
+    route: "/becas/fundacion-carolina-beca",
+    image: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&auto=format&fit=crop&q=80",
+    badgeClass: "bg-red-50 text-red-700 border border-red-200",
   },
   {
     id: 2,
-    type: "Voluntariado",
-    title: "Voluntariado Ambiental en Costa Rica",
-    country: "Costa Rica",
-    flag: "🇨🇷",
-    deadline: "Cierra en 8 días",
-    image: "/images/opportunities/costa-rica.jpg",
-    badgeClass: "bg-emerald-50 text-emerald-700",
+    type: "Maestría Integral",
+    title: "Becas Simón I. Patiño en Suiza y Bélgica",
+    country: "Suiza / Bélgica",
+    flag: "🇨🇭🇧🇪",
+    deadline: "Cierra en 15 días",
+    route: "/becas/patino-beca",
+    image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=800&auto=format&fit=crop&q=80",
+    badgeClass: "bg-blue-50 text-blue-700 border border-blue-200",
   },
   {
     id: 3,
-    type: "Beca de pregrado",
-    title: "Becas de Pregrado en Canadá",
-    country: "Canadá",
-    flag: "🇨🇦",
-    deadline: "Cierra en 10 días",
-    image: "/images/opportunities/canada.jpg",
-    badgeClass: "bg-violet-50 text-violet-700",
+    type: "Maestría Conjunta",
+    title: "Becas Erasmus Mundus (EMJM) 100% Financiadas",
+    country: "Unión Europea",
+    flag: "🇪🇺",
+    deadline: "Cierra en 20 días",
+    route: "/becas/erasmus-mundus-beca",
+    image: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=800&auto=format&fit=crop&q=80",
+    badgeClass: "bg-indigo-50 text-indigo-700 border border-indigo-200",
   },
   {
     id: 4,
-    type: "Intercambio",
-    title: "Intercambio Académico en España",
-    country: "España",
-    flag: "🇪🇸",
-    deadline: "Cierra en 10 días",
-    image: "/images/opportunities/espana.jpg",
-    badgeClass: "bg-blue-50 text-blue-700",
+    type: "Pregrado & Posgrado",
+    title: "Becas GKS Corea del Sur (Global Korea Scholarship)",
+    country: "Corea del Sur",
+    flag: "🇰🇷",
+    deadline: "Cierra en 25 días",
+    route: "/becas/gks-korea-beca",
+    image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&auto=format&fit=crop&q=80",
+    badgeClass: "bg-pink-50 text-pink-700 border border-pink-200",
+  },
+  {
+    id: 5,
+    type: "Posgrado en Desarrollo",
+    title: "Becas DAAD EPOS para Posgrados en Alemania",
+    country: "Alemania",
+    flag: "🇩🇪",
+    deadline: "Cierra en 28 días",
+    route: "/becas/daad-epos-beca",
+    image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&auto=format&fit=crop&q=80",
+    badgeClass: "bg-amber-50 text-amber-800 border border-amber-200",
+  },
+  {
+    id: 6,
+    type: "Maestría & Doctorado",
+    title: "Programa de Becas Fulbright en EE.UU.",
+    country: "Estados Unidos",
+    flag: "🇺🇸",
+    deadline: "Cierra en 30 días",
+    route: "/becas/fulbright-beca",
+    image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&auto=format&fit=crop&q=80",
+    badgeClass: "bg-cyan-50 text-cyan-700 border border-cyan-200",
   },
 ];
+
+const scholarshipCarouselItems = [
+  {
+    id: "carolina",
+    type: "Beca 100% Integral",
+    title: "Becas Fundación Carolina",
+    country: "España",
+    flag: "🇪🇸",
+    desc: "736 becas para realizar maestrías, doctorados y estancias de investigación en universidades de España.",
+    specs: [{ label: "Estipendio", val: "Alojamiento & Manutención" }, { label: "Idioma", val: "Español" }, { label: "Nivel", val: "Posgrado / Doctorado" }],
+    route: "/becas/fundacion-carolina-beca",
+    image: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-red-50 text-red-700 border border-red-200"
+  },
+  {
+    id: "patino",
+    type: "Beca de Excelencia",
+    title: "Becas Simón I. Patiño",
+    country: "Suiza / Bélgica",
+    flag: "🇨🇭🇧🇪",
+    desc: "Becas completas en la Universidad de Ginebra, Lausanne, EPFL y ULB para jóvenes profesionales bolivianos.",
+    specs: [{ label: "Estipendio", val: "Completo + Pasajes" }, { label: "Idioma", val: "Inglés / Francés" }, { label: "Nivel", val: "Maestría (18-24m)" }],
+    route: "/becas/patino-beca",
+    image: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-blue-50 text-blue-700 border border-blue-200"
+  },
+  {
+    id: "erasmus",
+    type: "Maestría Conjunta",
+    title: "Becas Erasmus Mundus (EMJM)",
+    country: "Unión Europea",
+    flag: "🇪🇺",
+    desc: "Estudia un máster conjunto itinerante en al menos 3 países europeos con 1.400 € al mes de estipendio.",
+    specs: [{ label: "Estipendio", val: "1.400 € / mes" }, { label: "Idioma", val: "Inglés" }, { label: "Nivel", val: "Maestría (12-24m)" }],
+    route: "/becas/erasmus-mundus-beca",
+    image: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-indigo-50 text-indigo-700 border border-indigo-200"
+  },
+  {
+    id: "gks",
+    type: "Beca Estatal NIIED",
+    title: "Becas GKS Corea del Sur",
+    country: "Corea del Sur",
+    flag: "🇰🇷",
+    desc: "Beca 100% financiada por el Gobierno de Corea del Sur con 1 año de idioma coreano + estipendio mensual.",
+    specs: [{ label: "Estipendio", val: "1.000.000 KRW/mes" }, { label: "Idioma", val: "Coreano / Inglés" }, { label: "Nivel", val: "Pregrado & Posgrado" }],
+    route: "/becas/gks-korea-beca",
+    image: "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-pink-50 text-pink-700 border border-pink-200"
+  },
+  {
+    id: "daad",
+    type: "Posgrado en Desarrollo",
+    title: "Becas DAAD EPOS Alemania",
+    country: "Alemania",
+    flag: "🇩🇪",
+    desc: "Maestrías en universidades alemanas orientadas al desarrollo con 934 €/mes de estipendio y curso de alemán.",
+    specs: [{ label: "Estipendio", val: "934 € - 1.300 €/mes" }, { label: "Idioma", val: "Inglés / Alemán" }, { label: "Nivel", val: "Posgrado & PhD" }],
+    route: "/becas/daad-epos-beca",
+    image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-amber-50 text-amber-800 border border-amber-200"
+  },
+  {
+    id: "fulbright",
+    type: "Beca de Gobierno",
+    title: "Programa de Becas Fulbright",
+    country: "Estados Unidos",
+    flag: "🇺🇸",
+    desc: "Financiamiento 100% para realizar maestrías o doctorados en universidades de prestigio en EE.UU.",
+    specs: [{ label: "Estipendio", val: "100% Completo + Visado" }, { label: "Idioma", val: "Inglés (TOEFL)" }, { label: "Nivel", val: "Posgrado & PhD" }],
+    route: "/becas/fulbright-beca",
+    image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-cyan-50 text-cyan-700 border border-cyan-200"
+  }
+];
+
+const volunteerCarouselItems = [
+  {
+    id: "aiesec",
+    type: "Impacto Social & Liderazgo",
+    title: "Voluntariado Global AIESEC",
+    country: "Internacional",
+    flag: "🌎",
+    desc: "Proyectos de impacto social y liderazgo en educación, medio ambiente y comunidad internacional.",
+    specs: [{ label: "Cobertura", val: "Hospedaje & Formación" }, { label: "Idioma", val: "Español / Inglés" }, { label: "Nivel", val: "Jóvenes 18-30 años" }],
+    route: "/voluntariados/aiesec-voluntariado",
+    image: "https://images.unsplash.com/photo-1526976668912-1a811878dd37?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-emerald-50 text-emerald-700 border border-emerald-200"
+  },
+  {
+    id: "esc",
+    type: "Cuerpo Solidario UE",
+    title: "Cuerpo Europeo de Solidaridad",
+    country: "Unión Europea",
+    flag: "🇪🇺",
+    desc: "Voluntariado subvencionado con pasajes, hospedaje, seguro médico y estipendio en Europa.",
+    specs: [{ label: "Cobertura", val: "100% Cubierto + Dinero de bolsillo" }, { label: "Idioma", val: "Español / Inglés" }, { label: "Nivel", val: "Jóvenes 18-30 años" }],
+    route: "/voluntariados/esc-voluntariado",
+    image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-blue-50 text-blue-700 border border-blue-200"
+  },
+  {
+    id: "techo",
+    type: "Desarrollo Comunitario",
+    title: "Voluntarios TECHO Bolivia",
+    country: "Bolivia & Latam",
+    flag: "🇧🇴",
+    desc: "Construcción de viviendas de emergencia y superación de la pobreza en asentamientos populares.",
+    specs: [{ label: "Modalidad", val: "Trabajo de Campo" }, { label: "Idioma", val: "Español" }, { label: "Nivel", val: "Todos los niveles" }],
+    route: "/voluntariados/techo-voluntariado",
+    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-amber-50 text-amber-800 border border-amber-200"
+  },
+  {
+    id: "unv",
+    type: "Misiones ONU",
+    title: "Voluntarios de las Naciones Unidas (UNV)",
+    country: "Internacional",
+    flag: "🇺🇳",
+    desc: "Misiones de paz y desarrollo comunitario sostenible respaldadas por el programa UNV de la ONU.",
+    specs: [{ label: "Estipendio", val: "Subsidio de Vida UNV" }, { label: "Idioma", val: "Inglés / Francés" }, { label: "Nivel", val: "Profesionales & Jóvenes" }],
+    route: "/voluntariados/un-voluntariado",
+    image: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb0?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-indigo-50 text-indigo-700 border border-indigo-200"
+  }
+];
+
+function SingleCategoryCarousel({
+  badge,
+  badgeColor,
+  title,
+  subtitle,
+  items,
+  icon: HeaderIcon
+}: {
+  badge: string;
+  badgeColor: string;
+  title: string;
+  subtitle: string;
+  items: typeof scholarshipCarouselItems;
+  icon: any;
+}) {
+  const navigate = useNavigate();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (isHovered || items.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % items.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [isHovered, items.length]);
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % items.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+  };
+
+  const visibleItems = [
+    items[currentIndex % items.length],
+    items[(currentIndex + 1) % items.length],
+    items[(currentIndex + 2) % items.length],
+  ];
+
+  return (
+    <div
+      className="p-8 rounded-3xl bg-white border border-slate-200/90 shadow-md space-y-8 relative overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Header bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+        <div className="space-y-1.5 text-left">
+          <div className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badgeColor}`}>
+            <HeaderIcon className="w-3.5 h-3.5" />
+            {badge}
+          </div>
+          <h3 className="text-2xl sm:text-3xl font-black text-[#061b58] tracking-tight">{title}</h3>
+          <p className="text-xs sm:text-sm text-slate-500 font-light">{subtitle}</p>
+        </div>
+
+        {/* Carousel Prev/Next Buttons */}
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={handlePrev}
+            type="button"
+            className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#061b58] font-bold flex items-center justify-center transition-all cursor-pointer border-none"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleNext}
+            type="button"
+            className="w-10 h-10 rounded-xl bg-[#061b58] hover:bg-[#2455bb] text-white font-bold flex items-center justify-center transition-all cursor-pointer border-none"
+          >
+            <ArrowRight className="w-4 h-4 text-[#ffc928]" />
+          </button>
+        </div>
+      </div>
+
+      {/* Grid Track */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {visibleItems.map((item, idx) => (
+          <motion.div
+            key={`${item.id}-${currentIndex}-${idx}`}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between group space-y-4"
+          >
+            <div className="space-y-3">
+              <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-900">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <span className={`absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold shadow-sm backdrop-blur-md ${item.badgeColor}`}>
+                  {item.type}
+                </span>
+                <span className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white font-bold text-xs flex items-center gap-1">
+                  <span>{item.flag}</span>
+                  <span>{item.country}</span>
+                </span>
+              </div>
+
+              <div className="space-y-1.5 text-left">
+                <h4 className="text-lg font-extrabold text-[#061b58] leading-tight group-hover:text-[#2455bb] transition-colors">
+                  {item.title}
+                </h4>
+                <p className="text-xs text-slate-500 leading-relaxed font-light line-clamp-2">
+                  {item.desc}
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 space-y-1.5 text-xs">
+                {item.specs.map((spec) => (
+                  <div key={spec.label} className="flex justify-between items-center text-[10px]">
+                    <span className="text-slate-400 font-semibold uppercase">{spec.label}:</span>
+                    <span className="font-bold text-[#061b58]">{spec.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate(item.route)}
+              className="w-full py-3 rounded-xl bg-[#061b58] hover:bg-[#2455bb] text-white font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-1.5 transition-all cursor-pointer border-none shadow-sm"
+            >
+              Ver Detalles
+              <ArrowRight className="w-3.5 h-3.5 text-[#ffc928]" />
+            </button>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Pagination Dots */}
+      <div className="flex items-center justify-center gap-1.5 pt-1">
+        {items.map((_, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => setCurrentIndex(idx)}
+            className={`h-2 rounded-full transition-all cursor-pointer border-none ${
+              currentIndex % items.length === idx ? "w-6 bg-[#2455bb]" : "w-2 bg-slate-300"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ExploreOpportunitiesCarousel() {
+  const [activeTab, setActiveTab] = useState<"all" | "becas" | "voluntariados">("all");
+
+  return (
+    <section id="opportunities" className="w-full bg-slate-50/70 py-20 px-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto space-y-12">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3 max-w-2xl text-left">
+            <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#2455bb]">
+              Catálogo Interactivo de Convocatorias
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black text-[#061b58] tracking-tight">
+              Explora Oportunidades
+            </h2>
+            <p className="text-slate-600 text-sm md:text-base font-light">
+              Filtra convocatorias por categoría. Navega en carruseles independientes para Becas y Voluntariados.
+            </p>
+          </div>
+
+          {/* Category Tabs */}
+          <div className="inline-flex p-1.5 rounded-2xl bg-white border border-slate-200 shadow-sm shrink-0">
+            <button
+              onClick={() => setActiveTab("all")}
+              type="button"
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none ${
+                activeTab === "all" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
+              }`}
+            >
+              Ver Ambos Carruseles
+            </button>
+            <button
+              onClick={() => setActiveTab("becas")}
+              type="button"
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none flex items-center gap-1.5 ${
+                activeTab === "becas" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
+              }`}
+            >
+              <GraduationCap className="w-4 h-4 text-[#ffc928]" />
+              Becas (6)
+            </button>
+            <button
+              onClick={() => setActiveTab("voluntariados")}
+              type="button"
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none flex items-center gap-1.5 ${
+                activeTab === "voluntariados" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
+              }`}
+            >
+              <Heart className="w-4 h-4 text-emerald-400" />
+              Voluntariados (4)
+            </button>
+          </div>
+        </div>
+
+        {/* CAROUSEL 1: BECAS INTERNACIONALES */}
+        {(activeTab === "all" || activeTab === "becas") && (
+          <SingleCategoryCarousel
+            badge="Becas Internacionales 100% Financiadas"
+            badgeColor="bg-blue-50 text-[#2455bb] border border-blue-200"
+            title="🎓 Carrusel de Becas Académicas"
+            subtitle="Maestrías, doctorados y licencias universitarias en España, Suiza, Alemania, Corea del Sur y EE.UU."
+            items={scholarshipCarouselItems}
+            icon={GraduationCap}
+          />
+        )}
+
+        {/* CAROUSEL 2: VOLUNTARIADOS & LIDERAZGO */}
+        {(activeTab === "all" || activeTab === "voluntariados") && (
+          <SingleCategoryCarousel
+            badge="Programas de Voluntariado & Impacto Social"
+            badgeColor="bg-emerald-50 text-emerald-700 border border-emerald-200"
+            title="🤝 Carrusel de Voluntariados e Intercambio Social"
+            subtitle="Proyectos de liderazgo, desarrollo comunitario y solidaridad con AIESEC, Cuerpo Europeo, TECHO y la ONU."
+            items={volunteerCarouselItems}
+            icon={Heart}
+          />
+        )}
+      </div>
+    </section>
+  );
+}
+
 // Productos y servicios principales de EduLab
 const aiFeatures = [
   {
@@ -432,7 +822,6 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
   const [authModalMode, setAuthModalMode] = useState<"login" | "register">(
     initialAuthMode ?? "login",
   );
-
   useEffect(() => {
     if (!initialAuthMode) return;
     setAuthModalMode(initialAuthMode);
@@ -453,19 +842,25 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
     openAuth("register");
   };
 
-  // Video modal state
-  const [videoOpen, setVideoOpen] = useState(false);
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 
-  const openVideo = (src: string) => {
-    setActiveVideo(src);
-    setVideoOpen(true);
-    setMenuOpen(false);
+  const openProductModal = (product: ProductItem) => {
+    setSelectedProduct(product);
+    setIsProductModalOpen(true);
   };
 
-  const closeVideo = () => {
-    setVideoOpen(false);
-    setActiveVideo(null);
+  const closeProductModal = () => {
+    setIsProductModalOpen(false);
+  };
+
+  const handleProductAction = (_product: ProductItem, _isSecondary?: boolean) => {
+    setIsProductModalOpen(false);
+    if (!isAuthenticated) {
+      openAuth("register");
+      return;
+    }
+    navigate("/ai-tools");
   };
 
   return (
@@ -530,85 +925,40 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
               )}
             </div>
 
-            <div className="mt-12 grid w-full max-w-4xl grid-cols-2 gap-3 md:grid-cols-4">
-              {[
-                [BookOpen, "Generador y editor de CV", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
-                [BookOpen, "Generador y editor de cartas de motivación", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
-                [BookOpen, "Simulador de Postulación", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
-                [UserRound, "Preparación de entrevistas", "https://www.youtube.com/watch?v=RFBDmwFxVr0&list=RDRFBDmwFxVr0&start_radio=1"],
-              ].map(([Icon, label, src], idx) => {
-                const FeatureIcon = Icon as typeof GraduationCap;
+            <div className="mt-12 grid w-full max-w-5xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {productsData.map((prod) => {
+                const Icon = prod.icon;
                 return (
-                  <motion.button
-                    key={String(label)}
+                  <button
+                    key={prod.id}
                     type="button"
-                    onClick={() => openVideo(String(src))}
-                    aria-label={`Abrir video: ${String(label)}`}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.45, delay: idx * 0.06 }}
-                    whileHover={{ y: -6, scale: 1.02 }}
-                    whileTap={{ scale: 0.985 }}
-                    className={
-                      "landing-v2-benefit group text-left rounded-lg px-3 py-3 bg-white/6 hover:bg-white/12 ring-1 ring-white/6 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-3"
-                    }
+                    onClick={() => openProductModal(prod)}
+                    className="group relative flex flex-col justify-between items-start text-left p-5 rounded-2xl border border-white/15 bg-[#021448]/55 backdrop-blur-md transition-all duration-300 hover:border-[#ffc928]/60 hover:bg-[#021448]/80 hover:-translate-y-1 shadow-lg cursor-pointer border-none overflow-hidden"
+                    aria-label={`Ver detalles de ${prod.title}`}
                   >
-                    <motion.span
-                      className="flex items-center justify-center rounded-md p-1"
-                      whileHover={{ rotate: 6 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
-                      <FeatureIcon className="h-6 w-6 text-[#ffc928] group-hover:scale-105" />
-                    </motion.span>
+                    <div className="absolute -top-6 -right-6 w-24 h-24 bg-[#ffc928]/10 rounded-full blur-xl pointer-events-none group-hover:bg-[#ffc928]/25 transition duration-500" />
 
-                    <span className="font-semibold text-sm text-white/95 group-hover:text-white">
-                      {String(label)}
-                    </span>
-                  </motion.button>
+                    <div className="flex items-center gap-3 mb-3 w-full">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#ffc928]/35 bg-[#ffc928]/15 text-[#ffc928] group-hover:scale-105 group-hover:bg-[#ffc928] group-hover:text-[#061b58] transition duration-300 shadow-sm">
+                        <Icon className="h-5.5 w-5.5" />
+                      </div>
+                      <h3 className="text-base font-extrabold text-white tracking-tight leading-snug group-hover:text-[#ffc928] transition-colors">
+                        {prod.title}
+                      </h3>
+                    </div>
+
+                    <p className="text-xs text-white/80 font-normal leading-relaxed mb-4 flex-1">
+                      {prod.cardShortDesc}
+                    </p>
+
+                    <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#ffc928] group-hover:translate-x-1 transition-transform">
+                      <span>Ver producto</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </div>
+                  </button>
                 );
               })}
             </div>
-
-            {videoOpen && activeVideo && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                <div className="absolute inset-0 bg-black/60" onClick={closeVideo} />
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.18 }}
-                  className="relative z-10 max-w-3xl w-full rounded-lg overflow-hidden bg-black"
-                >
-                  <button
-                    onClick={closeVideo}
-                    aria-label="Cerrar video"
-                    className="absolute right-3 top-3 z-20 p-2 rounded-full bg-white/20 text-white"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                  {activeVideo.includes("youtube.com") || activeVideo.includes("youtu.be") ? (
-                    (() => {
-                      // extract video id
-                      const url = new URL(activeVideo);
-                      const v = url.searchParams.get("v");
-                      const id = v ?? (activeVideo.includes("youtu.be") ? activeVideo.split("/").pop() : null);
-                      const embed = id ? `https://www.youtube.com/embed/${id}?autoplay=1` : activeVideo;
-                      return (
-                        <iframe
-                          title="Video"
-                          src={embed}
-                          className="w-full h-[56vh] md:h-[60vh] bg-black"
-                          allow="autoplay; encrypted-media; fullscreen"
-                          frameBorder={0}
-                        />
-                      );
-                    })()
-                  ) : (
-                    <video src={activeVideo} controls autoPlay className="w-full h-auto bg-black" />
-                  )}
-                </motion.div>
-              </div>
-            )}
 
             <div className="mt-7 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-semibold text-white/72 sm:text-sm">
               <span>Información verificada</span>
@@ -654,7 +1004,7 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
           </div>
 
           {/* Tarjetas */}
-          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {closingSoonOpportunities.map((opportunity, index) => (
               <motion.article
                 key={opportunity.id}
@@ -666,7 +1016,8 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                   delay: index * 0.08,
                   ease: "easeOut",
                 }}
-                className="group flex overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl"
+                onClick={() => navigate(opportunity.route)}
+                className="group flex overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl cursor-pointer"
               >
                 <div className="flex w-full flex-col">
                   {/* Imagen */}
@@ -691,27 +1042,30 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                   </div>
 
                   {/* Contenido */}
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3 className="min-h-[56px] text-lg font-extrabold leading-snug text-[#061b58]">
-                      {opportunity.title}
-                    </h3>
+                  <div className="flex flex-1 flex-col p-5 justify-between">
+                    <div className="space-y-3">
+                      <h3 className="min-h-[56px] text-lg font-extrabold leading-snug text-[#061b58] group-hover:text-[#2455bb] transition-colors">
+                        {opportunity.title}
+                      </h3>
 
-                    <div className="mt-4 flex items-center gap-2 text-sm font-medium text-slate-500">
-                      <span className="text-base">{opportunity.flag}</span>
-                      <span>{opportunity.country}</span>
-                    </div>
+                      <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+                        <span className="text-base">{opportunity.flag}</span>
+                        <span>{opportunity.country}</span>
+                      </div>
 
-                    <div className="mt-3 flex items-center gap-2 text-sm font-bold text-rose-500">
-                      <Clock3 className="h-4 w-4" />
-                      <span>{opportunity.deadline}</span>
+                      <div className="flex items-center gap-2 text-sm font-bold text-rose-500">
+                        <Clock3 className="h-4 w-4" />
+                        <span>{opportunity.deadline}</span>
+                      </div>
                     </div>
 
                     <button
                       type="button"
-                      onClick={goToPrograms}
-                      className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-[#061b58] transition hover:border-[#2455bb] hover:bg-blue-50 hover:text-[#2455bb]"
+                      onClick={(e) => { e.stopPropagation(); navigate(opportunity.route); }}
+                      className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-extrabold text-[#061b58] transition hover:border-[#2455bb] hover:bg-blue-50 hover:text-[#2455bb] cursor-pointer"
                     >
                       Ver detalles
+                      <ArrowRight className="h-4 w-4 text-[#ffc928]" />
                     </button>
                   </div>
                 </div>
@@ -732,143 +1086,10 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
       </section>
 
 
-      <section id="opportunities" className="w-full bg-white py-24 px-6 z-20 relative">
-        <div className="max-w-7xl mx-auto space-y-16">
-
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <h2 className="font-display font-extrabold text-4xl text-[#00135B] tracking-tight">
-              Explora Oportunidades
-            </h2>
-            <p className="text-sm text-gray-400 font-semibold leading-relaxed">
-              Encuentra el programa perfecto para tu perfil académico y profesional
-            </p>
-          </div>
-
-          {/* Centered column layout displaying ONLY Becas & Voluntariados (one per row) */}
-          <div className="flex flex-col gap-8 max-w-4xl mx-auto">
-
-            {/* Card 1: Becas Internacionales */}
-            <motion.div
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="bg-white p-8 rounded-[20px] shadow-[0_15px_40px_-15px_rgba(0,19,91,0.08)] border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group text-left"
-            >
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 flex-1">
-                {/* Icon square */}
-                <div className="w-14 h-14 rounded-[16px] bg-[#0ea5e9] flex items-center justify-center shadow-lg shadow-[#0ea5e9]/10 shrink-0">
-                  <GraduationCap className="w-7 h-7 text-white" />
-                </div>
-
-                {/* Info Text */}
-                <div className="space-y-2 flex-1">
-                  <h3 className="font-display font-extrabold text-xl text-[#00135B] group-hover:text-[#5D8CE2] transition-colors duration-200">
-                    Becas Internacionales
-                  </h3>
-                  <p className="text-sm text-gray-500 leading-relaxed font-medium">
-                    Financiamiento completo para estudios de grado y posgrado en universidades de prestigio global.
-                  </p>
-
-                  {/* Horizontal Key Specifications */}
-                  <div className="flex items-center gap-5 flex-wrap pt-2 text-[11px] font-bold">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-400 uppercase">País:</span>
-                      <span className="text-[#00135B]">Global</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-400 uppercase">Financiamiento:</span>
-                      <span className="text-[#5D8CE2]">100% Financiado</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-400 uppercase">Nivel:</span>
-                      <span className="text-[#00135B]">Pregrado & Posgrado</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Trigger Button */}
-              <button
-                onClick={() => navigate("/opportunities/daad-beca")}
-                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:from-[#0d288c] hover:to-blue-400 text-white font-bold text-xs tracking-wider uppercase text-center shadow-md shadow-[#00135B]/10 shrink-0 hover:scale-102 transition-all duration-200 cursor-pointer bg-transparent border-none"
-              >
-                Ver Detalles
-              </button>
-            </motion.div>
-
-            {/* Card 2: Voluntariados */}
-            <motion.div
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-              className="bg-white p-8 rounded-[20px] shadow-[0_15px_40px_-15px_rgba(0,19,91,0.08)] border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group text-left"
-            >
-              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 flex-1">
-                {/* Icon square */}
-                <div className="w-14 h-14 rounded-[16px] bg-[#ec4899] flex items-center justify-center shadow-lg shadow-[#ec4899]/10 shrink-0">
-                  <Heart className="w-7 h-7 text-white" />
-                </div>
-
-                {/* Info Text */}
-                <div className="space-y-2 flex-1">
-                  <h3 className="font-display font-extrabold text-xl text-[#00135B] group-hover:text-[#5D8CE2] transition-colors duration-200">
-                    Voluntariados
-                  </h3>
-                  <p className="text-sm text-gray-500 leading-relaxed font-medium">
-                    Proyectos de impacto social y comunitario con la red de voluntariado más grande del mundo.
-                  </p>
-
-                  {/* Horizontal Key Specifications */}
-                  <div className="flex items-center gap-5 flex-wrap pt-2 text-[11px] font-bold">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-400 uppercase">País:</span>
-                      <span className="text-[#00135B]">Europa & África</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-400 uppercase">Financiamiento:</span>
-                      <span className="text-[#5D8CE2]">Gastos Cubiertos</span>
-                    </div>
-                    <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-400 uppercase">Nivel:</span>
-                      <span className="text-[#00135B]">Todos los niveles</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Trigger Button */}
-              <button
-                onClick={() => navigate("/opportunities/aiesec-voluntariado")}
-                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#00135B] to-[#5D8CE2] hover:from-[#0d288c] hover:to-blue-400 text-white font-bold text-xs tracking-wider uppercase text-center shadow-md shadow-[#00135B]/10 shrink-0 hover:scale-102 transition-all duration-200 cursor-pointer bg-transparent border-none"
-              >
-                Ver Detalles
-              </button>
-            </motion.div>
-
-          </div>
-
-          <div className="text-center pt-8">
-            <button
-              onClick={() => {
-                if (isAuthenticated) {
-                  navigate("/programs");
-                } else {
-                  openAuth("login");
-                }
-              }}
-              className="inline-block px-8 py-3.5 rounded-xl bg-[#F5C542] hover:bg-[#ebd035] text-[#00135B] font-bold text-sm tracking-wide transition-all duration-300 hover:scale-105 cursor-pointer shadow-md shadow-[#F5C542]/20 border-none"
-            >
-              Ver Todas las Oportunidades
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* ─────────────────────────────────────────────────────────────────────────────
+          EXPLORA OPORTUNIDADES — CARRUSEL CIRCULAR INFINITO EN TARJETAS VERTICALES
+         ───────────────────────────────────────────────────────────────────────────── */}
+      <ExploreOpportunitiesCarousel />
 
 
       <section className="relative w-full bg-gradient-to-b from-[#00135B] to-[#001a7a] text-white py-24 px-6 z-10 flex flex-col items-center">
@@ -1395,6 +1616,13 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
         </div>
 
       </footer>
+
+      <ProductInfoModal
+        isOpen={isProductModalOpen}
+        product={selectedProduct}
+        onClose={closeProductModal}
+        onAction={handleProductAction}
+      />
 
       <AuthModal
         key={authModalMode}

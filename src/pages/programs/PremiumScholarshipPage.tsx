@@ -201,11 +201,34 @@ const SCHOLARSHIP_IMAGES = [
   "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=900&q=80", // studying
 ];
 
+import PatinoPage from "./PatinoPage";
+import CarolinaPage from "./CarolinaPage";
+import ErasmusPage from "./ErasmusPage";
+import GksPage from "./GksPage";
+import DaadPage from "./DaadPage";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN COMPONENT — PremiumScholarshipPage (dynamic & reusable)
 // ─────────────────────────────────────────────────────────────────────────────
 export default function PremiumScholarshipPage() {
   const { slug } = useParams<{ slug: string }>();
+
+  if (slug === "patino-beca") {
+    return <PatinoPage />;
+  }
+  if (slug === "fundacion-carolina-beca" || slug === "fundacion-carolina") {
+    return <CarolinaPage />;
+  }
+  if (slug === "erasmus-mundus-beca" || slug === "erasmus-mundus") {
+    return <ErasmusPage />;
+  }
+  if (slug === "gks-korea-beca" || slug === "gks-korea") {
+    return <GksPage />;
+  }
+  if (slug === "daad-epos-beca" || slug === "daad-epos") {
+    return <DaadPage />;
+  }
+
   const navigate = useNavigate();
   const { isAuthenticated, token } = useAuthStore();
 

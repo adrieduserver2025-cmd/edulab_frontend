@@ -10,6 +10,11 @@ import OnboardingPage from "../pages/onboarding/OnboardingPage";
 import AIToolsPage from "../pages/ai/AIToolsPage";
 import OpportunityDetailPage from "../pages/programs/OpportunityDetailPage";
 import PremiumScholarshipPage from "../pages/programs/PremiumScholarshipPage";
+import PatinoPage from "../pages/programs/PatinoPage";
+import CarolinaPage from "../pages/programs/CarolinaPage";
+import ErasmusPage from "../pages/programs/ErasmusPage";
+import GksPage from "../pages/programs/GksPage";
+import DaadPage from "../pages/programs/DaadPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRoutes() {
@@ -21,6 +26,25 @@ export default function AppRoutes() {
       <Route path="/register" element={<LandingPageV2 initialAuthMode="register" />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+      {/* Dedicated Beca Patiño route */}
+      <Route path="/becas/patino-beca" element={<PatinoPage />} />
+
+      {/* Dedicated Beca Fundación Carolina routes */}
+      <Route path="/becas/fundacion-carolina" element={<CarolinaPage />} />
+      <Route path="/becas/fundacion-carolina-beca" element={<CarolinaPage />} />
+
+      {/* Dedicated Beca Erasmus Mundus routes */}
+      <Route path="/becas/erasmus-mundus" element={<ErasmusPage />} />
+      <Route path="/becas/erasmus-mundus-beca" element={<ErasmusPage />} />
+
+      {/* Dedicated Beca GKS Corea del Sur routes */}
+      <Route path="/becas/gks-korea" element={<GksPage />} />
+      <Route path="/becas/gks-korea-beca" element={<GksPage />} />
+
+      {/* Dedicated Beca DAAD EPOS Alemania routes */}
+      <Route path="/becas/daad-epos" element={<DaadPage />} />
+      <Route path="/becas/daad-epos-beca" element={<DaadPage />} />
 
       {/* 
         Premium Scholarship pages — dynamic template (PremiumScholarshipPage).

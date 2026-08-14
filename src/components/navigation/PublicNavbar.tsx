@@ -39,8 +39,50 @@ interface PublicNavbarProps {
   onOpenAuth?: (mode: "login" | "register") => void;
 }
 
+const OPPORTUNITIES_BY_CONTINENT = [
+  {
+    continent: "América",
+    emoji: "🌎",
+    color: "#2563eb",
+    items: [
+      { title: "Beca Fulbright", desc: "Estudia en EE.UU. con financiamiento 100%.", slug: "fulbright-beca", flag: "🇺🇸", tag: "EE.UU." }
+    ]
+  },
+  {
+    continent: "Europa",
+    emoji: "🇪🇺",
+    color: "#059669",
+    items: [
+      { title: "Becas Patiño", desc: "Maestría para bolivianos en Suiza y Bélgica.", slug: "patino-beca", flag: "🇨🇭🇧🇪", tag: "Suiza/Bélgica", highlight: true },
+      { title: "Fundación Carolina", desc: "Posgrado y doctorado en España.", slug: "fundacion-carolina-beca", flag: "🇪🇸", tag: "España" },
+      { title: "Erasmus Mundus", desc: "Maestrías conjuntas internacionales.", slug: "erasmus-mundus-beca", flag: "🇪🇺", tag: "Unión Europea" },
+      { title: "Beca DAAD EPOS", desc: "Posgrados en desarrollo en Alemania.", slug: "daad-epos-beca", flag: "🇩🇪", tag: "Alemania" }
+    ]
+  },
+  {
+    continent: "Asia",
+    emoji: "🌏",
+    color: "#7c3aed",
+    items: [
+      { title: "GKS Corea del Sur", desc: "Beca integral + 1 año de idioma coreano.", slug: "gks-korea-beca", flag: "🇰🇷", tag: "Corea del Sur" }
+    ]
+  }
+];
+
+const VOLUNTEERS_BY_CONTINENT = [
+  {
+    continent: "América",
+    emoji: "🌎",
+    color: "#2563eb",
+    items: [
+      { title: "Voluntariado AIESEC", desc: "Proyectos de impacto social internacional.", slug: "aiesec-voluntariado", flag: "🌎", tag: "AIESEC" }
+    ]
+  }
+];
+
 export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [activeContinent, setActiveContinent] = useState<string>("Europa");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -138,67 +180,89 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
                       menu === "Oportunidades" ? "w-[560px]" : "w-80"
                     }`}
                   >
-                    {menu === "Oportunidades" ? (
-                      <div className="grid grid-cols-3 gap-4">
-                        {[
-                          {
-                            continent: "América",
-                            emoji: "🌎",
-                            color: "#2563eb",
-                            items: [
-                              { title: "Beca Fulbright", desc: "Estudia en EE.UU. con financiamiento 100%.", slug: "fulbright-beca", flag: "🇺🇸", tag: "EE.UU." },
-                            ]
-                          },
-                          {
-                            continent: "Europa",
-                            emoji: "🇪🇺",
-                            color: "#059669",
-                            items: [
-                              { title: "Chevening Scholarships", desc: "Maestría en Reino Unido 100% financiada.", slug: "chevening-beca", flag: "🇬🇧", tag: "Reino Unido" },
-                              { title: "Fundación Carolina", desc: "Posgrado y doctorado en España.", slug: "fundacion-carolina-beca", flag: "🇪🇸", tag: "España" },
-                              { title: "Becas Patiño", desc: "Maestría para bolivianos en Suiza y Bélgica.", slug: "patino-beca", flag: "🇨🇭🇧🇪", tag: "Suiza/Bélgica" },
-                              { title: "Erasmus Mundus", desc: "Maestrías conjuntas internacionales.", slug: "erasmus-mundus-beca", flag: "🇪🇺", tag: "Unión Europea" },
-                            ]
-                          },
-                          {
-                            continent: "Asia",
-                            emoji: "🌏",
-                            color: "#7c3aed",
-                            items: [
-                              { title: "GKS Corea del Sur", desc: "Beca integral + 1 año de idioma coreano.", slug: "gks-korea-beca", flag: "🇰🇷", tag: "Corea del Sur" },
-                            ]
-                          }
-                        ].map((group) => (
-                          <div key={group.continent} className="space-y-2">
-                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 border border-gray-100">
-                              <span className="text-sm">{group.emoji}</span>
-                              <span className="text-[11px] font-black uppercase tracking-wider text-[#00135B]">
-                                {group.continent}
-                              </span>
-                            </div>
-                            <div className="space-y-1">
-                              {group.items.map((item) => (
-                                <div
-                                  key={item.slug}
-                                  onClick={() => {
-                                    setActiveMenu(null);
-                                    navigate(`/becas/${item.slug}`);
-                                  }}
-                                  className="p-2 rounded-xl cursor-pointer hover:bg-blue-50/60 border border-transparent hover:border-blue-100 transition-all duration-200 group/item"
-                                >
-                                  <div className="flex items-center justify-between gap-1">
-                                    <span className="text-xs font-bold text-[#00135B] group-hover/item:text-[#5D8CE2] truncate">
-                                      {item.flag} {item.title}
-                                    </span>
-                                  </div>
-                                  <p className="text-[10px] text-gray-500 line-clamp-2 mt-0.5 leading-tight">
-                                    {item.desc}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
+                    {menu === "Oportunidades" || menu === "Voluntariados" ? (
+                      <div className="flex gap-2">
+                        {/* Left Column: Continents List */}
+                        <div className="w-48 border-r border-gray-100 pr-2 space-y-1">
+                          <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-gray-400">
+                            Continentes
                           </div>
-                        ))}
+                          {(menu === "Oportunidades" ? OPPORTUNITIES_BY_CONTINENT : VOLUNTEERS_BY_CONTINENT).map((group) => {
+                            const isSelected = activeContinent === group.continent;
+                            return (
+                              <div
+                                key={group.continent}
+                                onMouseEnter={() => setActiveContinent(group.continent)}
+                                onClick={() => setActiveContinent(group.continent)}
+                                className={`px-3 py-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                                  isSelected
+                                    ? "bg-[#00135B] text-white font-bold shadow-md"
+                                    : "hover:bg-gray-100 text-gray-700 font-medium"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className="text-base">{group.emoji}</span>
+                                  <span className="text-xs">{group.continent}</span>
+                                </div>
+                                <ChevronRight className={`w-3.5 h-3.5 ${isSelected ? "text-[#F5C542]" : "text-gray-400"}`} />
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Right Column: Items for Active Continent */}
+                        <div className="flex-1 space-y-2 pl-2">
+                          {(() => {
+                            const currentGroup = (menu === "Oportunidades" ? OPPORTUNITIES_BY_CONTINENT : VOLUNTEERS_BY_CONTINENT)
+                              .find(g => g.continent === activeContinent) || (menu === "Oportunidades" ? OPPORTUNITIES_BY_CONTINENT[1] : VOLUNTEERS_BY_CONTINENT[0]);
+                            
+                            return (
+                              <>
+                                <div className="flex items-center justify-between px-2 py-1 bg-blue-50/50 rounded-lg border border-blue-100">
+                                  <span className="text-xs font-bold text-[#00135B]">
+                                    {currentGroup.emoji} {currentGroup.continent} — {menu}
+                                  </span>
+                                  <span className="text-[10px] font-semibold text-blue-600">
+                                    {currentGroup.items.length} disponibles
+                                  </span>
+                                </div>
+                                <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+                                  {currentGroup.items.map((item) => (
+                                    <div
+                                      key={item.slug}
+                                      onClick={() => {
+                                        setActiveMenu(null);
+                                        if (item.slug.includes("-beca")) {
+                                          navigate(`/becas/${item.slug}`);
+                                        } else {
+                                          navigate(`/opportunities/${item.slug}`);
+                                        }
+                                      }}
+                                      className={`p-2.5 rounded-xl cursor-pointer transition-all duration-200 group/item border ${
+                                        (item as any).highlight
+                                          ? "bg-amber-500/10 hover:bg-amber-500/20 border-amber-300"
+                                          : "hover:bg-blue-50/60 border-transparent hover:border-blue-100"
+                                      }`}
+                                    >
+                                      <div className="flex items-center justify-between gap-1">
+                                        <span className="text-xs font-bold text-[#00135B] group-hover/item:text-[#5D8CE2] flex items-center gap-1.5">
+                                          <span>{item.flag}</span>
+                                          <span>{item.title}</span>
+                                        </span>
+                                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-semibold shrink-0">
+                                          {item.tag}
+                                        </span>
+                                      </div>
+                                      <p className="text-[10px] text-gray-500 line-clamp-2 mt-1 leading-tight">
+                                        {item.desc}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </>
+                            );
+                          })()}
+                        </div>
                       </div>
                     ) : (
                       menuData[menu]?.map((item, idx) => {
