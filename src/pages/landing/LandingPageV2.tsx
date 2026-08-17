@@ -1232,10 +1232,6 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
           className="relative z-10 mx-auto max-w-7xl"
         >
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#5D8CE2]/20 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.14em] text-[#00135B] shadow-sm">
-              <Sparkles className="h-4 w-4 text-[#F5C542]" />
-              Sin mensualidades
-            </span>
             <h2 className="mt-6 font-display text-4xl font-extrabold tracking-tight text-[#00135B] md:text-5xl">
               Encuentra oportunidades gratis. Prepárate cuando estés listo.
             </h2>
@@ -1257,7 +1253,7 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                   </div>
                 </div>
                 <div className="mt-6 grid gap-3 text-sm font-semibold text-slate-600 sm:grid-cols-2">
-                  {["Crear tu perfil EduLab", "Recibir recomendaciones", "Explorar becas y voluntariados", "Guardar tus oportunidades favoritas"].map((item) => (
+                  {["Crear tu perfil EduLab", "Recibir recomendaciones", "Explorar becas y voluntariados", "Guardar tus oportunidades favoritas", "Una generación de cv o carta de motivación", "Una revision de cv o carta de motivacion"].map((item) => (
                     <div key={item} className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
                       <span>{item}</span>
@@ -1269,7 +1265,6 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
               <div className="flex shrink-0 flex-col items-start gap-4 lg:items-end">
                 <div>
                   <span className="font-display text-4xl font-extrabold text-[#00135B]">Gratis</span>
-                  <p className="mt-1 text-xs font-bold text-slate-400">Sin tarjeta y sin suscripción</p>
                 </div>
                 {!isAuthenticated ? (
                   <button
