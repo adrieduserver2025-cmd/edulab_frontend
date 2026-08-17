@@ -29,8 +29,8 @@ import {
   TrendingUp,
   Heart,
   BadgeCheck,
-MapPin,
-Quote,
+  MapPin,
+  Quote,
   User,
 } from "lucide-react";
 import AuthModal from "../../components/auth/AuthModal";
@@ -592,9 +592,8 @@ function SingleCategoryCarousel({
             key={idx}
             type="button"
             onClick={() => setCurrentIndex(idx)}
-            className={`h-2 rounded-full transition-all cursor-pointer border-none ${
-              currentIndex % items.length === idx ? "w-6 bg-[#2455bb]" : "w-2 bg-slate-300"
-            }`}
+            className={`h-2 rounded-full transition-all cursor-pointer border-none ${currentIndex % items.length === idx ? "w-6 bg-[#2455bb]" : "w-2 bg-slate-300"
+              }`}
           />
         ))}
       </div>
@@ -627,18 +626,16 @@ function ExploreOpportunitiesCarousel() {
             <button
               onClick={() => setActiveTab("all")}
               type="button"
-              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none ${
-                activeTab === "all" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
-              }`}
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none ${activeTab === "all" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
+                }`}
             >
               Ver Ambos Carruseles
             </button>
             <button
               onClick={() => setActiveTab("becas")}
               type="button"
-              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none flex items-center gap-1.5 ${
-                activeTab === "becas" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
-              }`}
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none flex items-center gap-1.5 ${activeTab === "becas" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
+                }`}
             >
               <GraduationCap className="w-4 h-4 text-[#ffc928]" />
               Becas (6)
@@ -646,9 +643,8 @@ function ExploreOpportunitiesCarousel() {
             <button
               onClick={() => setActiveTab("voluntariados")}
               type="button"
-              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none flex items-center gap-1.5 ${
-                activeTab === "voluntariados" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
-              }`}
+              className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border-none flex items-center gap-1.5 ${activeTab === "voluntariados" ? "bg-[#061b58] text-white shadow-sm" : "text-slate-600 hover:text-[#061b58]"
+                }`}
             >
               <Heart className="w-4 h-4 text-emerald-400" />
               Voluntariados (4)
@@ -731,10 +727,12 @@ const aiFeatures = [
 
 const pricingPlans = [
   {
-    title: "Currículum vitae",
+    title: "Impulsa",
     price: "Bs 29",
     description: "Genera un nuevo CV o revisa y adapta uno que ya tengas para una oportunidad específica.",
     features: [
+      "Hasta 3 generaciones de CV",
+      "Hasta 3 revisiones de tu cv existente",
       "Estructura, claridad y redacción",
       "Revisión de información faltante",
       "Adaptación a becas o voluntariados",
@@ -747,10 +745,12 @@ const pricingPlans = [
     featured: false,
   },
   {
-    title: "Carta de motivación",
+    title: "Convence",
     price: "Bs 39",
     description: "Crea una carta personalizada o mejora una carta existente con base en tu experiencia real.",
     features: [
+      "Hasta 3 generaciones de cartas de motivación",
+      "Hasta 3 revisiones de tu carta de motivación existente",
       "Adaptación a la oportunidad",
       "Revisión de claridad y coherencia",
       "Detección de frases genéricas",
@@ -763,14 +763,17 @@ const pricingPlans = [
     featured: false,
   },
   {
-    title: "Simulador de postulación",
+    title: "Avanza",
     price: "Bs 79",
     description: "Organiza tu candidatura a una beca y conoce qué necesitas completar antes de postular.",
     features: [
+      "Hasta 3 simulaciones de postulación",
+      "Revisión de perfil ",
+      "Incluye plan Impulsa",
+      "Incluye plan Convence",
       "Verificación de requisitos",
       "Control de documentos de respaldo",
-      "Información y pendientes identificados",
-      "Fecha límite y plan de acción",
+      "Plan de acción",
     ],
     icon: FileCheck,
     button: "Simular mi postulación",
@@ -779,10 +782,10 @@ const pricingPlans = [
     featured: true,
   },
   {
-    title: "Preparación de entrevistas",
-    price: "Bs 99",
+    title: "Destaca",
+    price: "Bs 149",
     priceNote: "por sesión",
-    description: "Sesión individual de 45 a 60 minutos con una persona especializada.",
+    description: "Prepare para tu entrevista con una persona especializada en una sesión individual de 30 a 45 minutos .",
     features: [
       "Simulación de entrevista",
       "Preparación de preguntas probables",
@@ -1286,20 +1289,15 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
           </div>
 
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {pricingPlans.map((plan, index) => {
+            {pricingPlans.map((plan) => {
               const Icon = plan.icon;
               return (
-                <motion.article
+                <article
                   key={plan.title}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.15 }}
-                  transition={{ duration: 0.5, delay: index * 0.06 }}
-                  className={`relative flex min-h-[470px] flex-col overflow-hidden rounded-[26px] border bg-white p-7 transition duration-300 hover:-translate-y-1 ${
-                    plan.featured
-                      ? "border-violet-300 shadow-[0_26px_65px_-28px_rgba(124,58,237,0.5)] ring-2 ring-violet-100"
-                      : "border-slate-200 shadow-[0_20px_55px_-32px_rgba(0,19,91,0.35)]"
-                  }`}
+                  className={`relative flex h-full flex-col overflow-hidden rounded-[26px] border bg-white p-7 transition duration-300 hover:-translate-y-1 ${plan.featured
+                    ? "border-violet-300 shadow-[0_26px_65px_-28px_rgba(124,58,237,0.5)] ring-2 ring-violet-100"
+                    : "border-slate-200 shadow-[0_20px_55px_-32px_rgba(0,19,91,0.35)]"
+                    }`}
                 >
                   {plan.featured && (
                     <div className="absolute right-0 top-0 rounded-bl-2xl bg-[#00135B] px-4 py-2 text-[10px] font-extrabold uppercase tracking-[0.13em] text-white">
@@ -1307,91 +1305,114 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                     </div>
                   )}
 
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${plan.accent} text-white shadow-lg`}>
-                    <Icon className="h-6 w-6" />
-                  </div>
+                  {/* CONTENIDO SUPERIOR */}
+                  <div className="flex flex-1 flex-col">
 
-                  <h3 className="mt-6 min-h-[56px] font-display text-xl font-extrabold leading-tight text-[#00135B]">
-                    {plan.title}
-                  </h3>
-                  <div className="mt-4 flex items-end gap-2">
-                    <span className="font-display text-4xl font-extrabold text-[#00135B]">{plan.price}</span>
-                    {plan.priceNote && <span className="pb-1 text-xs font-bold text-slate-400">{plan.priceNote}</span>}
-                  </div>
-                  <p className="mt-4 min-h-[72px] text-sm font-medium leading-6 text-slate-600">{plan.description}</p>
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${plan.accent} text-white shadow-lg`}
+                    >
+                      <Icon className="h-6 w-6" />
+                    </div>
 
-                  <div className="mt-6 space-y-3 border-t border-slate-100 pt-6">
-                    {plan.features.map((feature) => (
-                      <div key={feature} className="flex items-start gap-2.5 text-sm font-semibold leading-5 text-slate-600">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                  </div>
+                    <h3 className="mt-6 font-display text-xl font-extrabold leading-tight text-[#00135B]">
+                      {plan.title}
+                    </h3>
 
-                  <button
-                    onClick={() => isAuthenticated ? navigate("/programs") : openAuth("register")}
-                    className={`mt-auto w-full rounded-xl border-none px-5 py-3.5 text-sm font-extrabold transition hover:-translate-y-0.5 cursor-pointer ${
-                      plan.featured
+                    <div className="mt-4 flex h-12 items-end gap-2">
+                      <span className="font-display text-4xl font-extrabold text-[#00135B]">
+                        {plan.price}
+                      </span>
+
+                      {plan.priceNote && (
+                        <span className="pb-1 text-xs font-bold text-slate-400">
+                          {plan.priceNote}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="mt-4 h-[96px] text-sm font-medium leading-6 text-slate-600">                      {plan.description}
+                    </p>
+
+                    {/* BOTÓN */}
+                    <button
+                      onClick={() =>
+                        isAuthenticated ? navigate("/programs") : openAuth("register")
+                      }
+                      className={`mt-6 w-full rounded-xl border-none px-5 py-3.5 text-sm font-extrabold transition hover:-translate-y-0.5 cursor-pointer ${plan.featured
                         ? "bg-[#00135B] text-white shadow-md shadow-blue-900/20 hover:bg-[#0d288c]"
                         : "bg-blue-50 text-[#00135B] hover:bg-blue-100"
-                    }`}
-                  >
-                    {isAuthenticated ? "Explorar oportunidades" : plan.button}
-                  </button>
-                </motion.article>
+                        }`}
+                    >
+                      {isAuthenticated ? "Elegir Plan" : plan.button}
+                    </button>
+
+                    {/* CARACTERÍSTICAS */}
+                    <div className="mt-6 space-y-3 border-t border-slate-100 pt-6">
+                      {plan.features.map((feature) => (
+                        <div
+                          key={feature}
+                          className="flex items-start gap-2.5 text-sm font-semibold leading-5 text-slate-600"
+                        >
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
+                </article>
               );
             })}
           </div>
         </motion.div>
       </section>
 
-<section
-  id="perfiles-destacados"
-  className="relative z-0 overflow-hidden bg-[#f7f9ff] px-5 py-20 sm:px-8 lg:py-24"
->
-  {/* Decoración de fondo */}
-  <div className="pointer-events-none absolute -left-32 top-20 h-80 w-80 rounded-full bg-blue-200/30 blur-[110px]" />
-  <div className="pointer-events-none absolute -right-32 bottom-10 h-80 w-80 rounded-full bg-amber-100/50 blur-[110px]" />
+      <section
+        id="perfiles-destacados"
+        className="relative z-0 overflow-hidden bg-[#f7f9ff] px-5 py-20 sm:px-8 lg:py-24"
+      >
+        {/* Decoración de fondo */}
+        <div className="pointer-events-none absolute -left-32 top-20 h-80 w-80 rounded-full bg-blue-200/30 blur-[110px]" />
+        <div className="pointer-events-none absolute -right-32 bottom-10 h-80 w-80 rounded-full bg-amber-100/50 blur-[110px]" />
 
-  <div className="relative mx-auto max-w-7xl">
-    {/* Encabezado */}
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55, ease: "easeOut" }}
-      className="mx-auto max-w-3xl text-center"
-    >
-      <span className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-amber-700">
-        <Award className="h-4 w-4" />
-        Perfiles destacados
-      </span>
+        <div className="relative mx-auto max-w-7xl">
+          {/* Encabezado */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="mx-auto max-w-3xl text-center"
+          >
+            <span className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-amber-700">
+              <Award className="h-4 w-4" />
+              Perfiles destacados
+            </span>
 
-      <h2 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-[#00135B] sm:text-4xl lg:text-5xl">
-        Inspírate en perfiles que lograron oportunidades internacionales
-      </h2>
+            <h2 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-[#00135B] sm:text-4xl lg:text-5xl">
+              Inspírate en perfiles que lograron oportunidades internacionales
+            </h2>
 
-      <p className="mx-auto mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-500 sm:text-lg">
-        Conoce experiencias, fortalezas y aprendizajes que pueden ayudarte a
-        preparar una postulación más sólida.
-      </p>
-    </motion.div>
+            <p className="mx-auto mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-500 sm:text-lg">
+              Conoce experiencias, fortalezas y aprendizajes que pueden ayudarte a
+              preparar una postulación más sólida.
+            </p>
+          </motion.div>
 
-    {/* Tarjetas */}
-    <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-      {winnerProfiles.map((profile, index) => (
-        <motion.article
-          key={profile.id}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{
-            duration: 0.55,
-            delay: index * 0.08,
-            ease: "easeOut",
-          }}
-          className="
+          {/* Tarjetas */}
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {winnerProfiles.map((profile, index) => (
+              <motion.article
+                key={profile.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{
+                  duration: 0.55,
+                  delay: index * 0.08,
+                  ease: "easeOut",
+                }}
+                className="
             group relative overflow-hidden rounded-[26px]
             border border-slate-200 bg-white p-6
             shadow-[0_18px_50px_-30px_rgba(0,19,91,0.25)]
@@ -1400,85 +1421,85 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
             hover:border-blue-200
             hover:shadow-[0_24px_65px_-30px_rgba(36,85,187,0.35)]
           "
-        >
-          {/* Línea superior con color */}
-          <div
-            className={`absolute inset-x-6 top-0 h-[3px] rounded-full bg-gradient-to-r ${profile.accent}`}
-          />
-
-          {/* Cabecera del perfil */}
-          <div className="flex items-start gap-4">
-            <div className="relative shrink-0">
-              <img
-                src={profile.image}
-                alt={`Perfil de ${profile.name}`}
-                loading="lazy"
-                className="h-16 w-16 rounded-2xl object-cover ring-4 ring-blue-50"
-                onError={(event) => {
-                  event.currentTarget.src =
-                    "https://ui-avatars.com/api/?background=EAF1FF&color=00135B&name=" +
-                    encodeURIComponent(profile.name);
-                }}
-              />
-
-              <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-[#2455bb]">
-                <BadgeCheck className="h-3.5 w-3.5 text-white" />
-              </span>
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <h3 className="truncate font-display text-lg font-extrabold text-[#00135B]">
-                {profile.name}
-              </h3>
-
-              <p className="mt-1 line-clamp-2 text-xs font-bold leading-relaxed text-[#2455bb]">
-                {profile.scholarship}
-              </p>
-
-              <div className="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                <span>{profile.flag}</span>
-                <MapPin className="h-3.5 w-3.5" />
-                <span>{profile.country}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Características */}
-          <div className="mt-6 flex flex-wrap gap-2">
-            {profile.traits.map((trait) => (
-              <span
-                key={trait}
-                className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-[10px] font-extrabold text-[#2455bb]"
               >
-                {trait}
-              </span>
+                {/* Línea superior con color */}
+                <div
+                  className={`absolute inset-x-6 top-0 h-[3px] rounded-full bg-gradient-to-r ${profile.accent}`}
+                />
+
+                {/* Cabecera del perfil */}
+                <div className="flex items-start gap-4">
+                  <div className="relative shrink-0">
+                    <img
+                      src={profile.image}
+                      alt={`Perfil de ${profile.name}`}
+                      loading="lazy"
+                      className="h-16 w-16 rounded-2xl object-cover ring-4 ring-blue-50"
+                      onError={(event) => {
+                        event.currentTarget.src =
+                          "https://ui-avatars.com/api/?background=EAF1FF&color=00135B&name=" +
+                          encodeURIComponent(profile.name);
+                      }}
+                    />
+
+                    <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-[#2455bb]">
+                      <BadgeCheck className="h-3.5 w-3.5 text-white" />
+                    </span>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-display text-lg font-extrabold text-[#00135B]">
+                      {profile.name}
+                    </h3>
+
+                    <p className="mt-1 line-clamp-2 text-xs font-bold leading-relaxed text-[#2455bb]">
+                      {profile.scholarship}
+                    </p>
+
+                    <div className="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                      <span>{profile.flag}</span>
+                      <MapPin className="h-3.5 w-3.5" />
+                      <span>{profile.country}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Características */}
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {profile.traits.map((trait) => (
+                    <span
+                      key={trait}
+                      className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-[10px] font-extrabold text-[#2455bb]"
+                    >
+                      {trait}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Frase */}
+                <div className="relative mt-6 rounded-2xl bg-slate-50 p-4">
+                  <Quote className="absolute right-3 top-3 h-5 w-5 text-blue-100" />
+
+                  <p className="relative pr-4 text-sm font-medium leading-6 text-slate-600">
+                    “{profile.quote}”
+                  </p>
+                </div>
+
+                {/* Pie */}
+                <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+
+                  <span className="text-xs font-bold text-slate-500">
+                    Experiencia compartida con EduLab
+                  </span>
+                </div>
+              </motion.article>
             ))}
           </div>
 
-          {/* Frase */}
-          <div className="relative mt-6 rounded-2xl bg-slate-50 p-4">
-            <Quote className="absolute right-3 top-3 h-5 w-5 text-blue-100" />
 
-            <p className="relative pr-4 text-sm font-medium leading-6 text-slate-600">
-              “{profile.quote}”
-            </p>
-          </div>
-
-          {/* Pie */}
-          <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-
-            <span className="text-xs font-bold text-slate-500">
-              Experiencia compartida con EduLab
-            </span>
-          </div>
-        </motion.article>
-      ))}
-    </div>
-
-    
-  </div>
-</section>
+        </div>
+      </section>
 
 
       <section id="recursos" className="px-5 py-16 sm:px-8">
