@@ -83,7 +83,7 @@ const winnerProfiles = [
     country: "Perú, Guatemala y Brasil",
     flag: "🌎",
     image:
-      "https://ui-avatars.com/api/?background=EAF1FF&color=00135B&name=Cristian+Siye+Ortiz",
+      "public/images/winners/andres-felipe.jfif",
     traits: ["Docencia", "Adaptación cultural", "Trabajo"],
     quote:
       "Vive la experiencia con la mente abierta: muchas veces quien llega termina aprendiendo incluso más de lo que esperaba aportar.",
@@ -96,7 +96,7 @@ const winnerProfiles = [
     country: "China",
     flag: "🇨🇳",
     image:
-      "https://ui-avatars.com/api/?background=F3EEFF&color=5B21B6&name=Arminda+Corrales+Aguilar",
+      "public/images/winners/Arminda-Corrales.png",
     traits: ["Beca", "Idioma", "Visado"],
     quote:
       "Construir una buena base del idioma y anticipar el trámite de la visa son pasos clave para aprovechar la oportunidad.",
@@ -109,7 +109,7 @@ const winnerProfiles = [
     country: "Japón",
     flag: "🇯🇵",
     image:
-      "https://ui-avatars.com/api/?background=FFF0F3&color=BE123C&name=Rodrigo+Aguilar+Fernandez",
+      "public/images/winners/carlos-andres.jfif",
     traits: ["Cultura", "Idioma japonés", "Movilidad"],
     quote:
       "Tramita el pasaporte y la visa con anticipación, y procura tener conexión a internet desde el primer día para movilizarte con seguridad.",
@@ -122,24 +122,11 @@ const winnerProfiles = [
     country: "Alemania",
     flag: "🇩🇪",
     image:
-      "https://ui-avatars.com/api/?background=FFF7E6&color=9A3412&name=Amanda+Alvarez+Rocha",
+      "public/images/winners/maria-fernanda.webp",
     traits: ["Beca", "Pasantías", "Formación dual"],
     quote:
       "Estudia, consigue una certificación oficial del idioma y no te rindas: el único límite es el que tú misma te pones.",
     accent: "from-amber-500 to-orange-400",
-  },
-  {
-    id: 5,
-    name: "Shaemi Mariam Choque Choque",
-    scholarship: "Asistente lingüística e intercambio internacional",
-    country: "Francia, Japón y Europa",
-    flag: "🌍",
-    image:
-      "https://ui-avatars.com/api/?background=ECFDF5&color=047857&name=Shaemi+Mariam+Choque+Choque",
-    traits: ["Intercambio", "Voluntariado", "Idiomas"],
-    quote:
-      "No esperes a aterrizar para empezar tu aventura: investiga la cultura y las normas del país antes de viajar.",
-    accent: "from-emerald-500 to-teal-400",
   },
 ];
 
@@ -773,7 +760,7 @@ const pricingPlans = [
       "Incluye plan Convence",
       "Verificación de requisitos",
       "Control de documentos de respaldo",
-      "Plan de acción",
+      "Guía de próximos pasos",
     ],
     icon: FileCheck,
     button: "Simular mi postulación",
@@ -1485,14 +1472,6 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
                   </p>
                 </div>
 
-                {/* Pie */}
-                <div className="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-
-                  <span className="text-xs font-bold text-slate-500">
-                    Experiencia compartida con EduLab
-                  </span>
-                </div>
               </motion.article>
             ))}
           </div>
