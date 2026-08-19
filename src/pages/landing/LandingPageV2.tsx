@@ -83,7 +83,7 @@ const winnerProfiles = [
     country: "Perú, Guatemala y Brasil",
     flag: "🌎",
     image:
-      "public/images/winners/andres-felipe.jfif",
+      "images/winners/andres-felipe.jfif",
     traits: ["Docencia", "Adaptación cultural", "Trabajo"],
     quote:
       "Vive la experiencia con la mente abierta: muchas veces quien llega termina aprendiendo incluso más de lo que esperaba aportar.",
@@ -96,7 +96,7 @@ const winnerProfiles = [
     country: "China",
     flag: "🇨🇳",
     image:
-      "public/images/winners/Arminda-Corrales.png",
+      "images/winners/Arminda-Corrales.png",
     traits: ["Beca", "Idioma", "Visado"],
     quote:
       "Construir una buena base del idioma y anticipar el trámite de la visa son pasos clave para aprovechar la oportunidad.",
@@ -109,7 +109,7 @@ const winnerProfiles = [
     country: "Japón",
     flag: "🇯🇵",
     image:
-      "public/images/winners/carlos-andres.jfif",
+      "images/winners/carlos-andres.jfif",
     traits: ["Cultura", "Idioma japonés", "Movilidad"],
     quote:
       "Tramita el pasaporte y la visa con anticipación, y procura tener conexión a internet desde el primer día para movilizarte con seguridad.",
@@ -122,7 +122,7 @@ const winnerProfiles = [
     country: "Alemania",
     flag: "🇩🇪",
     image:
-      "public/images/winners/maria-fernanda.webp",
+      "images/winners/maria-fernanda.webp",
     traits: ["Beca", "Pasantías", "Formación dual"],
     quote:
       "Estudia, consigue una certificación oficial del idioma y no te rindas: el único límite es el que tú misma te pones.",
@@ -1519,13 +1519,12 @@ export default function LandingPageV2({ initialAuthMode }: LandingPageV2Props) {
 
           {/* Column 1: Brand info */}
           <div className="space-y-4 text-left">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-[#00135B]" />
-              </div>
-              <span className="font-display font-extrabold text-xl tracking-wider text-white">
-                EDU<span className="text-[#5D8CE2] font-semibold">LAB</span>
-              </span>
+            <Link to="/" className="inline-flex items-center">
+              <img
+                src="src/assets/isotipo.png"
+                alt="EduLab"
+                className="h-10 w-auto object-contain"
+              />
             </Link>
             <p className="text-xs text-gray-400 leading-relaxed font-medium max-w-xs">
               Plataforma inteligente para empoderar estudiantes y conectarlos con becas de excelencia y voluntariados internacionales.
