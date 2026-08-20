@@ -31,6 +31,19 @@ import fulbrightLogo from "../../assets/fulbright/becafulbright.jpg";
 import fulbrightPhoto from "../../assets/fulbright/images (2).jpeg";
 import cursosImg1 from "../../assets/cursos_eduserver/REGULARES 2026 (1).jpg.jpeg";
 import cursosImg2 from "../../assets/cursos_eduserver/REGULARES 2026.jpg.jpeg";
+
+// UN Youth Volunteers assets
+import unvLogo from "../../assets/voluntariado_un_voluntier/imagenes/logo_principal.png";
+import unvPhoto1 from "../../assets/voluntariado_un_voluntier/imagenes/Community-Volunteer-mobilized-by-UN-Volunteers-and-UNHCR-in-Cameroon-during-a-community-activity-2.jpg";
+import unvPhoto2 from "../../assets/voluntariado_un_voluntier/imagenes/Khaled 5.jpg.webp";
+import unvPhoto3 from "../../assets/voluntariado_un_voluntier/imagenes/uf16pjn-12381p_0654-(1).jpg";
+
+// America Solidaria assets
+import americaSolidariaLogo from "../../assets/voluntariado_americasolidaria/imagenes/logo_principal.jpg";
+import americaSolidariaBg from "../../assets/voluntariado_americasolidaria/imagenes/INTERVENCION-VINA-AS-1.png";
+import americaSolidariaPhoto1 from "../../assets/voluntariado_americasolidaria/imagenes/America-Solidaria (1).jpg";
+import americaSolidariaPhoto2 from "../../assets/voluntariado_americasolidaria/imagenes/Lideres-por-una-America-Solidaria-.jpg";
+
 import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
 
 
@@ -1067,12 +1080,37 @@ export default function OpportunityDetailPage() {
           ? "https://www.unv.org/es/voluntariado-por-el-medio-ambiente"
           : null;
 
-  // Background assets based on type
-  const heroBg = isScholarship ? fulbrightBg : aiesecBg;
-  const orgLogo = isScholarship ? fulbrightLogo : aiesecLogo;
-  // const orgPhoto = isScholarship ? fulbrightPhoto : null;
-  // Scholarship video
-  const scholarshipVideoUrl = "https://www.youtube.com/watch?v=iS3qREybbeI";
+  // Dynamic Asset Resolver based on Opportunity Slug
+  const currentSlug = opportunity?.slug || slug || "";
+
+  let orgLogo = aiesecLogo;
+  let heroBg = aiesecBg;
+  let coverPhoto = "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600";
+  let videoTitle = `Conoce la experiencia ${opportunity?.organization_name || opportunity?.organization || ""}`;
+
+  if (currentSlug === "un-voluntariado" || currentSlug === "onu-voluntariado") {
+    orgLogo = unvLogo;
+    heroBg = unvPhoto1;
+    coverPhoto = unvPhoto1;
+    videoTitle = "Descubre el Programa UN Youth Volunteers";
+  } else if (currentSlug === "america-solidaria-voluntariado") {
+    orgLogo = americaSolidariaLogo;
+    heroBg = americaSolidariaBg;
+    coverPhoto = americaSolidariaPhoto1;
+    videoTitle = "Conoce el Programa Fellows América Solidaria";
+  } else if (currentSlug === "fulbright-beca") {
+    orgLogo = fulbrightLogo;
+    heroBg = fulbrightBg;
+    coverPhoto = fulbrightBg;
+    videoTitle = "Becas Fulbright: La oportunidad de tu vida";
+  } else if (isScholarship) {
+    orgLogo = fulbrightLogo;
+    heroBg = fulbrightBg;
+    coverPhoto = fulbrightBg;
+    videoTitle = `Conoce la Beca ${opportunity?.title || ""}`;
+  }
+
+  const scholarshipVideoUrl = opportunity?.video_url || "https://www.youtube.com/watch?v=iS3qREybbeI";
 
   return (
     <div className="w-full min-h-screen bg-[#f8fafc] text-slate-700 flex flex-col justify-between overflow-x-hidden pt-20">
@@ -1568,23 +1606,20 @@ export default function OpportunityDetailPage() {
             <div
               className="backdrop-blur-md rounded-3xl overflow-hidden p-3 shadow-md relative aspect-video flex flex-col justify-end min-h-[250px] group text-left bg-slate-900 border border-slate-200"
             >
-              {playVideo && (isBeca ? scholarshipVideoUrl : opportunity.video_url) ? (
+              {playVideo && (opportunity.video_url || scholarshipVideoUrl) ? (
                 <iframe
                   className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                  src={getEmbedUrl(isBeca ? scholarshipVideoUrl : opportunity.video_url)}
+                  src={getEmbedUrl(opportunity.video_url || scholarshipVideoUrl)}
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
               ) : (
                 <>
-                  {/* Cover image — Fulbright main photo or AIESEC stock */}
+                  {/* Cover image — Resolved coverPhoto */}
                   <img
-                    src={isBeca
-                      ? fulbrightBg
-                      : "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600"
-                    }
-                    alt={isBeca ? "Becarios Fulbright" : "Welcome to AIESEC video cover"}
+                    src={coverPhoto}
+                    alt={videoTitle}
                     className="absolute inset-0 w-full h-full object-cover opacity-80 filter brightness-75 transition-transform duration-500 group-hover:scale-103"
                   />
                   {/* Gradient overlay */}
@@ -1612,10 +1647,10 @@ export default function OpportunityDetailPage() {
                         : { background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.25)", color: "white" }
                       }
                     >
-                      {isBeca ? "🎓 Video Oficial Fulbright" : "Video de Bienvenida"}
+                      {isBeca ? "🎓 Video Oficial" : "Video de Bienvenida"}
                     </span>
                     <h3 className="font-bold text-sm font-display" style={{ color: "#F5C542" }}>
-                      {isBeca ? "Becas Fulbright: La oportunidad de tu vida" : "Conoce la experiencia AIESEC"}
+                      {videoTitle}
                     </h3>
                     <p className="text-[10px] text-slate-300 leading-snug">
                       {isBeca
