@@ -10,6 +10,7 @@ import OnboardingPage from "../pages/onboarding/OnboardingPage";
 import AIToolsPage from "../pages/ai/AIToolsPage";
 import OpportunityDetailPage from "../pages/programs/OpportunityDetailPage";
 import PremiumScholarshipPage from "../pages/programs/PremiumScholarshipPage";
+import FulbrightPage from "../pages/programs/FulbrightPage";
 import PatinoPage from "../pages/programs/PatinoPage";
 import CarolinaPage from "../pages/programs/CarolinaPage";
 import ErasmusPage from "../pages/programs/ErasmusPage";
@@ -27,6 +28,10 @@ export default function AppRoutes() {
       <Route path="/register" element={<LandingPageV2 initialAuthMode="register" />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+      {/* Dedicated Beca Fulbright routes */}
+      <Route path="/becas/fulbright" element={<FulbrightPage />} />
+      <Route path="/becas/fulbright-beca" element={<FulbrightPage />} />
 
       {/* Dedicated Beca Patiño route */}
       <Route path="/becas/patino-beca" element={<PatinoPage />} />

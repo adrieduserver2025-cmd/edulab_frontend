@@ -8,10 +8,11 @@ import {
   GraduationCap, DollarSign, Clock, Calendar, Languages,
   MapPin, Building2, Zap, Heart, X, Plane, Wallet, Shield, Home, Check
 } from "lucide-react";
+import PublicNavbar from "../../components/navigation/PublicNavbar";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
 import isotipo from "../../assets/isotipo.png";
-import fulbrightLogo from "../../assets/fulbright/becafulbright.jpg";
+import fulbrightLogo from "../../assets/fulbright/logo_principal.png";
 import fulbrightBadgeLogo from "../../assets/fulbright/logo_principal.png";
 
 const FULBRIGHT_HERO_SLIDES = [
@@ -478,7 +479,7 @@ export default function FulbrightPage() {
         }
       `}</style>
 
-      <Navbar />
+      <PublicNavbar onOpenAuth={() => setShowAuthModal(true)} />
 
       {/* ===================================== */}
       {/* HERO SECTION WITH DYNAMIC BACKGROUND CAROUSEL & PROMINENT LOGO CARD */}
@@ -644,11 +645,11 @@ export default function FulbrightPage() {
                 />
 
                 {/* Main Prominent Official Logo Badge */}
-                <div className="w-full max-w-[280px] h-24 mx-auto rounded-2xl bg-white p-3 shadow-2xl flex items-center justify-center border-2 border-[#F5C542] transition-transform hover:scale-105 duration-300">
+                <div className="w-full max-w-[280px] h-24 mx-auto rounded-2xl bg-white p-2 shadow-2xl flex items-center justify-center border-2 border-[#F5C542] overflow-hidden transition-transform hover:scale-105 duration-300">
                   <img
                     src={fulbrightLogo}
                     alt="Logo Beca Fulbright"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain scale-[1.45]"
                   />
                 </div>
 
@@ -757,6 +758,33 @@ export default function FulbrightPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================================== */}
+      {/* VIDEO OFICIAL Y EXPERIENCIA FULBRIGHT */}
+      {/* ===================================== */}
+      <section className="py-16 bg-[#00135B]/5 border-y border-[#00135B]/10">
+        <div className="max-w-6xl mx-auto px-6 space-y-6 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#00135B]/10 border border-[#00135B]/20 text-[#00135B] text-xs font-extrabold uppercase tracking-wider">
+            🎬 Video Oficial · Convocatoria Fulbright
+          </div>
+          <h2 className="text-3xl md:text-4xl font-black text-[#00135B]">
+            Conoce la experiencia y el proceso de selección
+          </h2>
+          <p className="text-slate-600 text-sm md:text-base max-w-2xl mx-auto">
+            Mira el video de la Embajada de Estados Unidos explicando las bases del programa, experiencias de becarios y el impacto social de la Beca Fulbright.
+          </p>
+
+          <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-black border-4 border-[#00135B]/20" style={{ aspectRatio: "16/9" }}>
+            <iframe
+              className="w-full h-full border-none"
+              src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0"
+              title="Beca Fulbright - Video Oficial"
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>

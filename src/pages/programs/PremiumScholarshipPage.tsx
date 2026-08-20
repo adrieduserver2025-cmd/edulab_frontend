@@ -14,7 +14,7 @@ import PublicNavbar from "../../components/navigation/PublicNavbar";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
 import fulbrightBg from "../../assets/fulbright/662bb8d0a1a92_.png";
-import fulbrightLogo from "../../assets/fulbright/becafulbright.jpg";
+import fulbrightLogo from "../../assets/fulbright/logo_principal.png";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -675,56 +675,59 @@ export default function PremiumScholarshipPage() {
               </div>
             </div>
 
-{/* Right side of Hero Section */}
             <div className="relative flex flex-col justify-center">
               {program.slug === "fulbright-beca" ? (
-                <div className="relative w-full">
+                <div
+                  className="w-full max-w-sm mx-auto rounded-3xl p-7 border border-white/30 shadow-2xl relative overflow-hidden backdrop-blur-xl text-center space-y-5"
+                  style={{ background: "rgba(0, 19, 91, 0.82)" }}
+                >
+                  {/* Gold glowing backdrop circle */}
                   <div
-                    className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/20 bg-black w-full"
-                    style={{ aspectRatio: "16/9" }}
-                  >
-                    <iframe
-                      key="hero-fulbright-video-horizontal"
-                      className="w-full h-full border-none"
-                      src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1006564038828442&show_text=0"
-                      title="Beca Fulbright - Video"
-                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                      allowFullScreen
+                    className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-2xl opacity-40 pointer-events-none"
+                    style={{ background: "#F5C542" }}
+                  />
+
+                  {/* Main Prominent Official Logo Badge */}
+                  <div className="w-full max-w-[280px] h-24 mx-auto rounded-2xl bg-white p-2 shadow-2xl flex items-center justify-center border-2 border-[#F5C542] overflow-hidden transition-transform hover:scale-105 duration-300">
+                    <img
+                      src={fulbrightLogo}
+                      alt="Logo Beca Fulbright"
+                      className="w-full h-full object-contain scale-[1.45]"
                     />
-                    <div
-                      className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold text-white pointer-events-none shadow-md"
-                      style={{ background: "#22c55e" }}
-                    >
-                      <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                      Convocatoria Abierta
-                    </div>
                   </div>
 
-                  {/* Attributes bar */}
-                  <div
-                    className="mt-4 p-4 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-4 text-left border border-white/10 w-full"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.08)",
-                      backdropFilter: "blur(20px)",
-                    }}
-                  >
-                    {[
-                      { icon: "💲", label: "Financiamiento", val: program.funding_type || "Completo" },
-                      { icon: "⏱", label: "Duración", val: program.duration || "1-2 años" },
-                      {
-                        icon: "📅",
-                        label: "Fecha límite",
-                        val: program.dates_info?.substring(0, 25) || "Variable",
-                      },
-                      { icon: "🌐", label: "Modalidad", val: "Presencial" },
-                    ].map((item) => (
-                      <div key={item.label} className="space-y-0.5">
-                        <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
-                          <span>{item.icon}</span> {item.label}
-                        </div>
-                        <div className="text-white font-extrabold text-xs">{item.val}</div>
-                      </div>
-                    ))}
+                  <div>
+                    <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-md">
+                      Beca <span style={{ color: "#F5C542" }}>Fulbright</span>
+                    </h3>
+                    <p className="text-xs text-amber-300 mt-1 font-bold uppercase tracking-wider">
+                      Gobierno de EE.UU. & Departamento de Estado
+                    </p>
+                  </div>
+
+                  {/* Verified Badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Beca 100% Verificada
+                  </div>
+
+                  {/* Metadata Details */}
+                  <div className="pt-4 border-t border-white/10 text-xs space-y-2.5 text-left text-white/80">
+                    <div className="flex justify-between items-center">
+                      <span className="text-white/50 font-medium">Sede:</span>
+                      <span className="font-bold text-white flex items-center gap-1">🇺🇸 Estados Unidos</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-white/50 font-medium">Entidad Convocante:</span>
+                      <span className="font-bold text-white">Comisión Fulbright & Dept. de Estado</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-white/50 font-medium">Modalidad:</span>
+                      <span className="font-bold text-[#F5C542]">Maestría & Doctorado</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-white/50 font-medium">Cobertura:</span>
+                      <span className="font-bold text-emerald-400">100% Completa + Manutención</span>
+                    </div>
                   </div>
                 </div>
               ) : (
