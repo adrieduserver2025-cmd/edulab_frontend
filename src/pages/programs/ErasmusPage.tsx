@@ -105,6 +105,13 @@ const ERASMUS_VIDEOS: ErasmusVideo[] = [
   }
 ];
 
+const ERASMUS_HERO_SLIDES = [
+  { url: emPhoto6, title: "Universidades de la Unión Europea · Erasmus Mundus" },
+  { url: emPhoto3, title: "Consorcio de Maestrías Conjuntas · Europa" },
+  { url: emPhoto2, title: "Movilidad Académica Multidisciplinaria · Europa" },
+  { url: emPhoto1, title: "Estudiantes Becados Erasmus Mundus" }
+];
+
 export default function ErasmusPage() {
   const navigate = useNavigate();
   const { isAuthenticated, token } = useAuthStore();
@@ -130,6 +137,15 @@ export default function ErasmusPage() {
   const [calcDegree, setCalcDegree] = useState<boolean>(true);
   const [calcMobility, setCalcMobility] = useState<boolean>(true);
   const [calcNationality, setCalcNationality] = useState<string>("bolivia");
+
+  const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlideIdx((prev) => (prev + 1) % ERASMUS_HERO_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   const gpaPasses = calcGpa >= 75;
   const isFullyEligible = gpaPasses && calcEnglish && calcDegree && calcMobility;
@@ -401,35 +417,66 @@ export default function ErasmusPage() {
       <PublicNavbar onOpenAuth={() => setShowAuthModal(true)} />
 
       {/* ─────────────────────────────────────────────────────────────────────────────
-          1. HERO SECTION (ONLY WELCOME VIDEO PLAYER IN HERO AS REQUESTED)
+          1. HERO SECTION WITH DYNAMIC BACKGROUND CAROUSEL & PROMINENT LOGO CARD
          ───────────────────────────────────────────────────────────────────────────── */}
-      <section
-        className="hero-pattern pt-28 pb-16 relative overflow-hidden text-white"
-        style={{ background: "linear-gradient(135deg, #00135B 0%, #001a7a 50%, #0a2490 100%)" }}
-      >
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, #5D8CE2, transparent)" }} />
-        <div className="absolute bottom-10 left-0 w-80 h-80 rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, #F5C542, transparent)" }} />
+      <section className="hero-pattern pt-28 pb-16 relative overflow-hidden text-white min-h-[580px] flex items-center">
+        {/* Dynamic Background Carousel */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {ERASMUS_HERO_SLIDES.map((slide, idx) => (
+            <div
+              key={idx}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                currentSlideIdx === idx ? "opacity-75 scale-105" : "opacity-0 scale-100"
+              }`}
+              style={{ transition: "opacity 1s ease-in-out, transform 7s ease-out" }}
+            >
+              <img src={slide.url} alt={slide.title} className="w-full h-full object-cover" />
+            </div>
+          ))}
+          {/* Deep Navy Gradient Overlay - Balanced for Vivid Background Photos */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(0, 12, 48, 0.78) 0%, rgba(0, 19, 91, 0.52) 50%, rgba(0, 12, 48, 0.75) 100%)"
+            }}
+          />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Interactive Slide Indicator (Bottom Right) */}
+        <div className="absolute bottom-6 right-8 z-20 hidden md:flex items-center gap-3 bg-black/60 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-xs font-medium text-white shadow-xl">
+          <span className="text-white/90 font-semibold">{ERASMUS_HERO_SLIDES[currentSlideIdx].title}</span>
+          <div className="flex gap-1.5 ml-2">
+            {ERASMUS_HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlideIdx(idx)}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  currentSlideIdx === idx ? "w-6 bg-[#F5C542]" : "w-2 bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-4 w-full relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Header */}
-            <div className="lg:col-span-7 space-y-7">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold"
-                style={{ background: "rgba(245,197,66,0.15)", borderColor: "rgba(245,197,66,0.3)", color: "#F5C542" }}>
+            <div className="lg:col-span-7 space-y-7 text-left drop-shadow-md">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold shadow-md"
+                style={{ background: "rgba(0, 19, 91, 0.65)", borderColor: "rgba(245,197,66,0.5)", color: "#F5C542", backdropFilter: "blur(8px)" }}>
                 <span className="w-2 h-2 rounded-full bg-[#F5C542] animate-pulse" />
                 BECA INTERNACIONAL DE EXCELENCIA 🇪🇺 UNIÓN EUROPEA
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-lg">
                 <span>Becas Erasmus </span>
                 <span style={{ color: "#F5C542" }}>Mundus (EMJM)</span>
               </h1>
 
-              <p className="text-white/80 text-base sm:text-lg leading-relaxed max-w-xl font-light">
-                Estudia un máster conjunto internacional cursando semestres en al menos <strong className="text-white font-semibold">3 países europeos</strong> con financiamiento 100% integral.
+              <p className="text-white/95 text-base sm:text-lg leading-relaxed max-w-xl font-medium drop-shadow-md">
+                Estudia un máster conjunto internacional cursando semestres en al menos <strong className="text-white font-black underline decoration-[#F5C542]">3 países europeos</strong> con financiamiento 100% integral.
               </p>
 
               {/* Tags */}
@@ -440,17 +487,17 @@ export default function ErasmusPage() {
                   { icon: "💶", text: "1.400 €/mes Estipendio" },
                   { icon: "🗣", text: "Inglés" },
                 ].map(tag => (
-                  <span key={tag.text} className="px-3.5 py-1.5 rounded-full text-xs font-medium text-white flex items-center gap-1.5"
-                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(8px)" }}>
+                  <span key={tag.text} className="px-3.5 py-1.5 rounded-full text-xs font-bold text-white flex items-center gap-1.5 shadow-md"
+                    style={{ background: "rgba(0,19,91,0.65)", border: "1px solid rgba(255,255,255,0.25)", backdropFilter: "blur(8px)" }}>
                     <span>{tag.icon}</span> <span>{tag.text}</span>
                   </span>
                 ))}
               </div>
 
-              {/* Action Buttons — Main Apply + AI Apply + Official Catalogue Link */}
+              {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 {applySuccess ? (
-                  <div className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[#00135B] text-sm"
+                  <div className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[#00135B] text-sm shadow-xl"
                     style={{ background: "#F5C542" }}>
                     <CheckCircle2 className="w-5 h-5" />
                     ¡Postulación iniciada! Ver en Dashboard
@@ -459,8 +506,8 @@ export default function ErasmusPage() {
                   <button
                     onClick={handleApply}
                     disabled={applying}
-                    className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-[#00135B] text-sm transition-all hover:scale-105 cursor-pointer"
-                    style={{ background: "#F5C542", boxShadow: "0 4px 20px rgba(245,197,66,0.4)" }}>
+                    className="flex items-center gap-2 px-8 py-4 rounded-full font-extrabold text-[#00135B] text-sm transition-all hover:scale-105 cursor-pointer shadow-xl"
+                    style={{ background: "#F5C542", boxShadow: "0 4px 25px rgba(245,197,66,0.5)" }}>
                     {applying ? "Iniciando..." : "Simular mi postulación"}
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -468,19 +515,18 @@ export default function ErasmusPage() {
 
                 <button
                   onClick={handleApply}
-                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/10 cursor-pointer"
-                  style={{ border: "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}>
+                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/20 cursor-pointer shadow-lg"
+                  style={{ border: "1px solid rgba(255,255,255,0.4)", background: "rgba(0,19,91,0.65)", backdropFilter: "blur(8px)" }}>
                   <Sparkles className="w-4 h-4 text-[#F5C542]" />
                   Aplicar con IA
                 </button>
 
-                {/* OFFICIAL EACEA CATALOGUE BUTTON — DO NOT DELETE */}
                 <a
                   href="https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/10 cursor-pointer"
-                  style={{ border: "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}
+                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/20 cursor-pointer shadow-lg"
+                  style={{ border: "1px solid rgba(255,255,255,0.4)", background: "rgba(0,19,91,0.65)", backdropFilter: "blur(8px)" }}
                 >
                   <Globe className="w-4 h-4 text-[#F5C542]" />
                   Catálogo Oficial EACEA
@@ -489,8 +535,8 @@ export default function ErasmusPage() {
               </div>
 
               {/* Attributes Banner */}
-              <div className="p-4 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full"
-                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <div className="p-4 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full shadow-lg"
+                style={{ background: "rgba(0, 19, 91, 0.65)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.2)" }}>
                 {[
                   { icon: "💶", label: "Financiamiento", val: "1.400 € / mes" },
                   { icon: "✈️", label: "Movilidad", val: "Mínimo 2-3 países" },
@@ -498,59 +544,83 @@ export default function ErasmusPage() {
                   { icon: "📅", label: "Convocatoria", val: "Octubre a Enero" },
                 ].map(item => (
                   <div key={item.label} className="space-y-0.5 text-left">
-                    <div className="text-white/50 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                    <div className="text-white/70 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                       <span>{item.icon}</span> {item.label}
                     </div>
-                    <div className="text-white font-extrabold text-xs">{item.val}</div>
+                    <div className="text-white font-black text-xs">{item.val}</div>
                   </div>
                 ))}
               </div>
 
               {/* Stats */}
-              <div className="flex flex-wrap gap-8 pt-2 border-t border-white/10">
+              <div className="flex flex-wrap gap-8 pt-2 border-t border-white/20">
                 {[
                   { val: "1.400 €", label: "Asignación mensual fija" },
                   { val: "200+", label: "Consorcios de Máster" },
                   { val: "100%", label: "Matrícula & Seguro Cubierto" },
                 ].map(s => (
                   <div key={s.label}>
-                    <div className="text-2xl font-black" style={{ color: "#F5C542" }}>{s.val}</div>
-                    <div className="text-white/70 text-xs font-medium mt-0.5">{s.label}</div>
+                    <div className="text-2xl font-black drop-shadow-md" style={{ color: "#F5C542" }}>{s.val}</div>
+                    <div className="text-white/90 text-xs font-semibold mt-0.5">{s.label}</div>
                   </div>
                 ))}
               </div>
 
             </div>
 
-            {/* Right Video Player Box — ONLY THE WELCOME VIDEO AS REQUESTED BY USER */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              <div className="w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-950 relative border border-white/20 p-2 space-y-3">
-                <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-black group">
-                  <iframe
-                    className="w-full h-full border-none"
-                    src={ERASMUS_VIDEOS[0].embedUrl.replace("autoplay=1", "autoplay=0")}
-                    title={ERASMUS_VIDEOS[0].title}
-                    allow="clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
+            {/* Right Column — Prominent Logo Card */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div
+                className="w-full max-w-sm rounded-3xl p-7 border border-white/30 shadow-2xl relative overflow-hidden backdrop-blur-xl text-center space-y-5"
+                style={{ background: "rgba(0, 19, 91, 0.82)" }}
+              >
+                {/* Blue/Gold glowing backdrop circle */}
+                <div
+                  className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-2xl opacity-40 pointer-events-none"
+                  style={{ background: "#5D8CE2" }}
+                />
 
-                  <button
-                    onClick={() => setModalVideo(ERASMUS_VIDEOS[0])}
-                    className="absolute top-3 right-3 px-3.5 py-1.5 rounded-full bg-black/70 hover:bg-[#00135B] text-white text-xs font-bold backdrop-blur-md border border-white/20 flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Video className="w-3.5 h-3.5 text-[#F5C542]" />
-                    Modo Ventana Emergente
-                  </button>
+                {/* Main Prominent Official Logo Badge */}
+                <div className="w-full max-w-[280px] h-24 mx-auto rounded-2xl bg-white p-3 shadow-2xl flex items-center justify-center border-2 border-[#F5C542] transition-transform hover:scale-105 duration-300">
+                  <img
+                    src={logoErasmus}
+                    alt="Logo Erasmus Mundus"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
 
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-white space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-[#F5C542] text-[#00135B] font-extrabold text-[10px] uppercase">
-                      {ERASMUS_VIDEOS[0].category}
-                    </span>
-                    <span className="text-xs font-bold truncate">{ERASMUS_VIDEOS[0].title}</span>
+                <div>
+                  <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-md">
+                    Erasmus <span style={{ color: "#F5C542" }}>Mundus</span>
+                  </h3>
+                  <p className="text-xs text-amber-300 mt-1 font-bold uppercase tracking-wider">
+                    Comisión Europea & Agencia EACEA
+                  </p>
+                </div>
+
+                {/* Verified Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Beca 100% Verificada
+                </div>
+
+                {/* Metadata Details */}
+                <div className="pt-4 border-t border-white/10 text-xs space-y-2.5 text-left text-white/80">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Sede:</span>
+                    <span className="font-bold text-white flex items-center gap-1">🇪🇺 Bruselas, Unión Europea</span>
                   </div>
-                  <p className="text-[11px] text-white/70 leading-relaxed font-light">{ERASMUS_VIDEOS[0].desc}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Entidad Convocante:</span>
+                    <span className="font-bold text-white">Comisión Europea (EACEA)</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Programa:</span>
+                    <span className="font-bold text-[#F5C542]">EMJM (Erasmus Mundus Joint Masters)</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Cobertura:</span>
+                    <span className="font-bold text-emerald-400">100% Completa (Estipendio + Matrícula + Viaje)</span>
+                  </div>
                 </div>
               </div>
             </div>

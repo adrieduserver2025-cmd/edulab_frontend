@@ -490,26 +490,26 @@ export default function FulbrightPage() {
             <div
               key={idx}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                currentSlideIdx === idx ? "opacity-35 scale-105" : "opacity-0 scale-100"
+                currentSlideIdx === idx ? "opacity-75 scale-105" : "opacity-0 scale-100"
               }`}
               style={{ transition: "opacity 1s ease-in-out, transform 7s ease-out" }}
             >
               <img src={slide.url} alt={slide.title} className="w-full h-full object-cover" />
             </div>
           ))}
-          {/* Deep Navy Radial & Linear Overlay for Crisp Readability */}
+          {/* Deep Navy Gradient Overlay - Balanced for Vivid Background Photos */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(135deg, rgba(0, 19, 91, 0.94) 0%, rgba(0, 26, 122, 0.88) 50%, rgba(10, 36, 144, 0.80) 100%)"
+                "linear-gradient(135deg, rgba(0, 12, 48, 0.78) 0%, rgba(0, 19, 91, 0.52) 50%, rgba(0, 12, 48, 0.75) 100%)"
             }}
           />
         </div>
 
         {/* Interactive Slide Indicator (Bottom Right) */}
-        <div className="absolute bottom-16 right-8 z-20 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-xs font-medium text-white">
-          <span className="text-white/70">{FULBRIGHT_HERO_SLIDES[currentSlideIdx].title}</span>
+        <div className="absolute bottom-16 right-8 z-20 hidden md:flex items-center gap-3 bg-black/60 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-xs font-medium text-white shadow-xl">
+          <span className="text-white/90 font-semibold">{FULBRIGHT_HERO_SLIDES[currentSlideIdx].title}</span>
           <div className="flex gap-1.5 ml-2">
             {FULBRIGHT_HERO_SLIDES.map((_, idx) => (
               <button
@@ -526,23 +526,23 @@ export default function FulbrightPage() {
         <div className="max-w-7xl mx-auto px-6 py-6 w-full relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Content Column */}
-            <div className="lg:col-span-7 space-y-7 text-left">
+            <div className="lg:col-span-7 space-y-7 text-left drop-shadow-md">
               {/* Badge */}
               <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold"
-                style={{ background: "rgba(245,197,66,0.15)", borderColor: "rgba(245,197,66,0.3)", color: "#F5C542" }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold shadow-md"
+                style={{ background: "rgba(0,19,91,0.65)", borderColor: "rgba(245,197,66,0.5)", color: "#F5C542", backdropFilter: "blur(8px)" }}
               >
                 <span className="w-2 h-2 rounded-full bg-[#F5C542] animate-pulse" />
                 BECA INTERNACIONAL 🇺🇸 ESTADOS UNIDOS — DEPARTAMENTO DE ESTADO
               </div>
 
               {/* Title */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-lg">
                 <span className="text-white">Beca </span>
                 <span style={{ color: "#F5C542" }}>Fulbright</span>
               </h1>
 
-              <p className="text-white/80 text-base sm:text-lg leading-relaxed max-w-xl font-light">
+              <p className="text-white/95 text-base sm:text-lg leading-relaxed max-w-xl font-medium drop-shadow-md">
                 Programa oficial del Gobierno de EE.UU. que ofrece becas integrales para estudios de posgrado e investigación en prestigiosas universidades estadounidenses.
               </p>
 
@@ -556,8 +556,8 @@ export default function FulbrightPage() {
                 ].map(tag => (
                   <span
                     key={tag.text}
-                    className="px-3.5 py-1.5 rounded-full text-xs font-medium text-white flex items-center gap-1.5"
-                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(8px)" }}
+                    className="px-3.5 py-1.5 rounded-full text-xs font-bold text-white flex items-center gap-1.5 shadow-md"
+                    style={{ background: "rgba(0,19,91,0.65)", border: "1px solid rgba(255,255,255,0.25)", backdropFilter: "blur(8px)" }}
                   >
                     <span>{tag.icon}</span> <span>{tag.text}</span>
                   </span>
@@ -568,7 +568,7 @@ export default function FulbrightPage() {
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 {applySuccess ? (
                   <div
-                    className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[#00135B] text-sm"
+                    className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[#00135B] text-sm shadow-xl"
                     style={{ background: "#F5C542" }}
                   >
                     <CheckCircle2 className="w-5 h-5" />
@@ -578,8 +578,8 @@ export default function FulbrightPage() {
                   <button
                     onClick={handleApply}
                     disabled={applying}
-                    className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-[#00135B] text-sm transition-all hover:scale-105 cursor-pointer"
-                    style={{ background: "#F5C542", boxShadow: "0 4px 20px rgba(245,197,66,0.4)" }}
+                    className="flex items-center gap-2 px-8 py-4 rounded-full font-extrabold text-[#00135B] text-sm transition-all hover:scale-105 cursor-pointer shadow-xl"
+                    style={{ background: "#F5C542", boxShadow: "0 4px 25px rgba(245,197,66,0.5)" }}
                   >
                     {applying ? "Iniciando..." : "Simular mi postulación"}
                     <ArrowRight className="w-4 h-4" />
@@ -588,8 +588,8 @@ export default function FulbrightPage() {
 
                 <button
                   onClick={handleApply}
-                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/10 cursor-pointer"
-                  style={{ border: "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}
+                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/20 cursor-pointer shadow-lg"
+                  style={{ border: "1px solid rgba(255,255,255,0.4)", background: "rgba(0,19,91,0.65)", backdropFilter: "blur(8px)" }}
                 >
                   <Sparkles className="w-4 h-4 text-[#F5C542]" />
                   Aplicar con IA
@@ -598,8 +598,8 @@ export default function FulbrightPage() {
 
               {/* Attributes Banner */}
               <div
-                className="p-4 rounded-3xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full"
-                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.1)" }}
+                className="p-4 rounded-2xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full shadow-lg"
+                style={{ background: "rgba(0, 19, 91, 0.65)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.2)" }}
               >
                 {[
                   { label: "FINANCIAMIENTO", val: "100% completa" },
@@ -608,7 +608,7 @@ export default function FulbrightPage() {
                   { label: "MODALIDAD", val: "Presencial" }
                 ].map(item => (
                   <div key={item.label} className="space-y-0.5 text-left">
-                    <div className="text-white/40 text-[9px] font-extrabold uppercase tracking-wider">
+                    <div className="text-white/70 text-[10px] font-bold uppercase tracking-wider">
                       {item.label}
                     </div>
                     <div className="text-white font-black text-xs">{item.val}</div>
@@ -617,15 +617,15 @@ export default function FulbrightPage() {
               </div>
 
               {/* Stats */}
-              <div className="flex flex-wrap gap-8 pt-2 w-full" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              <div className="flex flex-wrap gap-8 pt-2 w-full" style={{ borderTop: "1px solid rgba(255,255,255,0.2)" }}>
                 {[
                   { val: "+3,000", label: "Becados / año" },
                   { val: "170+", label: "Países participantes" },
                   { val: "70+", label: "Años de historia" }
                 ].map(s => (
                   <div key={s.label}>
-                    <div className="text-2xl font-black" style={{ color: "#F5C542" }}>{s.val}</div>
-                    <div className="text-white/55 text-xs font-medium mt-0.5">{s.label}</div>
+                    <div className="text-2xl font-black drop-shadow-md" style={{ color: "#F5C542" }}>{s.val}</div>
+                    <div className="text-white/90 text-xs font-semibold mt-0.5">{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -634,17 +634,17 @@ export default function FulbrightPage() {
             {/* Right Column — Prominent Logo Card */}
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
               <div
-                className="w-full max-w-sm rounded-3xl p-8 border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-xl text-center space-y-6"
-                style={{ background: "rgba(0, 19, 91, 0.75)" }}
+                className="w-full max-w-sm rounded-3xl p-7 border border-white/30 shadow-2xl relative overflow-hidden backdrop-blur-xl text-center space-y-5"
+                style={{ background: "rgba(0, 19, 91, 0.82)" }}
               >
                 {/* Gold glowing backdrop circle */}
                 <div
-                  className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-2xl opacity-30 pointer-events-none"
+                  className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-2xl opacity-40 pointer-events-none"
                   style={{ background: "#F5C542" }}
                 />
 
-                {/* Main Prominent Logo Badge */}
-                <div className="w-36 h-36 mx-auto rounded-3xl bg-white p-4 shadow-2xl flex items-center justify-center border-4 border-[#F5C542] transition-transform hover:scale-105 duration-300">
+                {/* Main Prominent Official Logo Badge */}
+                <div className="w-full max-w-[280px] h-24 mx-auto rounded-2xl bg-white p-3 shadow-2xl flex items-center justify-center border-2 border-[#F5C542] transition-transform hover:scale-105 duration-300">
                   <img
                     src={fulbrightLogo}
                     alt="Logo Beca Fulbright"
@@ -653,10 +653,10 @@ export default function FulbrightPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-black text-white tracking-tight">
+                  <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-md">
                     Beca <span style={{ color: "#F5C542" }}>Fulbright</span>
                   </h3>
-                  <p className="text-xs text-white/70 mt-1 font-medium">
+                  <p className="text-xs text-amber-300 mt-1 font-bold uppercase tracking-wider">
                     Gobierno de EE.UU. & Departamento de Estado
                   </p>
                 </div>
