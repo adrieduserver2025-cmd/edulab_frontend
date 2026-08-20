@@ -47,6 +47,25 @@ import valoresPhoto from "../../assets/becas_fun_carolina/imagenes/valores.png";
 import exbecarioPhoto from "../../assets/becas_fun_carolina/imagenes/exbecario.png";
 import bloodPhoto from "../../assets/becas_fun_carolina/imagenes/blood.png";
 
+const CAROLINA_HERO_SLIDES = [
+  {
+    url: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=1600&q=80",
+    title: "Universidad Complutense · Madrid, España"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1583422409516-2895a771deda?w=1600&q=80",
+    title: "Universitat de Barcelona · España"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1562678372-b77a0604b7e1?w=1600&q=80",
+    title: "Universidad de Salamanca · España"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=1600&q=80",
+    title: "Universidad Politécnica de Madrid"
+  }
+];
+
 // Types for Videos
 interface CarolinaVideo {
   id: string;
@@ -120,6 +139,14 @@ export default function CarolinaPage() {
 
   // Benefit Details Master-Detail Selection (Imagen 1 style)
   const [activeBenefitIdx, setActiveBenefitIdx] = useState<number>(0);
+  const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlideIdx((prev) => (prev + 1) % CAROLINA_HERO_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   // FAQ Search State
   const [faqSearch, setFaqSearch] = useState("");
@@ -373,22 +400,53 @@ export default function CarolinaPage() {
       <PublicNavbar onOpenAuth={() => setShowAuthModal(true)} />
 
       {/* ─────────────────────────────────────────────────────────────────────────────
-          1. HERO SECTION (ROYAL NAVY #00135B WITH FULBRIGHT STYLE BUTTONS & HERO PLAYER)
+          1. HERO SECTION WITH DYNAMIC BACKGROUND CAROUSEL & PROMINENT LOGO CARD
          ───────────────────────────────────────────────────────────────────────────── */}
-      <section
-        className="hero-pattern pt-28 pb-16 relative overflow-hidden text-white"
-        style={{ background: "linear-gradient(135deg, #00135B 0%, #001a7a 50%, #0a2490 100%)" }}
-      >
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, #DC2626, transparent)" }} />
-        <div className="absolute bottom-10 left-0 w-80 h-80 rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, #F5C542, transparent)" }} />
+      <section className="hero-pattern pt-28 pb-16 relative overflow-hidden text-white min-h-[580px] flex items-center">
+        {/* Dynamic Background Carousel */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {CAROLINA_HERO_SLIDES.map((slide, idx) => (
+            <div
+              key={idx}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                currentSlideIdx === idx ? "opacity-35 scale-105" : "opacity-0 scale-100"
+              }`}
+              style={{ transition: "opacity 1s ease-in-out, transform 7s ease-out" }}
+            >
+              <img src={slide.url} alt={slide.title} className="w-full h-full object-cover" />
+            </div>
+          ))}
+          {/* Deep Navy Radial & Linear Overlay */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(0, 19, 91, 0.94) 0%, rgba(0, 26, 122, 0.88) 50%, rgba(10, 36, 144, 0.80) 100%)"
+            }}
+          />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Interactive Slide Indicator (Bottom Right) */}
+        <div className="absolute bottom-6 right-8 z-20 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-xs font-medium text-white">
+          <span className="text-white/70">{CAROLINA_HERO_SLIDES[currentSlideIdx].title}</span>
+          <div className="flex gap-1.5 ml-2">
+            {CAROLINA_HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlideIdx(idx)}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  currentSlideIdx === idx ? "w-6 bg-[#F5C542]" : "w-2 bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-4 w-full relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Left Header */}
-            <div className="lg:col-span-7 space-y-7">
+            <div className="lg:col-span-7 space-y-7 text-left">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold"
                 style={{ background: "rgba(245,197,66,0.15)", borderColor: "rgba(245,197,66,0.3)", color: "#F5C542" }}>
                 <span className="w-2 h-2 rounded-full bg-[#F5C542] animate-pulse" />
@@ -419,7 +477,7 @@ export default function CarolinaPage() {
                 ))}
               </div>
 
-              {/* Action Buttons — Styled Exactly Like Fulbright Page */}
+              {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 {applySuccess ? (
                   <div className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[#00135B] text-sm"
@@ -481,47 +539,59 @@ export default function CarolinaPage() {
 
             </div>
 
-            {/* Right Video Player Box */}
-            <div className="lg:col-span-5 flex flex-col items-center">
-              <div className="w-full rounded-3xl overflow-hidden shadow-2xl bg-slate-950 relative border border-white/20 p-2 space-y-3">
-                <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-black group">
-                  <iframe
-                    key={CAROLINA_VIDEOS[heroVideoIdx].id}
-                    className="w-full h-full border-none"
-                    src={CAROLINA_VIDEOS[heroVideoIdx].embedUrl.replace("autoplay=1", "autoplay=0")}
-                    title={CAROLINA_VIDEOS[heroVideoIdx].title}
-                    allow="clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
+            {/* Right Column — Prominent Logo Card */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div
+                className="w-full max-w-sm rounded-3xl p-8 border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-xl text-center space-y-6"
+                style={{ background: "rgba(0, 19, 91, 0.75)" }}
+              >
+                {/* Red/Gold glowing backdrop circle */}
+                <div
+                  className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-2xl opacity-30 pointer-events-none"
+                  style={{ background: "#DC2626" }}
+                />
 
-                  <button
-                    onClick={() => setModalVideo(CAROLINA_VIDEOS[heroVideoIdx])}
-                    className="absolute top-3 right-3 px-3.5 py-1.5 rounded-full bg-black/70 hover:bg-[#00135B] text-white text-xs font-bold backdrop-blur-md border border-white/20 flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Video className="w-3.5 h-3.5 text-[#F5C542]" />
-                    Modo Ventana Emergente
-                  </button>
+                {/* Main Prominent Logo Badge */}
+                <div className="w-36 h-36 mx-auto rounded-3xl bg-white p-4 shadow-2xl flex items-center justify-center border-4 border-[#F5C542] transition-transform hover:scale-105 duration-300">
+                  <img
+                    src={carolinaLogoSquare}
+                    alt="Logo Fundación Carolina"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
 
-                {/* Video Selector Tabs */}
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  {CAROLINA_VIDEOS.map((v, idx) => (
-                    <button
-                      key={v.id}
-                      onClick={() => setHeroVideoIdx(idx)}
-                      className={`p-2 rounded-xl text-left border transition-all cursor-pointer flex items-center gap-2 ${
-                        heroVideoIdx === idx
-                          ? "bg-[#00135B] border-[#F5C542] text-white shadow"
-                          : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      <Play className={`w-3.5 h-3.5 shrink-0 ${heroVideoIdx === idx ? "text-[#F5C542] fill-current" : "text-white/40"}`} />
-                      <div className="truncate">
-                        <div className="text-[11px] font-bold truncate">{v.title}</div>
-                        <div className="text-[9px] text-white/50 truncate">{v.category}</div>
-                      </div>
-                    </button>
-                  ))}
+                <div>
+                  <h3 className="text-2xl font-black text-white tracking-tight">
+                    Fundación <span style={{ color: "#F5C542" }}>Carolina</span>
+                  </h3>
+                  <p className="text-xs text-white/70 mt-1 font-medium">
+                    Entidad Convocante Oficial · España
+                  </p>
+                </div>
+
+                {/* Verified Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Beca 100% Verificada
+                </div>
+
+                {/* Metadata Details */}
+                <div className="pt-4 border-t border-white/10 text-xs space-y-2.5 text-left text-white/80">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Sede:</span>
+                    <span className="font-bold text-white flex items-center gap-1">🇪🇸 Madrid, España</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Entidad Convocante:</span>
+                    <span className="font-bold text-white">Fundación Carolina</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Convenio:</span>
+                    <span className="font-bold text-[#F5C542]">Cooperación Iberoamericana</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Cobertura:</span>
+                    <span className="font-bold text-emerald-400">Total o Parcial</span>
+                  </div>
                 </div>
               </div>
             </div>

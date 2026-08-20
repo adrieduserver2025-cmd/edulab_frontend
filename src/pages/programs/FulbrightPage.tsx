@@ -11,6 +11,31 @@ import {
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
 import isotipo from "../../assets/isotipo.png";
+import fulbrightLogo from "../../assets/fulbright/becafulbright.jpg";
+import fulbrightBadgeLogo from "../../assets/fulbright/logo_principal.png";
+
+const FULBRIGHT_HERO_SLIDES = [
+  {
+    url: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&q=80",
+    title: "Harvard University · Cambridge, MA"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80",
+    title: "Columbia University · New York"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=1600&q=80",
+    title: "Georgetown University · Washington D.C."
+  },
+  {
+    url: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=1600&q=80",
+    title: "Stanford University · California"
+  },
+  {
+    url: "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1600&q=80",
+    title: "MIT · Massachusetts"
+  }
+];
 
 // ==========================
 // AUTH MODAL (simplified)
@@ -172,6 +197,14 @@ export default function FulbrightPage() {
   ];
   const [currentVideoIdx, setCurrentVideoIdx] = useState(0);
   const [activeBenefitIdx, setActiveBenefitIdx] = useState<number | null>(null);
+  const [currentSlideIdx, setCurrentSlideIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlideIdx((prev) => (prev + 1) % FULBRIGHT_HERO_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   const benefitsList = [
     {
@@ -448,58 +481,96 @@ export default function FulbrightPage() {
       <Navbar />
 
       {/* ===================================== */}
-      {/* HERO */}
+      {/* HERO SECTION WITH DYNAMIC BACKGROUND CAROUSEL & PROMINENT LOGO CARD */}
       {/* ===================================== */}
-      <section
-        className="hero-grid-pattern pt-24 pb-0 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #00135B 0%, #001a7a 50%, #0a2490 100%)" }}>
-        {/* Decorative circles */}
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl"
-          style={{ background: "radial-gradient(circle, #5D8CE2, transparent)" }} />
-        <div className="absolute bottom-20 left-0 w-72 h-72 rounded-full opacity-8 blur-3xl"
-          style={{ background: "radial-gradient(circle, #F5C542, transparent)" }} />
+      <section className="hero-grid-pattern pt-28 pb-12 relative overflow-hidden text-white min-h-[580px] flex flex-col justify-between">
+        {/* Dynamic Background Carousel */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {FULBRIGHT_HERO_SLIDES.map((slide, idx) => (
+            <div
+              key={idx}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                currentSlideIdx === idx ? "opacity-35 scale-105" : "opacity-0 scale-100"
+              }`}
+              style={{ transition: "opacity 1s ease-in-out, transform 7s ease-out" }}
+            >
+              <img src={slide.url} alt={slide.title} className="w-full h-full object-cover" />
+            </div>
+          ))}
+          {/* Deep Navy Radial & Linear Overlay for Crisp Readability */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(0, 19, 91, 0.94) 0%, rgba(0, 26, 122, 0.88) 50%, rgba(10, 36, 144, 0.80) 100%)"
+            }}
+          />
+        </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left */}
-            <div className="space-y-8">
+        {/* Interactive Slide Indicator (Bottom Right) */}
+        <div className="absolute bottom-16 right-8 z-20 hidden md:flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/15 px-4 py-2 rounded-full text-xs font-medium text-white">
+          <span className="text-white/70">{FULBRIGHT_HERO_SLIDES[currentSlideIdx].title}</span>
+          <div className="flex gap-1.5 ml-2">
+            {FULBRIGHT_HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlideIdx(idx)}
+                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                  currentSlideIdx === idx ? "w-6 bg-[#F5C542]" : "w-2 bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-6 w-full relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left Content Column */}
+            <div className="lg:col-span-7 space-y-7 text-left">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold"
-                style={{ background: "rgba(245,197,66,0.15)", borderColor: "rgba(245,197,66,0.3)", color: "#F5C542" }}>
+              <div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-bold"
+                style={{ background: "rgba(245,197,66,0.15)", borderColor: "rgba(245,197,66,0.3)", color: "#F5C542" }}
+              >
                 <span className="w-2 h-2 rounded-full bg-[#F5C542] animate-pulse" />
-                BECA INTERNACIONAL
+                BECA INTERNACIONAL 🇺🇸 ESTADOS UNIDOS — DEPARTAMENTO DE ESTADO
               </div>
 
               {/* Title */}
-              <h1 className="text-6xl font-black leading-none tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
                 <span className="text-white">Beca </span>
                 <span style={{ color: "#F5C542" }}>Fulbright</span>
               </h1>
 
-              <p className="text-white/75 text-lg leading-relaxed max-w-lg">
-                Estudia una maestría o desarrolla investigación en universidades de Estados Unidos con financiamiento completo.
+              <p className="text-white/80 text-base sm:text-lg leading-relaxed max-w-xl font-light">
+                Programa oficial del Gobierno de EE.UU. que ofrece becas integrales para estudios de posgrado e investigación en prestigiosas universidades estadounidenses.
               </p>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2.5">
                 {[
                   { icon: "🇺🇸", text: "Estados Unidos" },
-                  { icon: "🎓", text: "Maestría / Investigación" },
+                  { icon: "🎓", text: "Maestría / Doctorado" },
                   { icon: "💰", text: "100% Financiada" },
                   { icon: "🗣", text: "Inglés" },
                 ].map(tag => (
-                  <span key={tag.text} className="px-4 py-2 rounded-full text-sm font-medium text-white flex items-center gap-2"
-                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(8px)" }}>
-                    {tag.icon} {tag.text}
+                  <span
+                    key={tag.text}
+                    className="px-3.5 py-1.5 rounded-full text-xs font-medium text-white flex items-center gap-1.5"
+                    style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(8px)" }}
+                  >
+                    <span>{tag.icon}</span> <span>{tag.text}</span>
                   </span>
                 ))}
               </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-wrap gap-4">
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-4 pt-2">
                 {applySuccess ? (
-                  <div className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[#00135B] text-sm"
-                    style={{ background: "#F5C542" }}>
+                  <div
+                    className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[#00135B] text-sm"
+                    style={{ background: "#F5C542" }}
+                  >
                     <CheckCircle2 className="w-5 h-5" />
                     ¡Postulación iniciada! Ver en Dashboard
                   </div>
@@ -507,46 +578,50 @@ export default function FulbrightPage() {
                   <button
                     onClick={handleApply}
                     disabled={applying}
-                    className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-[#00135B] text-sm transition-all hover:scale-105"
-                    style={{ background: "#F5C542", boxShadow: "0 4px 20px rgba(245,197,66,0.4)" }}>
-                    {applying ? "Iniciando..." : "Iniciar postulación"}
+                    className="flex items-center gap-2 px-8 py-4 rounded-full font-bold text-[#00135B] text-sm transition-all hover:scale-105 cursor-pointer"
+                    style={{ background: "#F5C542", boxShadow: "0 4px 20px rgba(245,197,66,0.4)" }}
+                  >
+                    {applying ? "Iniciando..." : "Simular mi postulación"}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 )}
+
                 <button
                   onClick={handleApply}
-                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/10"
-                  style={{ border: "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}>
+                  className="flex items-center gap-2 px-6 py-4 rounded-full font-bold text-white text-sm transition-all hover:bg-white/10 cursor-pointer"
+                  style={{ border: "1px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}
+                >
                   <Sparkles className="w-4 h-4 text-[#F5C542]" />
                   Aplicar con IA
                 </button>
               </div>
-              {applyError && <p className="text-red-300 text-sm">{applyError}</p>}
 
-              {/* Glassmorphic program attributes banner */}
-              <div className="p-4 rounded-3xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full"
-                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              {/* Attributes Banner */}
+              <div
+                className="p-4 rounded-3xl grid grid-cols-2 sm:grid-cols-4 gap-4 w-full"
+                style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.1)" }}
+              >
                 {[
-                  { icon: "💲", label: "Financiamiento", val: "Completo" },
-                  { icon: "⏱", label: "Duración", val: "1 – 2 años" },
-                  { icon: "📅", label: "Fecha límite", val: "Oct 2025" },
-                  { icon: "🌐", label: "Modalidad", val: "Presencial" },
+                  { label: "FINANCIAMIENTO", val: "100% completa" },
+                  { label: "DURACIÓN", val: "1-2 años" },
+                  { label: "FECHA LÍMITE", val: "Convocatoria Abierta" },
+                  { label: "MODALIDAD", val: "Presencial" }
                 ].map(item => (
                   <div key={item.label} className="space-y-0.5 text-left">
-                    <div className="text-white/40 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
-                      <span>{item.icon}</span> {item.label}
+                    <div className="text-white/40 text-[9px] font-extrabold uppercase tracking-wider">
+                      {item.label}
                     </div>
-                    <div className="text-white font-extrabold text-xs">{item.val}</div>
+                    <div className="text-white font-black text-xs">{item.val}</div>
                   </div>
                 ))}
               </div>
 
               {/* Stats */}
-              <div className="flex flex-wrap gap-8 pt-4 w-full" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              <div className="flex flex-wrap gap-8 pt-2 w-full" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
                 {[
                   { val: "+3,000", label: "Becados / año" },
                   { val: "170+", label: "Países participantes" },
-                  { val: "70+", label: "Años de historia" },
+                  { val: "70+", label: "Años de historia" }
                 ].map(s => (
                   <div key={s.label}>
                     <div className="text-2xl font-black" style={{ color: "#F5C542" }}>{s.val}</div>
@@ -556,62 +631,68 @@ export default function FulbrightPage() {
               </div>
             </div>
 
-            {/* Right - Video Experiences Carousel */}
-            <div className="relative flex flex-col items-center justify-center">
-              <div className="w-full max-w-[280px] rounded-3xl overflow-hidden shadow-2xl bg-black relative border border-white/10" style={{ aspectRatio: "9/16" }}>
-                <iframe
-                  key={currentVideoIdx}
-                  className="w-full h-full border-none"
-                  src={heroVideos[currentVideoIdx].url}
-                  title={heroVideos[currentVideoIdx].title}
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                  allowFullScreen
+            {/* Right Column — Prominent Logo Card */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div
+                className="w-full max-w-sm rounded-3xl p-8 border border-white/20 shadow-2xl relative overflow-hidden backdrop-blur-xl text-center space-y-6"
+                style={{ background: "rgba(0, 19, 91, 0.75)" }}
+              >
+                {/* Gold glowing backdrop circle */}
+                <div
+                  className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-2xl opacity-30 pointer-events-none"
+                  style={{ background: "#F5C542" }}
                 />
-              </div>
 
-              {/* Carousel controls */}
-              <div className="flex items-center gap-4 mt-4">
-                <button
-                  type="button"
-                  onClick={() => setCurrentVideoIdx((prev) => (prev === 0 ? heroVideos.length - 1 : prev - 1))}
-                  className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
-                  aria-label="Video anterior"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </button>
-                <div className="flex gap-1.5">
-                  {heroVideos.map((_, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setCurrentVideoIdx(idx)}
-                      className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
-                        currentVideoIdx === idx ? "bg-[#F5C542] w-4" : "bg-white/30"
-                      }`}
-                      aria-label={`Ir al video ${idx + 1}`}
-                    />
-                  ))}
+                {/* Main Prominent Logo Badge */}
+                <div className="w-36 h-36 mx-auto rounded-3xl bg-white p-4 shadow-2xl flex items-center justify-center border-4 border-[#F5C542] transition-transform hover:scale-105 duration-300">
+                  <img
+                    src={fulbrightLogo}
+                    alt="Logo Beca Fulbright"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setCurrentVideoIdx((prev) => (prev === heroVideos.length - 1 ? 0 : prev + 1))}
-                  className="w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all cursor-pointer active:scale-95"
-                  aria-label="Siguiente video"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
 
-              {/* Title indicator */}
-              <p className="text-white/65 text-[10px] uppercase font-bold tracking-wider mt-2.5 bg-white/5 px-3.5 py-1.5 rounded-full border border-white/5 shadow-sm">
-                🎬 {heroVideos[currentVideoIdx].title}
-              </p>
+                <div>
+                  <h3 className="text-2xl font-black text-white tracking-tight">
+                    Beca <span style={{ color: "#F5C542" }}>Fulbright</span>
+                  </h3>
+                  <p className="text-xs text-white/70 mt-1 font-medium">
+                    Gobierno de EE.UU. & Departamento de Estado
+                  </p>
+                </div>
+
+                {/* Verified Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Beca 100% Verificada
+                </div>
+
+                {/* Metadata Details */}
+                <div className="pt-4 border-t border-white/10 text-xs space-y-2.5 text-left text-white/80">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Sede:</span>
+                    <span className="font-bold text-white flex items-center gap-1">🇺🇸 Estados Unidos</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Entidad Convocante:</span>
+                    <span className="font-bold text-white">Comisión Fulbright</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Convenio:</span>
+                    <span className="font-bold text-[#F5C542]">Programa Internacional</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white/50 font-medium">Cobertura:</span>
+                    <span className="font-bold text-emerald-400">100% Completa</span>
+                  </div>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
         {/* Wave SVG */}
-        <svg viewBox="0 0 1440 80" className="w-full block mt-8" preserveAspectRatio="none" style={{ height: 60 }}>
+        <svg viewBox="0 0 1440 80" className="w-full block relative z-10" preserveAspectRatio="none" style={{ height: 50 }}>
           <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white" />
         </svg>
       </section>

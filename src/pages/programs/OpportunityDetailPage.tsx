@@ -27,7 +27,7 @@ import { motion, AnimatePresence } from "motion/react";
 import aiesecBg from "../../assets/iaesec/fondo3.png";
 import aiesecLogo from "../../assets/iaesec/images.png";
 import fulbrightBg from "../../assets/fulbright/662bb8d0a1a92_.png";
-import fulbrightLogo from "../../assets/fulbright/images (1).png";
+import fulbrightLogo from "../../assets/fulbright/becafulbright.jpg";
 import fulbrightPhoto from "../../assets/fulbright/images (2).jpeg";
 import cursosImg1 from "../../assets/cursos_eduserver/REGULARES 2026 (1).jpg.jpeg";
 import cursosImg2 from "../../assets/cursos_eduserver/REGULARES 2026.jpg.jpeg";

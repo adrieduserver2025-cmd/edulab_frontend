@@ -14,7 +14,7 @@ import PublicNavbar from "../../components/navigation/PublicNavbar";
 import { useAuthStore } from "../../store/useAuthStore";
 import axiosClient from "../../services/api/axiosClient";
 import fulbrightBg from "../../assets/fulbright/662bb8d0a1a92_.png";
-import fulbrightLogo from "../../assets/fulbright/images (1).png";
+import fulbrightLogo from "../../assets/fulbright/becafulbright.jpg";
 
 
 // ─────────────────────────────────────────────────────────────────────────────
