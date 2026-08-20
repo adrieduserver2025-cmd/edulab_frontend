@@ -92,7 +92,16 @@ const VOLUNTEERS_BY_CONTINENT = [
     color: "#2563eb",
     items: [
       { title: "Voluntariado AIESEC", desc: "Proyectos de impacto social internacional.", slug: "aiesec-voluntariado", flag: "🌎", tag: "AIESEC" },
-      { title: "Voluntariado TECHO", desc: "Construcción comunitaria y desarrollo social.", slug: "techo-voluntariado", flag: "🇧🇴", tag: "TECHO", highlight: true }
+      { title: "Voluntariado TECHO", desc: "Construcción comunitaria y desarrollo social.", slug: "techo-voluntariado", flag: "🇧🇴", tag: "TECHO", highlight: true },
+      { title: "Fellows América Solidaria", desc: "Superación de la pobreza por 1 año en las Américas.", slug: "america-solidaria-voluntariado", flag: "🌎", tag: "América Solidaria", highlight: true }
+    ]
+  },
+  {
+    continent: "Global",
+    emoji: "🇺🇳",
+    color: "#0284c7",
+    items: [
+      { title: "UN Youth Volunteers", desc: "Proyectos humanitarios y de desarrollo con agencias de la ONU.", slug: "un-voluntariado", flag: "🇺🇳", tag: "ONU", highlight: true }
     ]
   }
 ];
@@ -196,61 +205,64 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
               <AnimatePresence>
                 {activeMenu === menu && (
                   <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 15 }}
-                    transition={{ duration: 0.15, ease: "easeOut" }}
-                    className={`absolute top-[calc(100%-8px)] left-0 bg-white/95 backdrop-blur-xl border border-gray-100 rounded-2xl shadow-xl p-4 flex flex-col gap-2 z-50 ${
-                      menu === "Oportunidades" ? "w-[560px]" : "w-80"
+                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className={`absolute top-[calc(100%-4px)] left-0 bg-white/98 backdrop-blur-2xl border border-slate-200/80 rounded-2xl shadow-2xl p-4 flex flex-col gap-3 z-50 ${
+                      menu === "Oportunidades" ? "w-[720px]" : menu === "Voluntariados" ? "w-[640px]" : "w-80"
                     }`}
                   >
                     {menu === "Oportunidades" || menu === "Voluntariados" ? (
-                      <div className="flex gap-2">
-                        {/* Left Column: Continents List */}
-                        <div className="w-48 border-r border-gray-100 pr-2 space-y-1">
-                          <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-gray-400">
-                            Continentes
+                      <div className="flex gap-4">
+                        {/* Left Column: Continentes / Regiones */}
+                        <div className="w-44 shrink-0 border-r border-slate-100 pr-3 space-y-1.5">
+                          <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            Regiones & Filtros
                           </div>
                           {(menu === "Oportunidades" ? OPPORTUNITIES_BY_CONTINENT : VOLUNTEERS_BY_CONTINENT).map((group) => {
-                            const isSelected = activeContinent === group.continent;
+                            const isSelected = activeContinent === group.continent || 
+                              (!OPPORTUNITIES_BY_CONTINENT.some(g => g.continent === activeContinent) && !VOLUNTEERS_BY_CONTINENT.some(g => g.continent === activeContinent) && group.continent === (menu === "Oportunidades" ? "Europa" : "América"));
                             return (
                               <div
                                 key={group.continent}
                                 onMouseEnter={() => setActiveContinent(group.continent)}
                                 onClick={() => setActiveContinent(group.continent)}
-                                className={`px-3 py-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all duration-150 ${
+                                className={`px-3 py-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all duration-200 ${
                                   isSelected
-                                    ? "bg-[#00135B] text-white font-bold shadow-md"
-                                    : "hover:bg-gray-100 text-gray-700 font-medium"
+                                    ? "bg-[#00135B] text-white font-bold shadow-md border-l-4 border-[#F5C542]"
+                                    : "hover:bg-slate-100/80 text-slate-700 font-medium"
                                 }`}
                               >
                                 <div className="flex items-center gap-2">
                                   <span className="text-base">{group.emoji}</span>
-                                  <span className="text-xs">{group.continent}</span>
+                                  <span className="text-xs tracking-tight">{group.continent}</span>
                                 </div>
-                                <ChevronRight className={`w-3.5 h-3.5 ${isSelected ? "text-[#F5C542]" : "text-gray-400"}`} />
+                                <ChevronRight className={`w-3.5 h-3.5 ${isSelected ? "text-[#F5C542]" : "text-slate-400"}`} />
                               </div>
                             );
                           })}
                         </div>
 
-                        {/* Right Column: Items for Active Continent */}
-                        <div className="flex-1 space-y-2 pl-2">
+                        {/* Right Column: Grid of Items for Active Continent */}
+                        <div className="flex-1 space-y-2.5 min-w-0">
                           {(() => {
-                            const currentGroup = (menu === "Oportunidades" ? OPPORTUNITIES_BY_CONTINENT : VOLUNTEERS_BY_CONTINENT)
-                              .find(g => g.continent === activeContinent) || (menu === "Oportunidades" ? OPPORTUNITIES_BY_CONTINENT[1] : VOLUNTEERS_BY_CONTINENT[0]);
+                            const continentList = menu === "Oportunidades" ? OPPORTUNITIES_BY_CONTINENT : VOLUNTEERS_BY_CONTINENT;
+                            const currentGroup = continentList.find(g => g.continent === activeContinent) || continentList[0];
                             
                             return (
                               <>
-                                <div className="flex items-center justify-between px-2 py-1 bg-blue-50/50 rounded-lg border border-blue-100">
-                                  <span className="text-xs font-bold text-[#00135B]">
-                                    {currentGroup.emoji} {currentGroup.continent} — {menu}
+                                <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-[#00135B] to-[#0d288c] rounded-xl text-white shadow-sm">
+                                  <span className="text-xs font-extrabold flex items-center gap-1.5">
+                                    <span>{currentGroup.emoji}</span>
+                                    <span>{currentGroup.continent}</span>
+                                    <span className="text-white/60 font-normal">({menu})</span>
                                   </span>
-                                  <span className="text-[10px] font-semibold text-blue-600">
-                                    {currentGroup.items.length} disponibles
+                                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#F5C542] text-[#00135B]">
+                                    {currentGroup.items.length} {currentGroup.items.length === 1 ? "opción" : "opciones"}
                                   </span>
                                 </div>
-                                <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+                                <div className="grid grid-cols-2 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
                                   {currentGroup.items.map((item) => (
                                     <div
                                       key={item.slug}
@@ -258,30 +270,37 @@ export default function PublicNavbar({ onOpenAuth }: PublicNavbarProps) {
                                         setActiveMenu(null);
                                         if (item.slug.includes("-beca")) {
                                           navigate(`/becas/${item.slug}`);
-                                        } else if (item.slug === "techo-voluntariado" || item.slug === "techo") {
-                                          navigate(`/voluntariados/techo-voluntariado`);
+                                        } else if (item.slug.includes("voluntariado")) {
+                                          navigate(`/voluntariados/${item.slug}`);
                                         } else {
                                           navigate(`/opportunities/${item.slug}`);
                                         }
                                       }}
-                                      className={`p-2.5 rounded-xl cursor-pointer transition-all duration-200 group/item border ${
+                                      className={`p-3 rounded-xl cursor-pointer transition-all duration-200 group/item border flex flex-col justify-between ${
                                         (item as any).highlight
-                                          ? "bg-amber-500/10 hover:bg-amber-500/20 border-amber-300"
-                                          : "hover:bg-blue-50/60 border-transparent hover:border-blue-100"
+                                          ? "bg-amber-500/5 hover:bg-amber-500/15 border-amber-200/80 hover:border-amber-400 shadow-sm"
+                                          : "bg-white hover:bg-slate-50 border-slate-200/60 hover:border-[#5D8CE2]/60 hover:shadow-md"
                                       }`}
                                     >
-                                      <div className="flex items-center justify-between gap-1">
-                                        <span className="text-xs font-bold text-[#00135B] group-hover/item:text-[#5D8CE2] flex items-center gap-1.5">
-                                          <span>{item.flag}</span>
-                                          <span>{item.title}</span>
-                                        </span>
-                                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-semibold shrink-0">
+                                      <div>
+                                        <div className="flex items-start justify-between gap-1.5 mb-1">
+                                          <span className="text-xs font-black text-[#00135B] group-hover/item:text-[#5D8CE2] flex items-center gap-1.5 leading-snug">
+                                            <span className="text-sm shrink-0">{item.flag}</span>
+                                            <span className="line-clamp-1">{item.title}</span>
+                                          </span>
+                                        </div>
+                                        <p className="text-[10.5px] text-slate-500 line-clamp-2 leading-relaxed font-normal">
+                                          {item.desc}
+                                        </p>
+                                      </div>
+                                      <div className="mt-2 pt-1.5 border-t border-slate-100 flex justify-between items-center">
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
                                           {item.tag}
                                         </span>
+                                        <span className="text-[10px] font-bold text-[#5D8CE2] opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center gap-0.5">
+                                          Ver ficha →
+                                        </span>
                                       </div>
-                                      <p className="text-[10px] text-gray-500 line-clamp-2 mt-1 leading-tight">
-                                        {item.desc}
-                                      </p>
                                     </div>
                                   ))}
                                 </div>

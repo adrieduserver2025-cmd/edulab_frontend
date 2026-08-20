@@ -626,6 +626,18 @@ const volunteerCarouselItems = [
     route: "/voluntariados/un-voluntariado",
     image: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb0?w=800&auto=format&fit=crop&q=80",
     badgeColor: "bg-indigo-50 text-indigo-700 border border-indigo-200"
+  },
+  {
+    id: "america-solidaria",
+    type: "Superación Pobreza",
+    title: "Fellows América Solidaria",
+    country: "Latinoamérica",
+    flag: "🌎",
+    desc: "Proyectos de 1 año en comunidades vulnerables con vivienda, alimentación y estipendio básico cubierto.",
+    specs: [{ label: "Cobertura", val: "100% Cubierto + Estipendio" }, { label: "Idioma", val: "Español" }, { label: "Nivel", val: "Profesionales <35 años" }],
+    route: "/voluntariados/america-solidaria-voluntariado",
+    image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&auto=format&fit=crop&q=80",
+    badgeColor: "bg-emerald-50 text-emerald-700 border border-emerald-200"
   }
 ];
 
