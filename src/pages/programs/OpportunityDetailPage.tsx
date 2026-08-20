@@ -31,19 +31,6 @@ import fulbrightLogo from "../../assets/fulbright/becafulbright.jpg";
 import fulbrightPhoto from "../../assets/fulbright/images (2).jpeg";
 import cursosImg1 from "../../assets/cursos_eduserver/REGULARES 2026 (1).jpg.jpeg";
 import cursosImg2 from "../../assets/cursos_eduserver/REGULARES 2026.jpg.jpeg";
-
-// UN Youth Volunteers assets
-import unvLogo from "../../assets/voluntariado_un_voluntier/imagenes/logo_principal.png";
-import unvPhoto1 from "../../assets/voluntariado_un_voluntier/imagenes/Community-Volunteer-mobilized-by-UN-Volunteers-and-UNHCR-in-Cameroon-during-a-community-activity-2.jpg";
-import unvPhoto2 from "../../assets/voluntariado_un_voluntier/imagenes/Khaled 5.jpg.webp";
-import unvPhoto3 from "../../assets/voluntariado_un_voluntier/imagenes/uf16pjn-12381p_0654-(1).jpg";
-
-// America Solidaria assets
-import americaSolidariaLogo from "../../assets/voluntariado_americasolidaria/imagenes/logo_principal.jpg";
-import americaSolidariaBg from "../../assets/voluntariado_americasolidaria/imagenes/INTERVENCION-VINA-AS-1.png";
-import americaSolidariaPhoto1 from "../../assets/voluntariado_americasolidaria/imagenes/America-Solidaria (1).jpg";
-import americaSolidariaPhoto2 from "../../assets/voluntariado_americasolidaria/imagenes/Lideres-por-una-America-Solidaria-.jpg";
-
 import { SPANISH_SPEAKING_COUNTRIES } from "../../constants/spanishCountries";
 
 
@@ -109,11 +96,10 @@ function EduServerAdCard() {
           <button
             key={i}
             onClick={() => setActive(i)}
-            className={`rounded-full border-none transition-all cursor-pointer ${
-              active === i
+            className={`rounded-full border-none transition-all cursor-pointer ${active === i
                 ? "w-5 h-1.5 bg-[#00135B]"
                 : "w-1.5 h-1.5 bg-slate-300"
-            }`}
+              }`}
           />
         ))}
       </div>
@@ -127,7 +113,7 @@ function EduServerAdCard() {
           className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#25D366] hover:bg-[#1ebe5d] text-white font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 no-underline"
         >
           <svg className="w-4 h-4 fill-white shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
           </svg>
           Consultar por WhatsApp
         </a>
@@ -448,8 +434,8 @@ function InteractiveAccordionCard({ item, index, isOpen, onToggle }: Interactive
           transition: { duration: 0.3, ease: "easeOut" }
         }}
         className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 cursor-pointer select-none bg-white ${isOpen
-            ? `${item.openBg} shadow-md border-opacity-100`
-            : "border-gray-200/70 shadow-sm hover:border-gray-300"
+          ? `${item.openBg} shadow-md border-opacity-100`
+          : "border-gray-200/70 shadow-sm hover:border-gray-300"
           }`}
         onClick={onToggle}
       >
@@ -529,7 +515,7 @@ export default function OpportunityDetailPage() {
     if (!dateStr) return "";
     const trimmed = dateStr.trim();
     if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
-    
+
     // Try DD/MM/YYYY
     const parts = trimmed.split("/");
     if (parts.length === 3) {
@@ -999,15 +985,31 @@ export default function OpportunityDetailPage() {
     }
   };
 
-  // Convert YouTube normal URL to embed format
+  // Auto video popup on entry
+  useEffect(() => {
+    if (opportunity) {
+      const timer = setTimeout(() => {
+        setShowVideoPopup(true);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [opportunity?.id]);
+
+  // Convert YouTube and TikTok normal URLs to embed format
   const getEmbedUrl = (url?: string) => {
     if (!url) return "";
-    if (url.includes("embed/")) return url;
+    if (url.includes("tiktok.com")) {
+      const match = url.match(/\/video\/(\d+)/);
+      if (match && match[1]) {
+        return `https://www.tiktok.com/embed/v2/${match[1]}`;
+      }
+    }
+    if (url.includes("embed/")) return url.includes("autoplay=1") ? url : `${url}?autoplay=1`;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11
       ? `https://www.youtube.com/embed/${match[2]}?autoplay=1`
-      : "";
+      : url;
   };
 
   // Scroll to section helper
@@ -1080,37 +1082,12 @@ export default function OpportunityDetailPage() {
           ? "https://www.unv.org/es/voluntariado-por-el-medio-ambiente"
           : null;
 
-  // Dynamic Asset Resolver based on Opportunity Slug
-  const currentSlug = opportunity?.slug || slug || "";
-
-  let orgLogo = aiesecLogo;
-  let heroBg = aiesecBg;
-  let coverPhoto = "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600";
-  let videoTitle = `Conoce la experiencia ${opportunity?.organization_name || opportunity?.organization || ""}`;
-
-  if (currentSlug === "un-voluntariado" || currentSlug === "onu-voluntariado") {
-    orgLogo = unvLogo;
-    heroBg = unvPhoto1;
-    coverPhoto = unvPhoto1;
-    videoTitle = "Descubre el Programa UN Youth Volunteers";
-  } else if (currentSlug === "america-solidaria-voluntariado") {
-    orgLogo = americaSolidariaLogo;
-    heroBg = americaSolidariaBg;
-    coverPhoto = americaSolidariaPhoto1;
-    videoTitle = "Conoce el Programa Fellows América Solidaria";
-  } else if (currentSlug === "fulbright-beca") {
-    orgLogo = fulbrightLogo;
-    heroBg = fulbrightBg;
-    coverPhoto = fulbrightBg;
-    videoTitle = "Becas Fulbright: La oportunidad de tu vida";
-  } else if (isScholarship) {
-    orgLogo = fulbrightLogo;
-    heroBg = fulbrightBg;
-    coverPhoto = fulbrightBg;
-    videoTitle = `Conoce la Beca ${opportunity?.title || ""}`;
-  }
-
-  const scholarshipVideoUrl = opportunity?.video_url || "https://www.youtube.com/watch?v=iS3qREybbeI";
+  // Background assets based on type
+  const heroBg = isScholarship ? fulbrightBg : aiesecBg;
+  const orgLogo = isScholarship ? fulbrightLogo : aiesecLogo;
+  // const orgPhoto = isScholarship ? fulbrightPhoto : null;
+  // Scholarship video
+  const scholarshipVideoUrl = "https://www.youtube.com/watch?v=iS3qREybbeI";
 
   return (
     <div className="w-full min-h-screen bg-[#f8fafc] text-slate-700 flex flex-col justify-between overflow-x-hidden pt-20">
@@ -1178,8 +1155,8 @@ export default function OpportunityDetailPage() {
                 <button
                   onClick={toggleSave}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold transition-all bg-white/5 cursor-pointer ${savedPrograms.includes(opportunity.id)
-                      ? "border-rose-400/50 text-rose-400 bg-rose-500/10"
-                      : "border-white/20 text-slate-300 hover:text-white hover:bg-white/10"
+                    ? "border-rose-400/50 text-rose-400 bg-rose-500/10"
+                    : "border-white/20 text-slate-300 hover:text-white hover:bg-white/10"
                     }`}
                 >
                   <Heart className={`w-3.5 h-3.5 ${savedPrograms.includes(opportunity.id) ? "fill-current" : ""}`} />
@@ -1262,10 +1239,10 @@ export default function OpportunityDetailPage() {
                 <button
                   disabled
                   className={`px-8 py-3.5 rounded-xl text-xs font-extrabold uppercase tracking-wider border cursor-not-allowed select-none transition-all shadow-sm ${existingApp.status === "pending"
-                      ? "bg-amber-50 border-amber-250 text-amber-700"
-                      : existingApp.status === "in_review"
-                        ? "bg-blue-50 border-blue-250 text-blue-700"
-                        : "bg-emerald-50 border-emerald-250 text-emerald-700"
+                    ? "bg-amber-50 border-amber-250 text-amber-700"
+                    : existingApp.status === "in_review"
+                      ? "bg-blue-50 border-blue-250 text-blue-700"
+                      : "bg-emerald-50 border-emerald-250 text-emerald-700"
                     }`}
                 >
                   {existingApp.status === "pending" && "Postulado - Esperando revisión"}
@@ -1332,8 +1309,8 @@ export default function OpportunityDetailPage() {
               key={tab.id}
               onClick={() => scrollToSection(tab.id)}
               className={`py-4 font-bold text-xs uppercase tracking-wider border-b-2 cursor-pointer transition-colors ${activeTab === tab.id
-                  ? "border-[#00135B] text-[#00135B]"
-                  : "border-transparent text-slate-400 hover:text-slate-700"
+                ? "border-[#00135B] text-[#00135B]"
+                : "border-transparent text-slate-400 hover:text-slate-700"
                 }`}
             >
               {tab.label}
@@ -1606,20 +1583,23 @@ export default function OpportunityDetailPage() {
             <div
               className="backdrop-blur-md rounded-3xl overflow-hidden p-3 shadow-md relative aspect-video flex flex-col justify-end min-h-[250px] group text-left bg-slate-900 border border-slate-200"
             >
-              {playVideo && (opportunity.video_url || scholarshipVideoUrl) ? (
+              {playVideo && (isBeca ? scholarshipVideoUrl : opportunity.video_url) ? (
                 <iframe
                   className="absolute inset-0 w-full h-full rounded-2xl border-none"
-                  src={getEmbedUrl(opportunity.video_url || scholarshipVideoUrl)}
+                  src={getEmbedUrl(isBeca ? scholarshipVideoUrl : opportunity.video_url)}
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>
               ) : (
                 <>
-                  {/* Cover image — Resolved coverPhoto */}
+                  {/* Cover image — Fulbright main photo or AIESEC stock */}
                   <img
-                    src={coverPhoto}
-                    alt={videoTitle}
+                    src={isBeca
+                      ? fulbrightBg
+                      : "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=600"
+                    }
+                    alt={isBeca ? "Becarios Fulbright" : "Welcome to AIESEC video cover"}
                     className="absolute inset-0 w-full h-full object-cover opacity-80 filter brightness-75 transition-transform duration-500 group-hover:scale-103"
                   />
                   {/* Gradient overlay */}
@@ -1647,10 +1627,10 @@ export default function OpportunityDetailPage() {
                         : { background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.25)", color: "white" }
                       }
                     >
-                      {isBeca ? "🎓 Video Oficial" : "Video de Bienvenida"}
+                      {isBeca ? "🎓 Video Oficial Fulbright" : "Video de Bienvenida"}
                     </span>
                     <h3 className="font-bold text-sm font-display" style={{ color: "#F5C542" }}>
-                      {videoTitle}
+                      {isBeca ? "Becas Fulbright: La oportunidad de tu vida" : "Conoce la experiencia AIESEC"}
                     </h3>
                     <p className="text-[10px] text-slate-300 leading-snug">
                       {isBeca
@@ -2038,10 +2018,10 @@ export default function OpportunityDetailPage() {
                     {steps.map((st, idx) => (
                       <div key={st} className="flex items-center gap-2">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${applyStep === idx + 1
-                            ? "bg-[#00135B] text-white"
-                            : applyStep > idx + 1
-                              ? "bg-emerald-500 text-white"
-                              : "bg-slate-100 text-slate-400"
+                          ? "bg-[#00135B] text-white"
+                          : applyStep > idx + 1
+                            ? "bg-emerald-500 text-white"
+                            : "bg-slate-100 text-slate-400"
                           }`}>
                           {idx + 1}
                         </div>
@@ -2246,11 +2226,10 @@ export default function OpportunityDetailPage() {
                                         : [...current, interest];
                                       setLocalProfileForm({ ...localProfileForm, interests: next });
                                     }}
-                                    className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all cursor-pointer ${
-                                      isSelected
+                                    className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all cursor-pointer ${isSelected
                                         ? "bg-[#5D8CE2] border-[#5D8CE2] text-white shadow-sm"
                                         : "bg-slate-50 border-gray-200 text-slate-500 hover:bg-slate-100"
-                                    }`}
+                                      }`}
                                   >
                                     {interest}
                                   </button>

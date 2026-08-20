@@ -214,6 +214,10 @@ export default function TechoPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      setSelectedVideo(TECHO_VIDEOS[0]);
+    }, 600);
+    return () => clearTimeout(timer);
   }, []);
 
   const toggleSave = () => {
