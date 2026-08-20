@@ -45,7 +45,13 @@ const OPPORTUNITIES_BY_CONTINENT = [
     emoji: "🌎",
     color: "#2563eb",
     items: [
-      { title: "Beca Fulbright", desc: "Estudia en EE.UU. con financiamiento 100%.", slug: "fulbright-beca", flag: "🇺🇸", tag: "EE.UU." }
+      { title: "Beca Fulbright", desc: "Estudia en EE.UU. con financiamiento 100%.", slug: "fulbright-beca", flag: "🇺🇸", tag: "EE.UU." },
+      { title: "Beca OEA - GCUB", desc: "Maestrías y posgrados en 50+ universidades de Brasil.", slug: "oea-gcub-brasil-beca", flag: "🇧🇷", tag: "Brasil" },
+      { title: "Fulbright Visiting Scholar", desc: "Investigación avanzada de 3 a 9 meses en EE.UU.", slug: "fulbright-visiting-scholar-beca", flag: "🇺🇸", tag: "EE.UU." },
+      { title: "ELAP Canadá", desc: "Intercambios de 4 a 6 meses financiados en Canadá.", slug: "elap-canada-beca", flag: "🇨🇦", tag: "Canadá", highlight: true },
+      { title: "Programa SUSI EE.UU.", desc: "Inmersión académica y de liderazgo de 5 a 6 semanas.", slug: "susi-eeuu-beca", flag: "🇺🇸", tag: "EE.UU." },
+      { title: "Becas OEA Cursos Cortos", desc: "Capacitación profesional presencial y online.", slug: "oea-cursos-desarrollo-beca", flag: "🌎", tag: "Américas" },
+      { title: "Becas TWAS Sur Global", desc: "Estancias doctorales y posdoctorales en Brasil/Sur Global.", slug: "twas-desarrollo-beca", flag: "🇧🇷", tag: "Brasil" }
     ]
   },
   {
@@ -55,8 +61,16 @@ const OPPORTUNITIES_BY_CONTINENT = [
     items: [
       { title: "Becas Patiño", desc: "Maestría para bolivianos en Suiza y Bélgica.", slug: "patino-beca", flag: "🇨🇭🇧🇪", tag: "Suiza/Bélgica", highlight: true },
       { title: "Fundación Carolina", desc: "Posgrado y doctorado en España.", slug: "fundacion-carolina-beca", flag: "🇪🇸", tag: "España" },
+      { title: "Chevening UK", desc: "Maestrías de 1 año 100% financiadas en el Reino Unido.", slug: "chevening-uk-beca", flag: "🇬🇧", tag: "Reino Unido", highlight: true },
       { title: "Erasmus Mundus", desc: "Maestrías conjuntas internacionales.", slug: "erasmus-mundus-beca", flag: "🇪🇺", tag: "Unión Europea" },
-      { title: "Beca DAAD EPOS", desc: "Posgrados en desarrollo en Alemania.", slug: "daad-epos-beca", flag: "🇩🇪", tag: "Alemania" }
+      { title: "Politécnico de Milán", desc: "Becas de excelencia para maestrías en Italia.", slug: "politecnico-milano-beca", flag: "🇮🇹", tag: "Italia", highlight: true },
+      { title: "Beca DAAD EPOS", desc: "Posgrados en desarrollo en Alemania.", slug: "daad-epos-beca", flag: "🇩🇪", tag: "Alemania" },
+      { title: "Gobierno Suizo Research", desc: "Estancias de investigación de posgrado en Suiza.", slug: "suiza-research-fellowship-beca", flag: "🇨🇭", tag: "Suiza" },
+      { title: "Stipendium Hungaricum", desc: "Grado y posgrados en inglés en Hungría (SEGIB).", slug: "stipendium-hungaricum-beca", flag: "🇭🇺", tag: "Hungría" },
+      { title: "SI Scholarships Suecia", desc: "Maestrías con 11.000 SEK/mes de estipendio.", slug: "swedish-institute-siss-beca", flag: "🇸🇪", tag: "Suecia" },
+      { title: "Becas ARES Bélgica", desc: "Maestrías de especialización en la Bélgica francófona.", slug: "ares-belgica-beca", flag: "🇧🇪", tag: "Bélgica" },
+      { title: "DAAD Investigación", desc: "Estancias doctorales de 1 a 6 meses en Alemania.", slug: "daad-investigacion-beca", flag: "🇩🇪", tag: "Alemania" },
+      { title: "Humboldt Research", desc: "Becas postdoctorales autónomas en Alemania.", slug: "humboldt-research-beca", flag: "🇩🇪", tag: "Alemania" }
     ]
   },
   {
@@ -64,7 +78,9 @@ const OPPORTUNITIES_BY_CONTINENT = [
     emoji: "🌏",
     color: "#7c3aed",
     items: [
-      { title: "GKS Corea del Sur", desc: "Beca integral + 1 año de idioma coreano.", slug: "gks-korea-beca", flag: "🇰🇷", tag: "Corea del Sur" }
+      { title: "GKS Corea del Sur", desc: "Beca integral + 1 año de idioma coreano.", slug: "gks-korea-beca", flag: "🇰🇷", tag: "Corea del Sur" },
+      { title: "Beca MEXT Japón", desc: "Pregrado completo + 1 año intensivo de japonés.", slug: "mext-japon-beca", flag: "🇯🇵", tag: "Japón", highlight: true },
+      { title: "Beca Türkiye Burslari", desc: "Pregrado y posgrado con residencia y turco gratis.", slug: "turkiye-burslari-beca", flag: "🇹🇷", tag: "Turquía" }
     ]
   }
 ];

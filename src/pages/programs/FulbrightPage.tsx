@@ -645,11 +645,11 @@ export default function FulbrightPage() {
                 />
 
                 {/* Main Prominent Official Logo Badge */}
-                <div className="w-full max-w-[280px] h-24 mx-auto rounded-2xl bg-white p-2 shadow-2xl flex items-center justify-center border-2 border-[#F5C542] overflow-hidden transition-transform hover:scale-105 duration-300">
+                <div className="w-full max-w-[280px] h-24 mx-auto rounded-2xl bg-white p-3.5 shadow-2xl flex items-center justify-center border-2 border-[#F5C542] overflow-hidden transition-transform hover:scale-105 duration-300">
                   <img
                     src={fulbrightLogo}
                     alt="Logo Beca Fulbright"
-                    className="w-full h-full object-contain scale-[1.45]"
+                    className="w-full h-full object-contain"
                   />
                 </div>
 
